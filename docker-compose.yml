@@ -1,0 +1,6 @@
+lea:
+  image: lea
+  volumes:
+    - ./src/:/lea/src
+  ports:
+    - "80:80"
