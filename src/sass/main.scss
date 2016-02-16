@@ -1,9 +1,20 @@
 body {
-	background-color: tomato;
+	background-color: white;
 }
 
 ace-editor { 
-    width: 600px;
-    height: 500px;
-    display: block;
+    width: 80%; 
+    float:right;
+    height: 400px;
+}
+
+.file-structure {
+	width: 20%; 
+	float:left;
+}
+
+header {
+	justify-content: space-between;
+	display: flex;
+	flex-wrap: nowrap;
 }

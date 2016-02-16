@@ -1,5 +1,15 @@
-<h1>Lea</h1>
+<header>
+	<h2>{{project.name}}</h2>
+	<div>
+	    <button (click)="run()">Run</button>
+	</div>
+</header>
 <div>
-    <button (click)="run()">Run</button>
+	<div class="file-structure">
+		<ul>
+			<li *ngFor="#file of project.files"><span (click)="selectFile(file)">{{file.name}}</span><span (click)="deleteFile(file)">[Delete]</span></li>
+		</ul>
+		<new-file-form (newFile)="newFile($event)"></new-file-form>
+	</div>
+	<ace-editor [file]="selectedFile"></ace-editor>
 </div>
-<ace-editor [file]="file"></ace-editor>
