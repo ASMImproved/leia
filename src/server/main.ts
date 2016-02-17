@@ -1,8 +1,9 @@
 /// <reference path="../../typings/main.d.ts" />
 
-var express = require('express')
-var app = express()
-var server = require('http').Server(app)
+import express = require('express')
+var app: express.Express = express()
+import http = require('http')
+var server: http.Server = http.createServer(app)
 var io: SocketIO.Server = require('socket.io')(server)
  
 app.get('/', (req, res) => {
