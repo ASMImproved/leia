@@ -36,8 +36,13 @@ RUN npm install \
     rxjs@5.0.0-beta.0 \
     zone.js@0.5.11
 
+RUN npm install -g typings
+
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
+
+ADD typings.json .
+RUN typings install
 
 ADD gulpfile.js .
 ADD tsconfig.json .

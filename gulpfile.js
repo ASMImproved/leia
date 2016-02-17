@@ -9,7 +9,7 @@ var sass = require('gulp-sass');
 // Main task
 gulp.task('default' , function () {
 	runSequence(
-		['typescript', 'index', 'vendor', 'template', 'server', 'sass']
+		['typescript', 'typescript-server', 'index', 'vendor', 'template', 'sass']
 	);
 });
 
@@ -27,6 +27,16 @@ gulp.task('typescript', function () {
 });
 gulp.task('typescript-watch', function() {
 	return gulp.watch(['src/app/**/**.ts'], ['typescript']);
+})
+
+gulp.task('typescript-server', function() {
+	return gulp.src('src/server/**/**.ts', {base: 'src/server'})
+		.pipe(ts({
+			target: "es5",
+			module: "commonjs",
+			moduleResolution: "node"
+		}))
+		.pipe(gulp.dest('dist'));
 })
 
 gulp.task('template', function () {
@@ -48,11 +58,6 @@ gulp.task('vendor', function() {
 			'node_modules/rxjs/**/**'
 		], {base: 'node_modules'})
 		.pipe(gulp.dest('dist/public/vendor/'))
-})
-
-gulp.task('server', function() {
-	return gulp.src('src/server/**/**')
-		.pipe(gulp.dest('dist/'))
 })
 
 gulp.task('sass', function() {
