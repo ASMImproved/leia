@@ -22,13 +22,17 @@
   <script>
     System.config({
       packages: {        
-        app: {
+        client: {
+          format: 'register',
+          defaultExtension: 'js'
+        },
+        common: {
           format: 'register',
           defaultExtension: 'js'
         }
       }
     });
-    System.import('app/main')
+    System.import('client/app/main')
           .then(null, console.error.bind(console));
   </script>
 </head>

@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
   res.send('Hello World from node')
 })
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/../public'));
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });

@@ -9,7 +9,7 @@ var sass = require('gulp-sass');
 // Main task
 gulp.task('default' , function () {
 	runSequence(
-		['typescript', 'typescript-server', 'index', 'vendor', 'template', 'sass']
+		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass']
 	);
 });
 
@@ -18,19 +18,19 @@ var tsProject = ts.createProject('tsconfig.json', {
 });
 
 // compiles *.ts files by tsconfig.json file and creates sourcemap filse
-gulp.task('typescript', function () {
-	return gulp.src(['src/app/**/**.ts'], {base: 'src/app'})
+gulp.task('typescript-client', function () {
+	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
         .pipe(ts(tsProject))
 		.pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist/public/app'));
+        .pipe(gulp.dest('dist/public/'));
 });
 gulp.task('typescript-watch', function() {
-	return gulp.watch(['src/app/**/**.ts'], ['typescript']);
+	return gulp.watch(['src/client/app/**/**.ts'], ['typescript']);
 })
 
 gulp.task('typescript-server', function() {
-	return gulp.src('src/server/**/**.ts', {base: 'src/server'})
+	return gulp.src(['src/server/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(ts({
 			target: "es5",
 			module: "commonjs",
@@ -40,12 +40,12 @@ gulp.task('typescript-server', function() {
 })
 
 gulp.task('template', function () {
-	return gulp.src(['src/app/**/**.html'], {base: 'src/app'})
+	return gulp.src(['src/client/app/**/**.html'], {base: 'src/app'})
         .pipe(gulp.dest('dist/public/app'));
 });
 
 gulp.task('index', function() {
-	return gulp.src('src/index.html')
+	return gulp.src('src/client/index.html')
 		.pipe(gulp.dest('dist/public/'))
 });
 
@@ -61,7 +61,7 @@ gulp.task('vendor', function() {
 })
 
 gulp.task('sass', function() {
-	return gulp.src('src/sass/**/*.scss')
+	return gulp.src('src/client/sass/**/*.scss')
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest('dist/public/css'))
 })

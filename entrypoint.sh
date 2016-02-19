@@ -4,4 +4,4 @@ cd /lea
 
 gulp 
 
-node dist/main.js
+node dist/server/main.js
