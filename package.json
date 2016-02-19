@@ -4,7 +4,7 @@
   "description": "Assembler IDE",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "karma start",
     "start": "node server.js",
     "tsc": "tsc"
   },
@@ -15,15 +15,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bower": "^1.7.2",
-    "express": "^4.13.4",
-    "socket.io": "^1.4.4",
     "angular2": "2.0.0-beta.3",
-    "systemjs": "0.19.6",
     "es6-promise": "^3.0.2",
     "es6-shim": "^0.33.3",
+    "express": "^4.13.4",
     "reflect-metadata": "0.1.2",
     "rxjs": "5.0.0-beta.0",
+    "socket.io": "^1.4.4",
+    "systemjs": "0.19.6",
     "zone.js": "0.5.11"
   },
   "devDependencies": {
@@ -37,9 +36,13 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.10.0",
     "jasmine-core": "2.4.1",
-    "lite-server": "^2.0.1",
+    "karma": "^0.13.21",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-coverage": "^0.5.3",
+    "karma-jasmine": "^0.3.7",
+    "remap-istanbul": "^0.5.1",
+    "run-sequence": "^1.1.5",
     "tsd": "^0.6.5",
-    "typescript": "^1.7.5",
-    "run-sequence": "^1.1.5"
+    "typescript": "^1.7.5"
   }
 }
