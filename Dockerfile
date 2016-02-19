@@ -1,4 +1,10 @@
-FROM node:5.5.0-wheezy
+FROM ubuntu:14.04.4
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_4.x | bash - && \
+    apt-cache showpkg nodejs && \
+    apt-get install -y nodejs build-essential
 
 RUN mkdir /lea
 
