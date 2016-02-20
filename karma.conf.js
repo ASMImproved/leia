@@ -36,7 +36,14 @@ module.exports = function(config) {
 
         autoWatch: true,
 
-        browsers: ['Chrome'],
+        browsers: ['Chrome_nosandbox'],
+
+        customLaunchers: {
+            Chrome_nosandbox: {
+                base: 'Chrome',
+                flags: ['--no-sandbox']
+            }
+        },
 
         // Karma plugins loaded
         plugins: [

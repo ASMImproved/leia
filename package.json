@@ -4,7 +4,7 @@
   "description": "Assembler IDE",
   "main": "server.js",
   "scripts": {
-    "test": "karma start",
+    "test_client": "karma start",
     "start": "node server.js",
     "tsc": "tsc"
   },
@@ -29,6 +29,7 @@
     "concurrently": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-connect": "^2.2.0",
+    "gulp-jasmine": "^2.3.0",
     "gulp-open": "^1.0.0",
     "gulp-plumber": "^1.0.1",
     "gulp-rimraf": "^0.2.0",
