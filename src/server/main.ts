@@ -7,7 +7,9 @@ var server: http.Server = http.createServer(app)
 var io: SocketIO.Server = require('socket.io')(server)
  
 app.get('/', (req, res) => {
-  res.send('Hello World from node')
+	res.sendFile('public/index.html', {
+		root: __dirname + '/../'
+	})
 })
 
 app.use(express.static(__dirname + '/../public'));
