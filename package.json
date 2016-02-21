@@ -23,7 +23,11 @@
     "rxjs": "5.0.0-beta.0",
     "socket.io": "^1.4.4",
     "systemjs": "0.19.6",
-    "zone.js": "0.5.11"
+    "zone.js": "0.5.11",
+    "temp": "0.8.3",
+    "async": "1.5.2",
+    "gcc-output-parser": "0.0.2",
+    "rimraf": "2.5.2"
   },
   "devDependencies": {
     "concurrently": "^1.0.0",

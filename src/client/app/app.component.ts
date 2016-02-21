@@ -13,14 +13,15 @@ declare var io: any;
 })
 export class AppComponent {
 	private socket;
+	public stdout: string = "";
 	public project: Project;
 	public selectedFile: File;
 
 	constructor() {
 		this.socket = io.connect();
-	    this.socket.on('news', function (data) {
-	      console.log(data);
-	    });
+		this.socket.on('stdout', (buffer) => {
+			this.stdout += buffer;
+		})
 	    this.project = new Project("Test project");
 		this.project.files.push(new File("main.s"));
 		this.selectedFile = new File("");
@@ -28,8 +29,8 @@ export class AppComponent {
 	}
 
 	run() {
-		console.log("run %s", this.project.files[0].content);
-		this.socket.emit('run', { content: this.project.files[0].content });
+		console.log("run %s", this.project);
+		this.socket.emit('run', this.project);
 	}
 
 	selectFile(file: File) {

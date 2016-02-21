@@ -2,15 +2,38 @@
 
 import util = require('util');
 import cp = require('child_process');
+import fs = require('fs');
+import path = require('path');
+import async = require('async');
+import {Project} from '../common/project.ts';
+var temp = require('temp');
+var rimraf = require('rimraf');
+var gccParser = require('gcc-output-parser');
 
-export class gcc {
-	constructor(public code: string) {
+export class Gcc {
+	constructor(private project: Project) {
 
 	}
 
-	compile(cb) {
-		cp.exec(util.format("gcc %s"), (err, stdout, stdin) => {
-			cb(err);
+	compile(compileFinishedCb) {
+		temp.mkdir('', (err, dirPath) => {
+			async.parallel(this.project.files.map((file) => {
+				return function(cb) {
+					var filepath: string = path.join(dirPath, file.name);
+					fs.writeFile(filepath, file.content, (err: NodeJS.ErrnoException) => {
+						cb(err, filepath);
+					});
+				}
+			}), (err, result: Array<string>) => {
+				if(err) {
+					compileFinishedCb(err)
+				}
+				var filestring: string = result.join(' ');
+				var out: string = path.join(dirPath, 'proj.out');
+				cp.exec(util.format("mips-linux-gnu-gcc -static -mips32r5 -o %s %s", out, filestring), (err, stdout, stderr) => {
+					compileFinishedCb(err, stdout, stderr, dirPath);
+				});
+			});
 		});
 	}
 }
