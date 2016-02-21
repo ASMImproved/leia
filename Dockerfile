@@ -12,10 +12,15 @@ RUN apt-get install -y curl && \
     curl -sL https://deb.nodesource.com/setup_4.x | bash - && \
     apt-get install -y --force-yes \
 	    nodejs \
+        build-essential \
+        xvfb \
+        chromium-browser \
 	    cpp-4.3-mips-linux-gnu \
 		gcc-4.3-mips-linux-gnu \
 		qemu-system-mips \
 		qemu-user
+
+ENV DISPLAY=:99
 
 RUN mkdir /lea
 

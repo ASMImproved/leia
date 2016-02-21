@@ -5,12 +5,20 @@ var typescript = require('typescript');
 var sourcemaps = require('gulp-sourcemaps');
 var rimraf = require('gulp-rimraf');
 var sass = require('gulp-sass');
+var jasmine = require('gulp-jasmine');
 
 // Main task
 gulp.task('default' , function () {
 	runSequence(
 		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass']
 	);
+});
+
+gulp.task('test_server', function() {
+	runSequence(
+		['typescript-server', 'vendor'],
+		'jasmine-server'
+	)
 });
 
 var tsProject = ts.createProject('tsconfig.json', {
@@ -69,4 +77,9 @@ gulp.task('sass', function() {
 gulp.task('clean', function() {
 	return gulp.src(['dist/'])
 		.pipe(rimraf())
+});
+
+gulp.task('jasmine-server', function() {
+	gulp.src(["dist/server/*.spec.js"])
+		.pipe(jasmine())
 });
