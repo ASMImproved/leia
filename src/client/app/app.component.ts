@@ -23,7 +23,6 @@ export class AppComponent {
 			this.stdout += buffer;
 		})
 	    this.project = new Project("Test project");
-		this.project.files.push(new File("main.s"));
 		this.selectedFile = this.project.files[0];
 	}
 
