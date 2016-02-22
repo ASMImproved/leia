@@ -29,7 +29,7 @@ io.on('connection', function (socket) {
 			var mipsRun: cp.ChildProcess = (new MipsRunner(path.join(dirPath, "proj.out"))).execute();
 			mipsRun.stdout.setEncoding('utf8');
 			mipsRun.stdout.on('data', (chunk) => {
-				socket.emit('stdout', chunk;
+				socket.emit('stdout', chunk);
 			})
 		});
 	});
