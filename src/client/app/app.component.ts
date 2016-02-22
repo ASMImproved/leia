@@ -43,5 +43,6 @@ export class AppComponent {
 
 	newFile(file: File) {
 		this.project.files.push(file);
+		this.selectedFile = file;
 	}
 }
