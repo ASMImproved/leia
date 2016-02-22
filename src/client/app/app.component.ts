@@ -24,8 +24,7 @@ export class AppComponent {
 		})
 	    this.project = new Project("Test project");
 		this.project.files.push(new File("main.s"));
-		this.selectedFile = new File("");
-		this.selectedFile.content = "";
+		this.selectedFile = this.project.files[0];
 	}
 
 	run() {
