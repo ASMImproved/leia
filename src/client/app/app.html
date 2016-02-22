@@ -1,20 +1,21 @@
 <header>
 	<h2>{{project.name}}</h2>
-	<div>
-	    <button (click)="run()">Run</button>
-	</div>
+	<button (click)="run()">Run</button>
 </header>
 <div>
 	<div class="file-structure">
 		<ul>
-			<li *ngFor="#file of project.files"><span (click)="selectFile(file)">{{file.name}}</span><span (click)="deleteFile(file)">[Delete]</span></li>
+			<li *ngFor="#file of project.files"><span (click)="selectFile(file)">{{file.name}}</span><span class="delete" (click)="deleteFile(file)">[Delete]</span></li>
 		</ul>
 		<new-file-form (newFile)="newFile($event)"></new-file-form>
 	</div>
 	<editor-panel>
-		<h3>{{selectedFile.name}}</h3>
+		<h4>{{selectedFile.name}}</h4>
 		<ace-editor [file]="selectedFile"></ace-editor>
 	</editor-panel>
 	<clear></clear>
 </div>
-<div>{{stdout}}</div>
+<lea-console>
+	<h4>Console</h4>
+	{{stdout}}
+</lea-console>

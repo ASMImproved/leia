@@ -1,10 +1,18 @@
 body {
 	background-color: white;
+	margin: 0px;
+	font-family: arial;
 }
 
 editor-panel { 
     width: 80%; 
     float:right;
+    h4 {
+    	margin: 0;
+		background-color: #79C3E6;
+		color: white;
+		padding: 5px;
+    }
 }
 
 ace-editor {
@@ -15,15 +23,49 @@ ace-editor {
 .file-structure {
 	width: 20%; 
 	float:left;
+	ul {
+		padding: 0px 10px;
+		li {
+			display: block;
+    		list-style: none;
+    		.delete {
+    			float: right;
+    		}
+		}
+	}
 }
 
 header {
 	justify-content: space-between;
 	display: flex;
 	flex-wrap: nowrap;
+	padding: 10px 20px;
+	background-color: #3E3E3E;
+    color: white;
+	h2 {
+		margin: 0px;
+	}
+}
+
+new-file-form {
+	display: block;
+    padding: 10px 20px;
 }
 
 clear {
 	display: block;
 	clear: both;
+}
+
+lea-console {
+	display: block;
+    padding: 5px 10px;
+    font-family: courier new;
+    background-color: #E8E8E8;
+    h4 {
+    	margin: 0;
+		background-color: #79C3E6;
+		color: white;
+		padding: 5px;
+    }
 }
