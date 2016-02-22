@@ -2,10 +2,14 @@ body {
 	background-color: white;
 }
 
-ace-editor { 
+editor-panel { 
     width: 80%; 
     float:right;
-    height: 400px;
+}
+
+ace-editor {
+	display: block;
+	height: 400px;
 }
 
 .file-structure {

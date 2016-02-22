@@ -11,7 +11,10 @@
 		</ul>
 		<new-file-form (newFile)="newFile($event)"></new-file-form>
 	</div>
-	<ace-editor [file]="selectedFile"></ace-editor>
+	<editor-panel>
+		<h3>{{selectedFile.name}}</h3>
+		<ace-editor [file]="selectedFile"></ace-editor>
+	</editor-panel>
 	<clear></clear>
 </div>
 <div>{{stdout}}</div>
