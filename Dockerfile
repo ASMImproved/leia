@@ -29,7 +29,7 @@ RUN npm install -g gulp-cli
 
 WORKDIR /lea
 
-ADD package.json .
+ADD package.json ./
 RUN npm install
 
 RUN npm install -g typings
@@ -37,13 +37,13 @@ RUN npm install -g typings
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
-ADD typings.json .
+ADD typings.json ./
 RUN typings install
 
-ADD gulpfile.js .
-ADD tsconfig.json .
-ADD karma.conf.js .
-ADD karma-test-shim.js .
+ADD gulpfile.js ./
+ADD tsconfig.json ./
+ADD karma.conf.js ./
+ADD karma-test-shim.js ./
 
 ADD src/ src/
 
