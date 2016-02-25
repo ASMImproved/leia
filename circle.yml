@@ -9,7 +9,7 @@ dependencies:
 
 test:
   override:
-    - docker run lea -v $CIRCLE_TEST_REPORTS/:/tests/
+    - docker run lea -v $CIRCLE_TEST_REPORTS/:/tests/ test
 
 deployment:
   hub:
