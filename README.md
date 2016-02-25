@@ -2,6 +2,8 @@
 
 A web-based Assembler IDE leveraging QEMU as a runtime.
 
+[![Circle CI](https://circleci.com/gh/ASMImproved/lea/tree/master.svg?style=svg)](https://circleci.com/gh/ASMImproved/lea/tree/master)
+
 ## Build instructions
 
 The server is intended to run in a Docker container.
