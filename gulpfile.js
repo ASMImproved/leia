@@ -6,6 +6,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var rimraf = require('gulp-rimraf');
 var sass = require('gulp-sass');
 var jasmine = require('gulp-jasmine');
+const reporters = require('jasmine-reporters');
 
 // Main task
 gulp.task('default' , function () {
@@ -81,5 +82,10 @@ gulp.task('clean', function() {
 
 gulp.task('jasmine-server', function() {
 	gulp.src(["dist/server/*.spec.js"])
-		.pipe(jasmine())
+		.pipe(jasmine({
+			reporter: new reporters.JUnitXmlReporter({
+				savePath: '/tests/',
+				consolidateAll: true
+			})
+		}))
 });
