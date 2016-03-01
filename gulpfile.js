@@ -116,7 +116,7 @@ gulp.task('jasmine-server', function() {
 	gulp.src(["dist/server/*.spec.js"])
 		.pipe(jasmine({
 			reporter: new reporters.JUnitXmlReporter({
-				savePath: '/tests/',
+				savePath: '/tests/server/',
 				consolidateAll: true
 			})
 		}))
