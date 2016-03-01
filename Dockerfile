@@ -46,5 +46,7 @@ ADD karma-test-shim.js ./
 
 ADD src/ src/
 
+RUN gulp
+
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]

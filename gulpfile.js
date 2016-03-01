@@ -9,6 +9,7 @@ var jasmine = require('gulp-jasmine');
 const reporters = require('jasmine-reporters');
 var watch = require('gulp-watch');
 var nodeServer = require('gulp-develop-server');
+var Karma = require('karma').Server;
 
 // Main task
 gulp.task('default' , function () {
@@ -30,6 +31,13 @@ gulp.task('test_server', function() {
 	runSequence(
 		['typescript-server', 'vendor'],
 		'jasmine-server'
+	)
+});
+
+gulp.task('test_client', function() {
+	runSequence(
+		['typescript-client', 'index', 'vendor', 'template', 'sass'],
+		'karma'
 	)
 });
 
@@ -120,4 +128,10 @@ gulp.task('jasmine-server', function() {
 				consolidateAll: true
 			})
 		}))
+});
+
+gulp.task('karma', function(done) {
+	new Karma({
+		configFile: __dirname + '/karma.conf.js'
+	}, done).start()
 });
