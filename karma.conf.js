@@ -25,7 +25,7 @@ module.exports = function(config) {
 
         // proxied base paths
         proxies: {
-            // required for component assests fetched by Angular's compiler
+            // required for component assets fetched by Angular's compiler
             '/src/': '/base/src/'
         },
 
@@ -55,7 +55,7 @@ module.exports = function(config) {
 
         reporters: ['junit'],
         junitReporter: {
-            outputDir: './tests/client/',
+            outputDir: '/tests/client/',
             useBrowserName: true
         },
 

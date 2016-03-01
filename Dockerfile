@@ -21,8 +21,6 @@ RUN apt-get install -y curl && \
 		qemu-system-mips \
 		qemu-user
 
-ENV DISPLAY=:99
-
 RUN mkdir /lea
 
 RUN npm install -g tsd

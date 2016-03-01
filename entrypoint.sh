@@ -1,5 +1,7 @@
 #! /bin/bash
 
+export DISPLAY=:99
+
 cd /lea
 
 gulp
