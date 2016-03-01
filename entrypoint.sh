@@ -9,7 +9,7 @@ if [ "$1" == "test" ]; then
 
     gulp test_client
     gulp test_server
-elif [ "$1" == "develop" ]; then
+elif [ "$1" == "watch" ]; then
     gulp watch
 else
     node dist/server/main.js
