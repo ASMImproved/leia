@@ -9,6 +9,8 @@ if [ "$1" == "test" ]; then
 
     npm run test_client
     gulp test_server
+elif [ "$1" == "develop" ]; then
+    gulp watch
 else
     node dist/server/main.js
 fi
