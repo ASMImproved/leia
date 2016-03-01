@@ -29,7 +29,7 @@ gulp.task('watch', function() {
 			'template-watch',
 			'sass-watch'
 		],
-		'browser-sync'
+		['browser-sync', 'jasmine-server', 'karma']
 	)
 });
 
