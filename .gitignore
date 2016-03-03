@@ -1,6 +1,7 @@
 node_modules
 typings
 dist
+docker-compose-protractor.yml
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
