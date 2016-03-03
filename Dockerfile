@@ -17,7 +17,10 @@ RUN apt-get install -y curl && \
         chromium-browser \
 	    cpp-4.3-mips-linux-gnu \
 		gcc-4.3-mips-linux-gnu \
+		gdb-multiarch \
+		git \
 		libexif12 \
+		python \
 		qemu-system-mips \
 		qemu-user
 
