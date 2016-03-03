@@ -15,7 +15,8 @@ module.exports = function(config) {
             {pattern: 'karma-test-shim.js', included: true, watched: true},
 
             // paths loaded via module imports
-            {pattern: 'dist/**/*.js', included: false, watched: true},
+            {pattern: 'dist/public/client/**/*.js', included: false, watched: true},
+            {pattern: 'dist/public/common/**/*.js', included: false, watched: true},
 
             // paths to support debugging with source maps in dev tools
             {pattern: 'src/**/*.ts', included: false, watched: false},
@@ -24,7 +25,7 @@ module.exports = function(config) {
 
         // proxied base paths
         proxies: {
-            // required for component assests fetched by Angular's compiler
+            // required for component assets fetched by Angular's compiler
             '/src/': '/base/src/'
         },
 
@@ -48,23 +49,14 @@ module.exports = function(config) {
         // Karma plugins loaded
         plugins: [
             'karma-jasmine',
-            //'karma-coverage',
+            'karma-junit-reporter',
             'karma-chrome-launcher'
         ],
 
-        // Coverage reporter generates the coverage
-        //reporters: ['progress', 'dots'], //, 'coverage'],
-
-        // Source files that you wanna generate coverage for.
-        // Do not include tests or libraries (these files will be instrumented by Istanbul)
-        preprocessors: {
-        //    'dist/**/!(*spec).js': ['coverage']
-        },
-
-        coverageReporter: {
-            reporters:[
-        //        {type: 'json', subdir: '.', file: 'coverage-final.json'}
-            ]
+        reporters: ['junit'],
+        junitReporter: {
+            outputDir: '/tests/client/',
+            useBrowserName: true
         },
 
         singleRun: true

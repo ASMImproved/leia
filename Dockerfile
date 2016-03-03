@@ -17,10 +17,9 @@ RUN apt-get install -y curl && \
         chromium-browser \
 	    cpp-4.3-mips-linux-gnu \
 		gcc-4.3-mips-linux-gnu \
+		libexif12 \
 		qemu-system-mips \
 		qemu-user
-
-ENV DISPLAY=:99
 
 RUN mkdir /lea
 
@@ -46,6 +45,8 @@ ADD karma.conf.js ./
 ADD karma-test-shim.js ./
 
 ADD src/ src/
+
+RUN gulp
 
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]

@@ -35,5 +35,5 @@ io.on('connection', function (socket) {
 	});
 });
  
-server.listen(80)
+server.listen(process.env.port || 80);
 console.log("server starts accepting connections");
