@@ -1,5 +1,5 @@
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
-import {File} from '../../common/file';
+import {File} from '../../common/File';
 
 // declare the ace library
 declare var ace: any;

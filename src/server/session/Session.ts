@@ -1,7 +1,7 @@
-/// <reference path="../../typings/main.d.ts" />
-import {Project} from '../common/project.ts'
-import {MipsRunner} from './mipsRunner'
-import {Gcc} from './gcc'
+/// <reference path="../../../typings/main.d.ts" />
+import {Project} from '../../common/project.ts'
+import {MipsRunner} from '../MipsRunner'
+import {Gcc} from '../Gcc'
 import path = require('path');
 import cp = require('child_process');
 

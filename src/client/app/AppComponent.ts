@@ -1,15 +1,15 @@
 import {Component} from 'angular2/core';
-import {AceDirective} from './ace.directive'
-import {File} from '../../common/file'
-import {Project} from '../../common/project'
-import {NewFileForm} from './new-file-form.component'
+import {AceDirective} from './AceDirective'
+import {File} from '../../common/File'
+import {Project} from '../../common/Project'
+import {NewFileFormComponent} from './NewFileFormComponent'
 
 declare var io: any;
 
 @Component({
     selector: 'my-app',
     templateUrl: 'client/app/app.html',
-    directives: [AceDirective, NewFileForm]
+    directives: [AceDirective, NewFileFormComponent]
 })
 export class AppComponent {
 	private socket;

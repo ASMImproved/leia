@@ -6,7 +6,7 @@ import expressSocketioSession = require('express-socket.io-session');
 
 var app: express.Express = express();
 import http = require('http')
-import {SessionManager} from './SessionManager'
+import {SessionManager} from './session/SessionManager'
 var server: http.Server = http.createServer(app);
 var io: SocketIO.Server = require('socket.io')(server);
 

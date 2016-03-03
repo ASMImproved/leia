@@ -1,4 +1,4 @@
-import {File} from './file'
+import {File} from './File'
 
 export class Project {
 	files: Array<File>;

@@ -1,6 +1,6 @@
 import {Component, Output, EventEmitter} from 'angular2/core';
 import {NgForm}    from 'angular2/common';
-import { File }    from '../../common/file';
+import { File }    from '../../common/File';
 
 @Component({
   selector: 'new-file-form',
@@ -9,7 +9,7 @@ import { File }    from '../../common/file';
 	"newFile"
   ]
 })
-export class NewFileForm {
+export class NewFileFormComponent {
   name: string;
   model = new File("");
   public newFile: EventEmitter<File>;
