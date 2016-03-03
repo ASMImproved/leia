@@ -4,6 +4,7 @@
   "ambientDependencies": {
     "async": "github:DefinitelyTyped/DefinitelyTyped/async/async.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
     "express": "github:DefinitelyTyped/DefinitelyTyped/express/express.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4",
+    "express-session": "github:DefinitelyTyped/DefinitelyTyped/express-session/express-session.d.ts#3ca0e0306a56b3dff5e6999dbd1627bf30201cfc",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#366b936e62a6244a15f011e0ee0559b903d1dd65",
     "socket.io": "github:DefinitelyTyped/DefinitelyTyped/socket.io/socket.io.d.ts#4128f7af06c355e3526b7cf7cbb85e2e43bff167"
   }
