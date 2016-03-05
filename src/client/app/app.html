@@ -1,6 +1,8 @@
 <header>
 	<h2>{{project.name}}</h2>
-	<button (click)="run()">Run</button>
+	<h2>{{connected ? "" : "Disconnected"}}</h2>
+	<button *ngIf="!running" [disabled]="running || !connected" (click)="run()">Run</button>
+	<button *ngIf="running" [disabled]="!connected" (click)="stop()">Stop</button>
 </header>
 <div>
 	<div class="file-structure">
@@ -16,6 +18,7 @@
 	<clear></clear>
 </div>
 <lea-console>
-	<h4>Console</h4>
+	<h4>Console {{running ? "- Running" : ""}}</h4>
+	{{gccErr}}
 	{{stdout}}
 </lea-console>
