@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "express-socket.io-session": "file:src/typings/express-socket.io-session.d.ts"
+    "express-socket.io-session": "file:src/typings/express-socket.io-session.d.ts",
+    "randomstring": "file:src/typings/randomstring.d.ts"
   },
   "devDependencies": {},
   "ambientDependencies": {
