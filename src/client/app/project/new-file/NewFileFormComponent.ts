@@ -1,10 +1,10 @@
 import {Component, Output, EventEmitter} from 'angular2/core';
 import {NgForm}    from 'angular2/common';
-import { File }    from '../../common/File';
+import { File }    from '../../../../common/File';
 
 @Component({
   selector: 'new-file-form',
-  templateUrl: 'client/app/new-file-form.html',
+  templateUrl: 'client/app/project/new-file/new-file-form.html',
   outputs: [
 	"newFile"
   ]

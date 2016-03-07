@@ -1,17 +1,17 @@
 import {Component} from 'angular2/core';
 import {AceDirective} from './AceDirective'
-import {File} from '../../common/File'
-import {Project} from '../../common/Project'
-import {NewFileFormComponent} from './NewFileFormComponent'
+import {File} from '../../../common/File'
+import {Project} from '../../../common/Project'
+import {NewFileFormComponent} from './new-file/NewFileFormComponent'
 
 declare var io: any;
 
 @Component({
-    selector: 'my-app',
-    templateUrl: 'client/app/app.html',
+    selector: 'lea-project',
+    templateUrl: 'client/app/project/project.html',
     directives: [AceDirective, NewFileFormComponent]
 })
-export class AppComponent {
+export class ProjectComponent {
 	private socket;
 	public stdout: string = "";
 	public gccErr: string = "";
