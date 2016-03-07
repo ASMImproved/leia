@@ -11,10 +11,12 @@ var watch = require('gulp-watch');
 var nodeServer = require('gulp-develop-server');
 var Karma = require('karma').Server;
 var browserSync = require('browser-sync').create();
+var typings = require("gulp-typings");
 
 // Main task
 gulp.task('default' , function () {
 	runSequence(
+		'install-typings',
 		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass']
 	);
 });
@@ -22,6 +24,7 @@ gulp.task('default' , function () {
 gulp.task('watch', function() {
 	runSequence(
 		[
+			'install-typings-watch',
 			'typescript-client-watch',
 			'typescript-server-watch',
 			'index-watch',
@@ -146,6 +149,14 @@ gulp.task('sass', function() {
 });
 gulp.task('sass-watch', function() {
 	return gulp.watch(['src/client/sass/**/*.scss'], ['sass']);
+});
+
+gulp.task('install-typings', function() {
+	return gulp.src('typings.json')
+		.pipe(typings())
+});
+gulp.task('install-typings-watch', function() {
+	return gulp.watch(['typings.json'], ['install-typings']);
 });
 
 gulp.task('clean', function() {

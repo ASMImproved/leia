@@ -40,7 +40,6 @@ ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 ADD typings.json ./
-RUN typings install
 
 ADD gulpfile.js ./
 ADD tsconfig.json ./
