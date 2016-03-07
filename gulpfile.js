@@ -65,13 +65,17 @@ var tsProject = ts.createProject('tsconfig.json', {
 	typescript: typescript
 });
 
-// compiles *.ts files by tsconfig.json file and creates sourcemap filse
+function failOnTypescriptError() {
+	process.exit(1);
+}
+
 gulp.task('typescript-client', function () {
 	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
-        .pipe(ts(tsProject))
+		.pipe(ts(tsProject))
+		.on('error', failOnTypescriptError)
 		.pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist/public/'))
+		.pipe(gulp.dest('dist/public/'))
 		.pipe(browserSync.stream());
 });
 gulp.task('typescript-client-watch', function() {
@@ -85,6 +89,7 @@ gulp.task('typescript-server', function() {
 			module: "commonjs",
 			moduleResolution: "node"
 		}))
+		.on('error', failOnTypescriptError)
 		.pipe(gulp.dest('dist'));
 });
 gulp.task('typescript-server-watch', function() {
