@@ -1,13 +1,18 @@
-import {Component} from 'angular2/core';
-import {ProjectComponent} from '../project/ProjectComponent'
+import {Component, EventEmitter} from 'angular2/core';
 
 @Component({
     selector: 'lea-splash',
     templateUrl: 'client/app/splash/splash.html',
-    directives: [ProjectComponent]
+    outputs: ["newProjectEvent"]
 })
 export class SplashComponent {
+    public newProjectEvent: EventEmitter<any>;
     constructor() {
+        this.newProjectEvent = new EventEmitter();
+    }
 
+    public newProject() {
+        console.log('in splash');
+        this.newProjectEvent.emit({});
     }
 }

@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component, Input, OnInit} from 'angular2/core';
 import {AceDirective} from './AceDirective'
 import {File} from '../../../common/File'
 import {Project} from '../../../common/Project'
@@ -11,11 +11,11 @@ declare var io: any;
     templateUrl: 'client/app/project/project.html',
     directives: [AceDirective, NewFileFormComponent]
 })
-export class ProjectComponent {
+export class ProjectComponent implements OnInit{
 	private socket;
 	public stdout: string = "";
 	public gccErr: string = "";
-	public project: Project;
+	@Input() public project: Project;
 	public selectedFile: File;
 	public running: boolean = false;
 	public connected: boolean = false;
@@ -41,7 +41,9 @@ export class ProjectComponent {
 			this.gccErr = err.toString();
 			console.log(this.gccErr);
 		});
-	    this.project = new Project("Test project");
+	}
+
+	ngOnInit() {
 		this.selectedFile = this.project.files[0];
 	}
 
