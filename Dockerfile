@@ -3,7 +3,7 @@ FROM ubuntu:14.04.4
 ADD ./emdebian-toolchain-archive.key .
 
 RUN apt-get install -y curl && \
-    curl -sL http://ftp.de.debian.org/debian/pool/main/g/gmp/libgmp3c2_4.3.2+dfsg-1_amd64.deb -o libgmp3c2_4.3.2+dfsg-1_amd64.deb && \
+    curl -fsL http://de.archive.ubuntu.com/ubuntu/pool/universe/g/gmp4/libgmp3c2_4.3.2+dfsg-2ubuntu1_amd64.deb -o libgmp3c2_4.3.2+dfsg-1_amd64.deb && \
     dpkg -i /libgmp3c2_4.3.2+dfsg-1_amd64.deb && \
     echo "deb http://www.emdebian.org/debian stable main" >> /etc/apt/sources.list && \
     apt-get update && \
