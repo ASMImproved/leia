@@ -1,5 +1,5 @@
 
 import {bootstrap}    from 'angular2/platform/browser'
-import {AppComponent} from './AppComponent'
+import {LeaComponent} from './lea/LeaComponent'
 
-bootstrap(AppComponent);
+bootstrap(LeaComponent);

@@ -1,0 +1,3 @@
+
+<lea-project *ngIf="activeProject" [project]="activeProject"></lea-project>
+<lea-splash *ngIf="!activeProject" (newProjectEvent)="newProject()"></lea-splash>
