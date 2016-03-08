@@ -1,3 +1,4 @@
+/// <reference path="../../../typings/browser/ambient/jasmine/jasmine.d.ts" />
 import {describe, it, expect} from 'angular2/testing';
 
 describe("it works", () => {
