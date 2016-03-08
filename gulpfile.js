@@ -11,10 +11,12 @@ var watch = require('gulp-watch');
 var nodeServer = require('gulp-develop-server');
 var Karma = require('karma').Server;
 var browserSync = require('browser-sync').create();
+var typings = require("gulp-typings");
 
 // Main task
 gulp.task('default' , function () {
 	runSequence(
+		'install-typings',
 		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass']
 	);
 });
@@ -22,6 +24,7 @@ gulp.task('default' , function () {
 gulp.task('watch', function() {
 	runSequence(
 		[
+			'install-typings-watch',
 			'typescript-client-watch',
 			'typescript-server-watch',
 			'index-watch',
@@ -65,13 +68,17 @@ var tsProject = ts.createProject('tsconfig.json', {
 	typescript: typescript
 });
 
-// compiles *.ts files by tsconfig.json file and creates sourcemap filse
+function failOnTypescriptError() {
+	process.exit(1);
+}
+
 gulp.task('typescript-client', function () {
 	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
-        .pipe(ts(tsProject))
+		.pipe(ts(tsProject))
+		.on('error', failOnTypescriptError)
 		.pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist/public/'))
+		.pipe(gulp.dest('dist/public/'))
 		.pipe(browserSync.stream());
 });
 gulp.task('typescript-client-watch', function() {
@@ -85,6 +92,7 @@ gulp.task('typescript-server', function() {
 			module: "commonjs",
 			moduleResolution: "node"
 		}))
+		.on('error', failOnTypescriptError)
 		.pipe(gulp.dest('dist'));
 });
 gulp.task('typescript-server-watch', function() {
@@ -141,6 +149,14 @@ gulp.task('sass', function() {
 });
 gulp.task('sass-watch', function() {
 	return gulp.watch(['src/client/sass/**/*.scss'], ['sass']);
+});
+
+gulp.task('install-typings', function() {
+	return gulp.src('typings.json')
+		.pipe(typings())
+});
+gulp.task('install-typings-watch', function() {
+	return gulp.watch(['typings.json'], ['install-typings']);
 });
 
 gulp.task('clean', function() {

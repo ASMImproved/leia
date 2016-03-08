@@ -1,5 +1,9 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "express-socket.io-session": "file:src/typings/express-socket.io-session.d.ts",
+    "randomstring": "file:src/typings/randomstring.d.ts",
+    "serve-static": "file:src/typings/serve-static.d.ts"
+  },
   "devDependencies": {},
   "ambientDependencies": {
     "async": "github:DefinitelyTyped/DefinitelyTyped/async/async.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",

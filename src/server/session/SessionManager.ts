@@ -12,11 +12,11 @@ export class SessionManager {
 	public startListening() {
 		this.io.on('connection', (socket: SocketIO.Socket) => {
 			//console.log(socket.request);
-			if (!socket.handshake.session.user) {
-				socket.handshake.session.user = randomstring.generate(8);
-				socket.handshake.session.save();
+			if (!socket.handshake['session']['user']) {
+				socket.handshake['session']['user'] = randomstring.generate(8);
+				socket.handshake['session'].save();
 			}
-			var userId: string = socket.handshake.session.user;
+			var userId: string = socket.handshake['session']['user'];
 			if(!this.sessions[userId]) {
 				this.sessions[userId] = new Session();
 			}
