@@ -5,6 +5,7 @@ import {Project} from '../../../common/Project'
 import {NewFileFormComponent} from './new-file/NewFileFormComponent'
 import {SocketService} from "./SocketService";
 import {RunService} from "./RunService";
+import {ProgramStoppedEvent} from "../../../common/Debugger";
 
 @Component({
     selector: 'lea-project',

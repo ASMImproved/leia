@@ -45,4 +45,8 @@ export class RunService {
     stop() {
         this.socketService.socket.emit('stop');
     }
+
+    step() {
+        this.socketService.socket.emit('step');
+    }
 }
