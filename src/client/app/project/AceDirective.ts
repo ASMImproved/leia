@@ -2,7 +2,8 @@
 
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {File} from '../../../common/File';
-import {BreakpointService, Breakpoint} from "./BreakpointService";
+import {BreakpointService} from "./BreakpointService";
+import {Breakpoint} from '../../../common/Debugger';
 
 // declare the ace library
 declare var ace: AceAjax.Ace;

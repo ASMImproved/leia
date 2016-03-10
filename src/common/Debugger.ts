@@ -24,3 +24,12 @@ export interface ProgramStoppedEvent {
     breakpointId?: number;
     frame: IFrameInfo;
 }
+
+export class Breakpoint {
+    constructor(public file: string, public line: number, public pending?: boolean) {
+    }
+
+    get location() {
+        return this.file + ':' + this.line;
+    }
+}

@@ -1,4 +1,4 @@
-import {Injectable} from "angular2/core";
+import {Injectable, EventEmitter} from "angular2/core";
 import {SocketService} from "./SocketService";
 import {Project} from "../../../common/Project";
 
@@ -7,6 +7,7 @@ export class RunService {
     private _stdout: string = "";
     private _gccErr: string = "";
     private _running: boolean = false;
+    public runStatusChanged: EventEmitter<boolean> = new EventEmitter();
 
     constructor(private socketService: SocketService) {
         socketService.socket.on('stdout', (buffer) => {
@@ -17,7 +18,7 @@ export class RunService {
             console.log(this._gccErr);
         });
         socketService.socket.on('exit', () => {
-            this._running = false;
+            this.setRunningState(false);
             console.log('exit');
         });
     }
@@ -35,12 +36,17 @@ export class RunService {
     }
 
     run(project: Project) {
-        this._running = true;
+        this.setRunningState(true);
         this._stdout = "";
         this._gccErr = "";
         console.log("run %s", project);
         this.socketService.socket.emit('run', project);
     }
+
+    private setRunningState(running:  boolean) {
+        this._running = running;
+        this.runStatusChanged.emit(this._running);
+    };
 
     stop() {
         this.socketService.socket.emit('stop');
