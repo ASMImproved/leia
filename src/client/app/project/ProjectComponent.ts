@@ -4,48 +4,23 @@ import {File} from '../../../common/File'
 import {Project} from '../../../common/Project'
 import {NewFileFormComponent} from './new-file/NewFileFormComponent'
 import {SocketService} from "./SocketService";
+import {RunService} from "./RunService";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
     directives: [AceDirective, NewFileFormComponent],
-	providers: [SocketService]
+	providers: [SocketService, RunService]
 })
 export class ProjectComponent implements OnInit{
-	public stdout: string = "";
-	public gccErr: string = "";
 	@Input() public project: Project;
 	public selectedFile: File;
-	public running: boolean = false;
 
-	constructor(private socketService: SocketService) {
-		socketService.socket.on('stdout', (buffer) => {
-			this.stdout += buffer;
-		});
-		socketService.socket.on('exit', () => {
-			this.running = false;
-			console.log('exit');
-		});
-		socketService.socket.on('gcc-error', (err) => {
-			this.gccErr = err.toString();
-			console.log(this.gccErr);
-		});
+	constructor(private socketService: SocketService, private runService: RunService) {
 	}
 
 	ngOnInit() {
 		this.selectedFile = this.project.files[0];
-	}
-
-	run() {
-		this.running = true;
-		this.stdout = "";
-		this.gccErr = "";
-		console.log("run %s", this.project);
-		this.socketService.socket.emit('run', this.project);
-	}
-
-	stop() {
-		this.socketService.socket.emit('stop');
 	}
 
 	selectFile(file: File) {

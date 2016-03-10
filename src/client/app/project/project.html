@@ -1,8 +1,8 @@
 <header>
 	<h2>{{project.name}}</h2>
 	<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
-	<button *ngIf="!running" [disabled]="running || !socketService.connected" (click)="run()">Run</button>
-	<button *ngIf="running" [disabled]="!socketService.connected" (click)="stop()">Stop</button>
+	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runService.run(project)">Run</button>
+	<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()">Stop</button>
 </header>
 <div>
 	<div class="file-structure">
@@ -18,7 +18,7 @@
 	<clear></clear>
 </div>
 <lea-console>
-	<h4>Console {{running ? "- Running" : ""}}</h4>
-	{{gccErr}}
-	{{stdout}}
+	<h4>Console {{runService.running ? "- Running" : ""}}</h4>
+	{{runService.gccErr}}
+	{{runService.stdout}}
 </lea-console>
