@@ -52,6 +52,9 @@ export class Session {
 						});
 				});
 
+				socket.on('continue', () => {
+					this.mipsProgram.debug.resumeInferior();
+				});
 				socket.on('step', () => {
 					console.log('step');
 					this.mipsProgram.debug.stepIntoInstruction();
@@ -63,6 +66,7 @@ export class Session {
 						.then(() => {
 							console.log("connected debugger");
 							this.setupSignals(socket);
+							this.mipsProgram.debug.resumeInferior();
 						})
 						.catch((error) => {
 							console.error(error);
