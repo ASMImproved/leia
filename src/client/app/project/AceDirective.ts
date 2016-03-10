@@ -2,6 +2,7 @@
 
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {File} from '../../../common/File';
+import {BreakpointService, Breakpoint} from "./BreakpointService";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -19,27 +20,17 @@ declare interface AceEvent extends Event {
     selector: 'ace-editor',
     outputs: [
         "textChanged"
-    ]
+    ],
+    bindings: [BreakpointService]
 })
 export class AceDirective { 
-    private editor;
+    private editor: AceAjax.Editor;
     public textChanged: EventEmitter<string>;
     private _file: File;
 
-    /**
-     * Sets the editor's text.
-     */
-    @Input()
-    set file(file: File) {
-        this._file = file;
-        this.editor.setValue(file.content);
-        this.editor.clearSelection();
-        this.editor.focus();
-    }
-    
-    constructor(elementRef: ElementRef) {
+    constructor(elementRef: ElementRef, private breakpointService: BreakpointService) {
         this.textChanged = new EventEmitter<string>();
-        
+
         let el = elementRef.nativeElement;
         this.editor = ace.edit(el);
         this.editor.setTheme("ace/theme/github");
@@ -52,5 +43,43 @@ export class AceDirective {
             this.textChanged.next(this.editor.getValue());
             this._file.content = this.editor.getValue();
         });
+
+        this.editor.addEventListener("guttermousedown", (event: AceEvent) => {
+            var row: number = event.getDocumentPosition().row;
+            if (row in event.editor.session.getBreakpoints()) {
+                breakpointService.removeBreakpoint(this._file.name, row);
+            } else {
+                breakpointService.addBreakpoint(this._file.name, row);
+            }
+        });
+
+        this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
+            if (breakpoint.file === this._file.name) {
+                this.editor.session.setBreakpoint(breakpoint.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
+            }
+        });
+
+        this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
+            if (breakpoint.file === this._file.name) {
+                this.editor.session.setBreakpoint(breakpoint.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
+            }
+        });
+
+        this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
+            if (breakpoint.file === this._file.name) {
+                this.editor.session.clearBreakpoint(breakpoint.line);
+            }
+        });
+    }
+
+    /**
+     * Sets the editor's text.
+     */
+    @Input()
+    set file(file: File) {
+        this._file = file;
+        this.editor.setValue(file.content);
+        this.editor.clearSelection();
+        this.editor.focus();
     }
 }
