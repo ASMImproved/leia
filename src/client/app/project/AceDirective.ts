@@ -36,7 +36,9 @@ export class AceDirective {
         let el = elementRef.nativeElement;
         this.editor = ace.edit(el);
         this.editor.setTheme("ace/theme/github");
-        //this.editor.getSession().setMode("ace/mode/xml");
+
+        var mips_mode = ace.require("ace/mode/mips").Mode;
+        this.editor.getSession().setMode(new mips_mode());
         
         this.editor.on("change", (e) => {
             // discard the delta (e), and provide whole document
