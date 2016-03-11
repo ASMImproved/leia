@@ -1,8 +1,15 @@
+/// <reference path="../../../../typings/main/ambient/ace/index.d.ts" />
+
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {File} from '../../../common/File';
 
 // declare the ace library
-declare var ace: any;
+declare var ace: AceAjax.Ace;
+
+declare interface AceEvent extends Event {
+    getDocumentPosition() : AceAjax.Position;
+    editor: AceAjax.Editor;
+}
 
 /**
  * A directive to use the Ace editor for editing XML. 
@@ -39,8 +46,8 @@ export class AceDirective {
 
         var mips_mode = ace.require("ace/mode/mips").Mode;
         this.editor.getSession().setMode(new mips_mode());
-        
-        this.editor.on("change", (e) => {
+
+        this.editor.addEventListener("change", (e) => {
             // discard the delta (e), and provide whole document
             this.textChanged.next(this.editor.getValue());
             this._file.content = this.editor.getValue();
