@@ -4,26 +4,30 @@ import {Project} from "../../../common/Project";
 
 @Injectable()
 export class RunService {
-    public stdout: string = "";
-    public gccErr: string = "";
-    public _running: boolean = false;
+    private _stdout: string = "";
+    private _gccErr: string = "";
+    private _running: boolean = false;
 
     constructor(private socketService: SocketService) {
         socketService.socket.on('stdout', (buffer) => {
-            this.stdout += buffer;
+            this._stdout += buffer;
         });
         socketService.socket.on('gcc-error', (err) => {
-            this.gccErr = err.toString();
-            console.log(this.gccErr);
+            this._gccErr = err.toString();
+            console.log(this._gccErr);
         });
         socketService.socket.on('exit', () => {
-            this.running = false;
+            this._running = false;
             console.log('exit');
         });
     }
 
-    private set running(running: boolean) {
-        this._running = running;
+    get stdout() {
+        return this._stdout;
+    }
+
+    get gccErr() {
+        return this._gccErr;
     }
 
     get running() {
@@ -31,9 +35,9 @@ export class RunService {
     }
 
     run(project: Project) {
-        this.running = true;
-        this.stdout = "";
-        this.gccErr = "";
+        this._running = true;
+        this._stdout = "";
+        this._gccErr = "";
         console.log("run %s", project);
         this.socketService.socket.emit('run', project);
     }

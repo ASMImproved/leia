@@ -10,16 +10,12 @@ export class SocketService {
 
         this.socket.on('connect', () => {
             console.log("socket connected");
-            this.connected = true;
+            this._connected = true;
         });
         this.socket.on('disconnect', () => {
             console.log("socket disconnected");
-            this.connected = false;
+            this._connected = false;
         });
-    }
-
-    private set connected(connected: boolean) {
-        this._connected = connected;
     }
 
     get connected(): boolean {
