@@ -17,7 +17,7 @@ var typings = require("gulp-typings");
 gulp.task('default' , function () {
 	runSequence(
 		'install-typings',
-		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass']
+		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass', 'ace-mips-mode']
 	);
 });
 
@@ -139,6 +139,11 @@ gulp.task('vendor-watch', function() {
 		'node_modules/systemjs/**/**',
 		'node_modules/rxjs/**/**'
 	], ['vendor', nodeServer.restart]);
+});
+
+gulp.task('ace-mips-mode', function() {
+	return gulp.src('src/client/ace/mode-mips.js')
+		.pipe(gulp.dest('dist/public/'))
 });
 
 gulp.task('sass', function() {
