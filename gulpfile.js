@@ -88,7 +88,7 @@ gulp.task('typescript-client-watch', function() {
 gulp.task('typescript-server', function() {
 	return gulp.src(['src/server/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(ts({
-			target: "es5",
+			target: "es6",
 			module: "commonjs",
 			moduleResolution: "node"
 		}))

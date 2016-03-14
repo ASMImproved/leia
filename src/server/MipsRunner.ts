@@ -11,7 +11,8 @@ export class MipsRunner extends EventEmitter {
 	public debug: dbgmits.DebugSession;
 
 	constructor(private elfFile: string) {
-		this.execution = cp.spawn("qemu-mips", ["-g", <string>this.port, this.elfFile]);
+		super();
+		this.execution = cp.spawn("qemu-mips", ["-g", String(this.port), this.elfFile]);
 		this.execution.stdout.setEncoding("utf-8");
 		this.execution.stderr.setEncoding("utf-8");
 
