@@ -53,7 +53,7 @@ module.exports = function(config) {
             'karma-chrome-launcher'
         ],
 
-        reporters: ['junit'],
+        reporters: ['progress', 'junit'],
         junitReporter: {
             outputDir: '/tests/client/',
             useBrowserName: true

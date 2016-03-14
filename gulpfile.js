@@ -13,6 +13,8 @@ var Karma = require('karma').Server;
 var browserSync = require('browser-sync').create();
 var typings = require("gulp-typings");
 
+var watching = false;
+
 // Main task
 gulp.task('default' , function () {
 	runSequence(
@@ -22,6 +24,7 @@ gulp.task('default' , function () {
 });
 
 gulp.task('watch', function() {
+	watching = true;
 	runSequence(
 		[
 			'install-typings-watch',
@@ -32,7 +35,7 @@ gulp.task('watch', function() {
 			'template-watch',
 			'sass-watch'
 		],
-		['browser-sync', 'jasmine-server', 'karma']
+		['browser-sync', 'jasmine-server', 'karma-watch']
 	)
 });
 
@@ -69,7 +72,8 @@ var tsProject = ts.createProject('tsconfig.json', {
 });
 
 function failOnTypescriptError() {
-	process.exit(1);
+	if (!watching)
+		process.exit(1);
 }
 
 gulp.task('typescript-client', function () {
@@ -182,5 +186,11 @@ gulp.task('jasmine-server', function() {
 gulp.task('karma', function(done) {
 	new Karma({
 		configFile: __dirname + '/karma.conf.js'
+	}, done).start()
+});
+gulp.task('karma-watch', function(done) {
+	new Karma({
+		configFile: __dirname + '/karma.conf.js',
+		singleRun: false
 	}, done).start()
 });
