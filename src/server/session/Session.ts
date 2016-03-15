@@ -5,7 +5,7 @@ import {Gcc} from '../Gcc'
 import path = require('path');
 import cp = require('child_process');
 import * as dbgmits from "asmimproved-dbgmits";
-import {ProgramStoppedEvent} from "../../common/Debugger";
+import {ProgramStoppedEvent, SourceLocation, Breakpoint} from "../../common/Debugger";
 
 export interface ResultCallback<ResultType> {
 	(result: ResultType, error: any): void;
@@ -17,7 +17,7 @@ export class Session {
 	private mipsProgram: MipsRunner = null;
 
 	public hookSocket(socket: SocketIO.Socket) {
-		socket.on('run', (project: Project) => {
+		socket.on('run', (project: Project, onProgramStarted:(error:any)=>void) => {
 			this.running = true;
 			this.stage = "gcc";
 			var gcc: Gcc = new Gcc(project);
@@ -40,12 +40,16 @@ export class Session {
 					socket.emit('exit', {code: code, signal: signal});
 				});
 
-				socket.on('addBreakpoint', (location: string, onFinished: ResultCallback<dbgmits.IBreakpointInfo>) => {
-					console.log('addBreakpoint');
+				socket.on('addBreakpoint', (location: SourceLocation, onFinished: ResultCallback<Breakpoint>) => {
+					console.log('addBreakpoint: ' + location.locationString);
 					this.mipsProgram.debug
-						.addBreakpoint(location)
+						.addBreakpoint(location.locationString)
 						.then((breakpoint: dbgmits.IBreakpointInfo) => {
-							onFinished(breakpoint, null);
+							onFinished({
+								location: location,
+								pending: breakpoint.pending !== undefined,
+								id: breakpoint.id
+							}, null);
 						})
 						.catch((error: any) => {
 							onFinished(null, error);
@@ -53,6 +57,7 @@ export class Session {
 				});
 
 				socket.on('continue', () => {
+					console.log("continue");
 					this.mipsProgram.debug.resumeInferior();
 				});
 				socket.on('step', () => {
@@ -66,7 +71,7 @@ export class Session {
 						.then(() => {
 							console.log("connected debugger");
 							this.setupSignals(socket);
-							this.mipsProgram.debug.resumeInferior();
+							onProgramStarted(null);
 						})
 						.catch((error) => {
 							console.error(error);
@@ -78,6 +83,7 @@ export class Session {
 		socket.on('stop', () => {
 			// very basic implementation. This will not stop a process which hangs in the assembler stage
 			if(this.mipsProgram.execution) {
+				console.log("kill");
 				this.mipsProgram.execution.kill('SIGKILL');
 				this.running = false;
 			}
@@ -85,13 +91,18 @@ export class Session {
 	}
 
 	private setupSignals(socket: SocketIO.Socket) {
-		this.mipsProgram.debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: ProgramStoppedEvent) => {
+		this.mipsProgram.debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
 			console.log("hit");
-			socket.emit("programStopped", stoppedEvent);
+			socket.emit("programStopped", {
+				location: new SourceLocation(stoppedEvent.frame.filename, stoppedEvent.frame.line),
+				breakpointId: stoppedEvent.breakpointId
+			});
 		});
-		this.mipsProgram.debug.on(dbgmits.EVENT_STEP_FINISHED, (stoppedEvent: ProgramStoppedEvent) => {
+		this.mipsProgram.debug.on(dbgmits.EVENT_STEP_FINISHED, (stoppedEvent: dbgmits.IStepFinishedEvent) => {
 			console.log("stepped");
-			socket.emit("programStopped", stoppedEvent);
+			socket.emit("programStopped", {
+				location: new SourceLocation(stoppedEvent.frame.filename, stoppedEvent.frame.line)
+			});
 		})
 	}
 }

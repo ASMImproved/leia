@@ -1,7 +1,7 @@
 import {Output, EventEmitter, Injectable} from 'angular2/core';
 import {SocketService} from "./SocketService";
 import {RunService} from "./RunService";
-import {Breakpoint} from "../../../common/Debugger"
+import {Breakpoint, SourceLocation} from "../../../common/Debugger"
 
 @Injectable()
 export class BreakpointService {
@@ -13,35 +13,67 @@ export class BreakpointService {
     constructor(private socketService: SocketService, private runService: RunService) {
         runService.runStatusChanged.subscribe((running: boolean) => {
             if (running) {
+                var breakpoints: Promise<Breakpoint>[] = [];
                 for (var breakpoint of this.pendingBreakpoints) {
                     this.sendBreakpoint(breakpoint);
                 }
+                this.pendingBreakpoints = [];
+                // the program was halted on GDB connect
+                // after the breakpoints are set it can be continued
+                // no matter, whether they were set successfully
+                Promise.all(breakpoints)
+                    .then(() => {
+                        runService.continue();
+                    })
+                    .catch(() => {
+                        runService.continue();
+                    });
             }
         });
     }
 
-    addBreakpoint(file: string, line: number): void {
+    addBreakpoint(location: SourceLocation): void {
+        console.log("add breakpoint " + location.locationString);
         if (this.runService.running) {
-            this.sendBreakpoint(new Breakpoint(file, line));
+            console.log("sending");
+            this.sendBreakpoint({
+                location: location
+            });
         } else {
-            this.pendingBreakpoints.push(new Breakpoint(file, line));
+            console.log("saving");
+            this.pendingBreakpoints.push({
+                location: location
+            });
         }
-        this.breakpointAdded.emit(new Breakpoint(file, line, true));
+        this.breakpointAdded.emit({
+            location: location,
+            pending: true
+        });
     }
 
-    private sendBreakpoint(breakpoint: Breakpoint) {
-        this.socketService.socket
-            .emit('addBreakpoint', breakpoint.location, (breakpointSetResult:Breakpoint, error: any) => {
-                if (error) {
-                    return console.log(error);
-                }
-                breakpoint.pending = breakpointSetResult.pending !== undefined;
-                this.breakpointAdded.emit(breakpoint);
-            });
+    private sendBreakpoint(breakpoint: Breakpoint): Promise<Breakpoint> {
+        return new Promise<Breakpoint>(
+            (resolve:(breakpoint:Breakpoint)=>void, reject:(error:any)=>void) => {
+                console.log("sending breakpoint " + breakpoint.location.locationString);
+                this.socketService.socket
+                    .emit('addBreakpoint', breakpoint.location, (breakpointSetResult:Breakpoint, error:any) => {
+                        if (error) {
+                            reject(error);
+                            return console.log(error);
+                        }
+                        breakpoint.pending = breakpointSetResult.pending !== undefined;
+                        breakpoint.id = breakpointSetResult.id;
+                        this.breakpointAdded.emit(breakpoint);
+                        resolve(breakpoint);
+                    });
+            }
+        );
     };
 
-    removeBreakpoint(file: string, line: number): void {
+    removeBreakpoint(location: SourceLocation): void {
         // TODO send to server
-        this.breakpointRemoved.emit(new Breakpoint(file, line));
+        this.breakpointRemoved.emit({
+            location: location
+        });
     }
 }

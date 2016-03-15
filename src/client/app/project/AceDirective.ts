@@ -3,7 +3,7 @@
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {File} from '../../../common/File';
 import {BreakpointService} from "./BreakpointService";
-import {Breakpoint} from '../../../common/Debugger';
+import {Breakpoint, SourceLocation} from '../../../common/Debugger';
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -46,29 +46,31 @@ export class AceDirective {
         });
 
         this.editor.addEventListener("guttermousedown", (event: AceEvent) => {
+            console.log("guttermousedown");
             var row: number = event.getDocumentPosition().row;
             if (row in event.editor.session.getBreakpoints()) {
-                breakpointService.removeBreakpoint(this._file.name, row);
+                breakpointService.removeBreakpoint(new SourceLocation(this._file.name, row));
             } else {
-                breakpointService.addBreakpoint(this._file.name, row);
+                console.log("ace: adding breakpoint");
+                breakpointService.addBreakpoint(new SourceLocation(this._file.name, row));
             }
         });
 
         this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
-            if (breakpoint.file === this._file.name) {
-                this.editor.session.setBreakpoint(breakpoint.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
+            if (breakpoint.location.filename === this._file.name) {
+                this.editor.session.setBreakpoint(breakpoint.location.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
             }
         });
 
         this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
-            if (breakpoint.file === this._file.name) {
-                this.editor.session.setBreakpoint(breakpoint.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
+            if (breakpoint.location.filename === this._file.name) {
+                this.editor.session.setBreakpoint(breakpoint.location.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
             }
         });
 
         this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
-            if (breakpoint.file === this._file.name) {
-                this.editor.session.clearBreakpoint(breakpoint.line);
+            if (breakpoint.location.filename === this._file.name) {
+                this.editor.session.clearBreakpoint(breakpoint.location.line);
             }
         });
     }

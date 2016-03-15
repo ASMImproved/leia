@@ -36,11 +36,15 @@ export class RunService {
     }
 
     run(project: Project) {
-        this.setRunningState(true);
         this._stdout = "";
         this._gccErr = "";
         console.log("run %s", project);
-        this.socketService.socket.emit('run', project);
+        this.socketService.socket.emit('run', project, (error: string) => {
+            if (error) {
+                return console.error(error);
+            }
+            this.setRunningState(true);
+        });
     }
 
     private setRunningState(running:  boolean) {
@@ -49,14 +53,17 @@ export class RunService {
     };
 
     stop() {
+        console.log("stop");
         this.socketService.socket.emit('stop');
     }
 
     step() {
+        console.log("step");
         this.socketService.socket.emit('step');
     }
 
     continue() {
+        console.log("continue");
         this.socketService.socket.emit('continue');
     }
 }
