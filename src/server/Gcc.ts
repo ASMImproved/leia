@@ -30,7 +30,7 @@ export class Gcc {
 				}
 				var filestring: string = result.join(' ');
 				var out: string = path.join(dirPath, 'proj.out');
-				cp.exec(util.format("mips-linux-gnu-gcc -static -mips32r5 -o %s %s", out, filestring), (err, stdout, stderr) => {
+				cp.exec(util.format("mips-linux-gnu-gcc -g -static -mips32r5 -o %s %s", out, filestring), (err, stdout, stderr) => {
 					compileFinishedCb(err, stdout, stderr, dirPath);
 				});
 			});

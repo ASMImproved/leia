@@ -26,7 +26,11 @@ export class MipsRunner extends EventEmitter {
 	}
 
 	public connectDebugger() : Promise<void> {
-		this.debug = dbgmits.startDebugSession(dbgmits.DebuggerType.GDB);
-		return this.debug.connectToRemoteTarget("localhost", this.port);
+		this.debug = dbgmits.startDebugSession(dbgmits.DebuggerType.GDB, "gdb-multiarch");
+		return this.debug
+			.setExecutableFile(this.elfFile)
+			.then(() => {
+				return this.debug.connectToRemoteTarget("localhost", this.port)
+			});
 	};
 }
