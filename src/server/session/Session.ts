@@ -37,32 +37,8 @@ export class Session {
 				});
 				this.mipsProgram.execution.on('exit', (code: number, signal: string) => {
 					this.running = false;
+					this.clearSignals(socket);
 					socket.emit('exit', {code: code, signal: signal});
-				});
-
-				socket.on('addBreakpoint', (location: SourceLocation, onFinished: ResultCallback<Breakpoint>) => {
-					console.log('addBreakpoint: ' + location.locationString);
-					this.mipsProgram.debug
-						.addBreakpoint(location.locationString)
-						.then((breakpoint: dbgmits.IBreakpointInfo) => {
-							onFinished({
-								location: location,
-								pending: breakpoint.pending !== undefined,
-								id: breakpoint.id
-							}, null);
-						})
-						.catch((error: any) => {
-							onFinished(null, error);
-						});
-				});
-
-				socket.on('continue', () => {
-					console.log("continue");
-					this.mipsProgram.debug.resumeInferior();
-				});
-				socket.on('step', () => {
-					console.log('step');
-					this.mipsProgram.debug.stepIntoInstruction();
 				});
 
 				this.mipsProgram.on('debuggerReady', () => {
@@ -90,7 +66,38 @@ export class Session {
 		});
 	}
 
+	private clearSignals(socket: SocketIO.Socket) {
+		socket.removeAllListeners('addBreakpoint');
+		socket.removeAllListeners('continue');
+		socket.removeAllListeners('step');
+	}
+
 	private setupSignals(socket: SocketIO.Socket) {
+		socket.on('addBreakpoint', (location: SourceLocation, onFinished: ResultCallback<Breakpoint>) => {
+			console.log('addBreakpoint: ' + location.locationString);
+			this.mipsProgram.debug
+				.addBreakpoint(location.locationString)
+				.then((breakpoint: dbgmits.IBreakpointInfo) => {
+					onFinished({
+						location: location,
+						pending: breakpoint.pending !== undefined,
+						id: breakpoint.id
+					}, null);
+				})
+				.catch((error: any) => {
+					onFinished(null, error);
+				});
+		});
+
+		socket.on('continue', () => {
+			console.log("continue");
+			this.mipsProgram.debug.resumeInferior();
+		});
+		socket.on('step', () => {
+			console.log('step');
+			this.mipsProgram.debug.stepIntoInstruction();
+		});
+
 		this.mipsProgram.debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
 			console.log("hit");
 			socket.emit("programStopped", {
@@ -103,6 +110,6 @@ export class Session {
 			socket.emit("programStopped", {
 				location: new SourceLocation(stoppedEvent.frame.filename, stoppedEvent.frame.line)
 			});
-		})
+		});
 	}
 }
