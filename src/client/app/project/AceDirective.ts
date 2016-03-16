@@ -47,30 +47,30 @@ export class AceDirective {
 
         this.editor.addEventListener("guttermousedown", (event: AceEvent) => {
             console.log("guttermousedown");
-            var row: number = event.getDocumentPosition().row;
-            if (row in event.editor.session.getBreakpoints()) {
-                breakpointService.removeBreakpoint(new SourceLocation(this._file.name, row));
+            var line: number = event.getDocumentPosition().row+1;
+            if (line in event.editor.session.getBreakpoints()) {
+                breakpointService.removeBreakpoint(new SourceLocation(this._file.name, line));
             } else {
                 console.log("ace: adding breakpoint");
-                breakpointService.addBreakpoint(new SourceLocation(this._file.name, row));
+                breakpointService.addBreakpoint(new SourceLocation(this._file.name, line));
             }
         });
 
         this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
             if (breakpoint.location.filename === this._file.name) {
-                this.editor.session.setBreakpoint(breakpoint.location.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
+                this.editor.session.setBreakpoint(breakpoint.location.line-1, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
             }
         });
 
         this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
             if (breakpoint.location.filename === this._file.name) {
-                this.editor.session.setBreakpoint(breakpoint.location.line, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
+                this.editor.session.setBreakpoint(breakpoint.location.line-1, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
             }
         });
 
         this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
             if (breakpoint.location.filename === this._file.name) {
-                this.editor.session.clearBreakpoint(breakpoint.location.line);
+                this.editor.session.clearBreakpoint(breakpoint.location.line-1);
             }
         });
     }
