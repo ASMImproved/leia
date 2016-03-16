@@ -8,16 +8,16 @@ export class BreakpointService {
     breakpointAdded: EventEmitter<Breakpoint> = new EventEmitter();
     breakpointChanged: EventEmitter<Breakpoint> = new EventEmitter();
     breakpointRemoved: EventEmitter<Breakpoint> = new EventEmitter();
-    private pendingBreakpoints: Breakpoint[] = [];
+    private breakpoints: Breakpoint[] = [];
 
     constructor(private socketService: SocketService, private runService: RunService) {
         runService.runStatusChanged.subscribe((running: boolean) => {
             if (running) {
+                console.log(this.breakpoints);
                 var breakpoints: Promise<Breakpoint>[] = [];
-                for (var breakpoint of this.pendingBreakpoints) {
+                for (var breakpoint of this.breakpoints) {
                     this.sendBreakpoint(breakpoint);
                 }
-                this.pendingBreakpoints = [];
                 // the program was halted on GDB connect
                 // after the breakpoints are set it can be continued
                 // no matter, whether they were set successfully
@@ -41,7 +41,7 @@ export class BreakpointService {
             });
         } else {
             console.log("saving");
-            this.pendingBreakpoints.push({
+            this.breakpoints.push({
                 location: location
             });
         }
@@ -72,6 +72,12 @@ export class BreakpointService {
 
     removeBreakpoint(location: SourceLocation): void {
         // TODO send to server
+        var breakpoints: Breakpoint[] = this.breakpoints.filter((breakpoint: Breakpoint) => {
+            return breakpoint.location.locationString === location.locationString;
+        });
+        for (var breakpoint of breakpoints) {
+            this.breakpoints.slice(this.breakpoints.indexOf(breakpoint), 1);
+        }
         this.breakpointRemoved.emit({
             location: location
         });
