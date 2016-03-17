@@ -10,6 +10,7 @@ export class RunService {
     private _running: boolean = false;
     public runStatusChanged: EventEmitter<boolean> = new EventEmitter();
     public stopped: EventEmitter<ISourceLocation> = new EventEmitter();
+    public continued: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private socketService: SocketService) {
         socketService.socket.on('stdout', (buffer) => {
@@ -27,6 +28,10 @@ export class RunService {
             console.log("programStopped");
             console.log(programStoppedEvent);
             this.stopped.emit(programStoppedEvent.location);
+        });
+        socketService.socket.on('programContinued', () => {
+            console.log("continue");
+            this.continued.emit(null);
         });
     }
 

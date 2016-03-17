@@ -99,6 +99,10 @@ export class Session {
 			this.mipsProgram.debug.stepIntoInstruction();
 		});
 
+		this.mipsProgram.debug.on(dbgmits.EVENT_TARGET_RUNNING, (threadId: string) => {
+			console.log("continue running");
+			socket.emit("programContinued");
+		});
 		this.mipsProgram.debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
 			console.log("hit");
 			console.log(stoppedEvent);

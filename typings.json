@@ -6,7 +6,7 @@
   },
   "devDependencies": {},
   "ambientDependencies": {
-    "ace": "github:DefinitelyTyped/DefinitelyTyped/ace/ace.d.ts#2f7fb157a8482a8efa1a50e724b27bf8736eb379",
+    "ace": "github:DefinitelyTyped/DefinitelyTyped/ace/ace.d.ts#7de6c3dd94feaeb21f20054b9f30d5dabc5efabd",
     "async": "github:DefinitelyTyped/DefinitelyTyped/async/async.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
     "bunyan": "github:DefinitelyTyped/DefinitelyTyped/bunyan/bunyan.d.ts#44db8b563316354d4a6c7a418fe86d377e6f6142",
     "express": "github:DefinitelyTyped/DefinitelyTyped/express/express.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4",

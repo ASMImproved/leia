@@ -82,7 +82,13 @@ export class AceDirective {
         this.runService.stopped.subscribe((location: ISourceLocation) => {
             const row = location.line - 1;
             console.log(row);
-            this.editor.session.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
+            this.breakpointLineMarker = this.editor.session.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
+        });
+        this.runService.continued.subscribe(() => {
+            if (this.breakpointLineMarker) {
+                this.editor.session.removeMarker(this.breakpointLineMarker);
+                this.breakpointLineMarker = null;
+            }
         });
     }
 
