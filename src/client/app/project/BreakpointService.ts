@@ -8,15 +8,15 @@ export class BreakpointService {
     breakpointAdded: EventEmitter<Breakpoint> = new EventEmitter();
     breakpointChanged: EventEmitter<Breakpoint> = new EventEmitter();
     breakpointRemoved: EventEmitter<Breakpoint> = new EventEmitter();
-    private breakpoints: Breakpoint[] = [];
+    private breakpoints: {[index: string]: Breakpoint} = {};
 
     constructor(private socketService: SocketService, private runService: RunService) {
         runService.runStatusChanged.subscribe((running: boolean) => {
             if (running) {
                 console.log(this.breakpoints);
                 var breakpoints: Promise<Breakpoint>[] = [];
-                for (var breakpoint of this.breakpoints) {
-                    this.sendBreakpoint(breakpoint);
+                for (var location in this.breakpoints) {
+                    this.sendBreakpoint(this.breakpoints[location]);
                 }
                 // the program was halted on GDB connect
                 // after the breakpoints are set it can be continued
@@ -41,9 +41,9 @@ export class BreakpointService {
             });
         } else {
             console.log("saving");
-            this.breakpoints.push({
+            this.breakpoints[location.locationString] = {
                 location: location
-            });
+            };
         }
         this.breakpointAdded.emit({
             location: location,
@@ -63,6 +63,7 @@ export class BreakpointService {
                         }
                         breakpoint.pending = breakpointSetResult.pending !== undefined;
                         breakpoint.id = breakpointSetResult.id;
+                        this.breakpoints[breakpoint.location.locationString] = breakpoint;
                         this.breakpointAdded.emit(breakpoint);
                         resolve(breakpoint);
                     });
@@ -71,15 +72,19 @@ export class BreakpointService {
     };
 
     removeBreakpoint(location: SourceLocation): void {
-        // TODO send to server
-        var breakpoints: Breakpoint[] = this.breakpoints.filter((breakpoint: Breakpoint) => {
-            return breakpoint.location.locationString === location.locationString;
-        });
-        for (var breakpoint of breakpoints) {
-            this.breakpoints.slice(this.breakpoints.indexOf(breakpoint), 1);
+        console.log("should remove breakpoint: " + location.locationString);
+        const breakpoint: Breakpoint = this.breakpoints[location.locationString];
+        if (!breakpoint) {
+            return;
         }
-        this.breakpointRemoved.emit({
-            location: location
-        });
+
+        if (breakpoint.id && this.runService.running) {
+            console.log("sending remove request for id " + breakpoint.id);
+            this.socketService.socket.emit('removeBreakpoint', breakpoint.id);
+        }
+
+        console.log("removing breakpoint from client's breakpoints");
+        delete this.breakpoints[location.locationString];
+        this.breakpointRemoved.emit(breakpoint);
     }
 }

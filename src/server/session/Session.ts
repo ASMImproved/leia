@@ -5,7 +5,7 @@ import {Gcc} from '../Gcc'
 import path = require('path');
 import cp = require('child_process');
 import * as dbgmits from "asmimproved-dbgmits";
-import {ProgramStoppedEvent, SourceLocation, Breakpoint} from "../../common/Debugger";
+import {ProgramStoppedEvent, ISourceLocation, SourceLocation, Breakpoint} from "../../common/Debugger";
 import {basename} from 'path';
 
 export interface ResultCallback<ResultType> {
@@ -74,7 +74,7 @@ export class Session {
 	}
 
 	private setupSignals(socket: SocketIO.Socket) {
-		socket.on('addBreakpoint', (location: SourceLocation, onFinished: ResultCallback<Breakpoint>) => {
+		socket.on('addBreakpoint', (location: ISourceLocation, onFinished: ResultCallback<Breakpoint>) => {
 			console.log('addBreakpoint: ' + location.locationString);
 			this.mipsProgram.debug
 				.addBreakpoint(location.locationString)
@@ -88,6 +88,9 @@ export class Session {
 				.catch((error: any) => {
 					onFinished(null, error);
 				});
+		});
+		socket.on('removeBreakpoint', (breakpointId: number) => {
+			this.mipsProgram.debug.removeBreakpoint(breakpointId);
 		});
 
 		socket.on('continue', () => {

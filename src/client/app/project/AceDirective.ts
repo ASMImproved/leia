@@ -53,7 +53,8 @@ export class AceDirective {
         this.editor.addEventListener("guttermousedown", (event: AceEvent) => {
             console.log("guttermousedown");
             var line: number = event.getDocumentPosition().row+1;
-            if (line in event.editor.session.getBreakpoints()) {
+            if (event.getDocumentPosition().row in event.editor.session.getBreakpoints()) {
+                console.log("ace: removing breakpoint");
                 breakpointService.removeBreakpoint(new SourceLocation(this._file.name, line));
             } else {
                 console.log("ace: adding breakpoint");
