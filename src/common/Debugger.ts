@@ -4,7 +4,7 @@ export interface ProgramStoppedEvent {
 }
 
 export interface Breakpoint {
-    location: SourceLocation;
+    location: ISourceLocation;
     pending?: boolean;
     id?: number;
 }

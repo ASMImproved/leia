@@ -3,10 +3,14 @@
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {File} from '../../../common/File';
 import {BreakpointService} from "./BreakpointService";
+import {RunService} from "./RunService";
 import {Breakpoint, SourceLocation} from '../../../common/Debugger';
+import {ISourceLocation} from "../../../common/Debugger";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
+
+var Range = ace.require('ace/range').Range;
 
 declare interface AceEvent extends Event {
     getDocumentPosition() : AceAjax.Position;
@@ -28,8 +32,9 @@ export class AceDirective {
     private editor: AceAjax.Editor;
     public textChanged: EventEmitter<string>;
     private _file: File;
+    private breakpointLineMarker: number;
 
-    constructor(elementRef: ElementRef, private breakpointService: BreakpointService) {
+    constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService) {
         this.textChanged = new EventEmitter<string>();
 
         let el = elementRef.nativeElement;
@@ -72,6 +77,12 @@ export class AceDirective {
             if (breakpoint.location.filename === this._file.name) {
                 this.editor.session.clearBreakpoint(breakpoint.location.line-1);
             }
+        });
+
+        this.runService.stopped.subscribe((location: ISourceLocation) => {
+            const row = location.line - 1;
+            console.log(row);
+            this.editor.session.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
         });
     }
 

@@ -6,6 +6,7 @@ import path = require('path');
 import cp = require('child_process');
 import * as dbgmits from "asmimproved-dbgmits";
 import {ProgramStoppedEvent, SourceLocation, Breakpoint} from "../../common/Debugger";
+import {basename} from 'path';
 
 export interface ResultCallback<ResultType> {
 	(result: ResultType, error: any): void;
@@ -100,15 +101,16 @@ export class Session {
 
 		this.mipsProgram.debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
 			console.log("hit");
-			socket.emit("programStopped", {
-				location: new SourceLocation(stoppedEvent.frame.filename, stoppedEvent.frame.line),
+			console.log(stoppedEvent);
+			socket.emit("programStopped", <ProgramStoppedEvent>{
+				location: new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line),
 				breakpointId: stoppedEvent.breakpointId
 			});
 		});
 		this.mipsProgram.debug.on(dbgmits.EVENT_STEP_FINISHED, (stoppedEvent: dbgmits.IStepFinishedEvent) => {
 			console.log("stepped");
 			socket.emit("programStopped", {
-				location: new SourceLocation(stoppedEvent.frame.filename, stoppedEvent.frame.line)
+				location: new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line)
 			});
 		});
 	}

@@ -1,6 +1,7 @@
 import {Injectable, EventEmitter} from "angular2/core";
 import {SocketService} from "./SocketService";
 import {Project} from "../../../common/Project";
+import {ProgramStoppedEvent, ISourceLocation} from "../../../common/Debugger";
 
 @Injectable()
 export class RunService {
@@ -8,6 +9,7 @@ export class RunService {
     private _gccErr: string = "";
     private _running: boolean = false;
     public runStatusChanged: EventEmitter<boolean> = new EventEmitter();
+    public stopped: EventEmitter<ISourceLocation> = new EventEmitter();
 
     constructor(private socketService: SocketService) {
         socketService.socket.on('stdout', (buffer) => {
@@ -20,6 +22,11 @@ export class RunService {
         socketService.socket.on('exit', () => {
             this.setRunningState(false);
             console.log('exit');
+        });
+        socketService.socket.on('programStopped', (programStoppedEvent: ProgramStoppedEvent) => {
+            console.log("programStopped");
+            console.log(programStoppedEvent);
+            this.stopped.emit(programStoppedEvent.location);
         });
     }
 
@@ -43,6 +50,7 @@ export class RunService {
             if (error) {
                 return console.error(error);
             }
+            console.log('set running');
             this.setRunningState(true);
         });
     }
