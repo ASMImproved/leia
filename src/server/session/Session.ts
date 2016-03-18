@@ -4,14 +4,21 @@ import {MipsRunner} from '../MipsRunner'
 import {Gcc} from '../Gcc'
 import path = require('path');
 import cp = require('child_process');
+import * as dbgmits from "asmimproved-dbgmits";
+import {ProgramStoppedEvent, ISourceLocation, SourceLocation, Breakpoint} from "../../common/Debugger";
+import {basename} from 'path';
+
+export interface ResultCallback<ResultType> {
+	(result: ResultType, error: any): void;
+}
 
 export class Session {
 	running: boolean = false;
-	mipsRun: cp.ChildProcess;
 	stage: string;
+	private mipsProgram: MipsRunner = null;
 
 	public hookSocket(socket: SocketIO.Socket) {
-		socket.on('run', (project: Project) => {
+		socket.on('run', (project: Project, onProgramStarted:(error:any)=>void) => {
 			this.running = true;
 			this.stage = "gcc";
 			var gcc: Gcc = new Gcc(project);
@@ -25,23 +32,93 @@ export class Session {
 
 				this.stage = "running";
 
-				this.mipsRun = (new MipsRunner(path.join(dirPath, "proj.out"))).execute();
-				this.mipsRun.stdout.setEncoding('utf8');
-				this.mipsRun.stdout.on('data', (chunk) => {
+				this.mipsProgram = new MipsRunner(path.join(dirPath, "proj.out"));
+				this.mipsProgram.execution.stdout.on('data', (chunk) => {
 					socket.emit('stdout', chunk);
-				})
-				this.mipsRun.on('exit', (code: number, signal: string) => {
+				});
+				this.mipsProgram.execution.on('exit', (code: number, signal: string) => {
 					this.running = false;
+					this.clearSignals(socket);
 					socket.emit('exit', {code: code, signal: signal});
-				})
+				});
+
+				this.mipsProgram.on('debuggerReady', () => {
+					this.mipsProgram
+						.connectDebugger()
+						.then(() => {
+							console.log("connected debugger");
+							this.setupSignals(socket);
+							onProgramStarted(null);
+						})
+						.catch((error) => {
+							console.error(error);
+						});
+				});
+
 			});
 		});
 		socket.on('stop', () => {
 			// very basic implementation. This will not stop a process which hangs in the assembler stage
-			if(this.mipsRun) {
-				this.mipsRun.kill('SIGKILL');
+			if(this.mipsProgram.execution) {
+				console.log("kill");
+				this.mipsProgram.execution.kill('SIGKILL');
 				this.running = false;
 			}
+		});
+	}
+
+	private clearSignals(socket: SocketIO.Socket) {
+		socket.removeAllListeners('addBreakpoint');
+		socket.removeAllListeners('continue');
+		socket.removeAllListeners('step');
+	}
+
+	private setupSignals(socket: SocketIO.Socket) {
+		socket.on('addBreakpoint', (location: ISourceLocation, onFinished: ResultCallback<Breakpoint>) => {
+			console.log('addBreakpoint: ' + location.locationString);
+			this.mipsProgram.debug
+				.addBreakpoint(location.locationString)
+				.then((breakpoint: dbgmits.IBreakpointInfo) => {
+					onFinished({
+						location: location,
+						pending: breakpoint.pending !== undefined,
+						id: breakpoint.id
+					}, null);
+				})
+				.catch((error: any) => {
+					onFinished(null, error);
+				});
+		});
+		socket.on('removeBreakpoint', (breakpointId: number) => {
+			this.mipsProgram.debug.removeBreakpoint(breakpointId);
+		});
+
+		socket.on('continue', () => {
+			console.log("continue");
+			this.mipsProgram.debug.resumeInferior();
+		});
+		socket.on('step', () => {
+			console.log('step');
+			this.mipsProgram.debug.stepIntoInstruction();
+		});
+
+		this.mipsProgram.debug.on(dbgmits.EVENT_TARGET_RUNNING, (threadId: string) => {
+			console.log("continue running");
+			socket.emit("programContinued");
+		});
+		this.mipsProgram.debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
+			console.log("hit");
+			console.log(stoppedEvent);
+			socket.emit("programStopped", <ProgramStoppedEvent>{
+				location: new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line),
+				breakpointId: stoppedEvent.breakpointId
+			});
+		});
+		this.mipsProgram.debug.on(dbgmits.EVENT_STEP_FINISHED, (stoppedEvent: dbgmits.IStepFinishedEvent) => {
+			console.log("stepped");
+			socket.emit("programStopped", {
+				location: new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line)
+			});
 		});
 	}
 }

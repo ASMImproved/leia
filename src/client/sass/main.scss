@@ -20,6 +20,17 @@ ace-editor {
 	height: 400px;
 }
 
+.breakpoint_pending {
+	border-radius: 20px 0px 0px 20px;
+	background-color: orange;
+}
+
+.breakpoint_line {
+	position: absolute;
+	z-index: 1000;
+	background: lightpink;
+}
+
 .file-structure {
 	width: 20%; 
 	float:left;
