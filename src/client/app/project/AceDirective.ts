@@ -6,6 +6,7 @@ import {BreakpointService} from "./BreakpointService";
 import {RunService} from "./RunService";
 import {Breakpoint, SourceLocation} from '../../../common/Debugger';
 import {ISourceLocation} from "../../../common/Debugger";
+import {FileNameEndingService} from "./FileNameEndingService";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -26,23 +27,24 @@ declare interface AceEvent extends Event {
     outputs: [
         "textChanged"
     ],
-    bindings: [BreakpointService]
+    bindings: [BreakpointService, FileNameEndingService]
 })
 export class AceDirective { 
     private editor: AceAjax.Editor;
     public textChanged: EventEmitter<string>;
     private _file: File;
     private breakpointLineMarker: number;
+    private mips_mode: any;
 
-    constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService) {
+
+    constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService, private fileNameEndingService: FileNameEndingService) {
         this.textChanged = new EventEmitter<string>();
 
         let el = elementRef.nativeElement;
         this.editor = ace.edit(el);
         this.editor.setTheme("ace/theme/github");
 
-        var mips_mode = ace.require("ace/mode/mips").Mode;
-        this.editor.getSession().setMode(new mips_mode());
+        this.mips_mode = new (ace.require("ace/mode/mips").Mode);
 
         this.editor.addEventListener("change", (e) => {
             // discard the delta (e), and provide whole document
@@ -102,5 +104,14 @@ export class AceDirective {
         this.editor.setValue(file.content);
         this.editor.clearSelection();
         this.editor.focus();
+        switch (this.fileNameEndingService.getFileNameEnding(file.name)) {
+            case 's':
+                this.editor.getSession().setMode(this.mips_mode);
+                break;
+            case 'c':
+            case 'h':
+                this.editor.getSession().setMode('ace/mode/c_cpp');
+                break;
+        }
     }
 }
