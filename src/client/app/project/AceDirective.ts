@@ -45,6 +45,7 @@ export class AceDirective {
         this.editor.setTheme("ace/theme/github");
 
         this.mips_mode = new (ace.require("ace/mode/mips").Mode);
+        this.editor.getSession().setMode('ace/mode/text');
 
         this.editor.addEventListener("change", (e) => {
             // discard the delta (e), and provide whole document
@@ -112,6 +113,8 @@ export class AceDirective {
             case 'h':
                 this.editor.getSession().setMode('ace/mode/c_cpp');
                 break;
+            default:
+                this.editor.getSession().setMode('ace/mode/text');
         }
     }
 }
