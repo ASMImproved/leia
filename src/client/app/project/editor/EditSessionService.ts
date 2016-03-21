@@ -1,11 +1,20 @@
+/// <reference path="../../../../../typings/main/ambient/ace/index.d.ts" />
+
 import {Injectable, EventEmitter} from 'angular2/core';
 import IEditSession = AceAjax.IEditSession;
 import {File} from '../../../../common/File'
 import {FileNameEndingService} from "./../FileNameEndingService";
 import {Session} from "./Session";
+import {BreakpointService} from "../BreakpointService";
+import {Breakpoint} from "../../../../common/Debugger";
+import {ProjectService} from "../ProjectService";
+import {RunService} from "../RunService";
+import {ISourceLocation} from "../../../../common/Debugger";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
+
+var Range = ace.require('ace/range').Range;
 
 @Injectable()
 export class EditSessionService {
@@ -13,10 +22,50 @@ export class EditSessionService {
     public setChanged: EventEmitter<Array<{key: File; value: Session}>>;
     public activeSessionChanged: EventEmitter<Session>;
     private activeSession: Session;
+    private breakpointMarker: {marker: number, session: Session};
 
-    constructor(private fileNameEndingService: FileNameEndingService) {
+    constructor(private fileNameEndingService: FileNameEndingService, private breakpointService: BreakpointService, private projectService: ProjectService, private runService: RunService) {
         this.setChanged = new EventEmitter();
         this.activeSessionChanged = new EventEmitter();
+
+        this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
+            let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
+            if(session) {
+                session.ace.setBreakpoint(breakpoint.location.line - 1, (breakpoint.pending) ? "breakpoint_pending" : "breakpoint_set");
+            }
+        });
+
+        this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
+            let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
+            if(session) {
+                session.ace.setBreakpoint(breakpoint.location.line - 1, (breakpoint.pending) ? "breakpoint_pending" : "breakpoint_set");
+            }
+        });
+
+        this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
+            let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
+            if(session) {
+                session.ace.clearBreakpoint(breakpoint.location.line-1);
+            }
+        });
+
+        this.runService.stopped.subscribe((location: ISourceLocation) => {
+            console.log(location);
+            let session = this.getOrCreateSession(this.projectService.getFileByName(location.filename));
+            const row = location.line - 1;
+            let breakpointLineMarker: number = session.ace.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
+            this.breakpointMarker = {
+                marker: breakpointLineMarker,
+                session: session
+            }
+        });
+        this.runService.continued.subscribe(() => {
+            console.log('continued');
+            if (this.breakpointMarker) {
+                this.breakpointMarker.session.ace.removeMarker(this.breakpointMarker.marker);
+                this.breakpointMarker = null;
+            }
+        });
     }
 
     public getOrCreateSession(file: File): Session {
@@ -65,4 +114,6 @@ export class EditSessionService {
         this.activeSession = session;
         this.activeSessionChanged.emit(this.activeSession);
     }
+
+
 }

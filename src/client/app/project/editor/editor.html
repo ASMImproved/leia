@@ -3,5 +3,5 @@
 </lea-editor-no-session>
 <lea-editor-active-session *ngIf="session">
     <h4>{{session.file.name}} <button (click)="session.save()">Save</button></h4>
-    <ace-editor [session]="session.ace"></ace-editor>
+    <ace-editor [session]="session"></ace-editor>
 </lea-editor-active-session>

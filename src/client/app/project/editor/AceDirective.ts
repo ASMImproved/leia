@@ -6,11 +6,10 @@ import {RunService} from "./../RunService";
 import {Breakpoint, SourceLocation} from '../../../../common/Debugger';
 import {ISourceLocation} from "../../../../common/Debugger";
 import IEditSession = AceAjax.IEditSession;
+import {Session} from "./Session";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
-
-var Range = ace.require('ace/range').Range;
 
 declare interface AceEvent extends Event {
     getDocumentPosition() : AceAjax.Position;
@@ -25,15 +24,12 @@ declare interface AceEvent extends Event {
     selector: 'ace-editor',
     outputs: [
         "textChanged"
-    ],
-    bindings: [BreakpointService]
+    ]
 })
 export class AceDirective { 
     private editor: AceAjax.Editor;
     public textChanged: EventEmitter<string>;
-    private breakpointLineMarker: number;
-    private mips_mode: any;
-    private _session: IEditSession;
+    private _session: Session;
 
 
     constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService) {
@@ -48,61 +44,29 @@ export class AceDirective {
             this.textChanged.emit(this.editor.getValue());
         });
 
-        /*
         this.editor.addEventListener("guttermousedown", (event: AceEvent) => {
             console.log("guttermousedown");
             var line: number = event.getDocumentPosition().row+1;
             if (event.getDocumentPosition().row in event.editor.session.getBreakpoints()) {
                 console.log("ace: removing breakpoint");
-                breakpointService.removeBreakpoint(new SourceLocation(this._file.name, line));
+                breakpointService.removeBreakpoint(new SourceLocation(this._session.file.name, line));
             } else {
                 console.log("ace: adding breakpoint");
-                breakpointService.addBreakpoint(new SourceLocation(this._file.name, line));
+                breakpointService.addBreakpoint(new SourceLocation(this._session.file.name, line));
             }
         });
-
-        this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
-            if (breakpoint.location.filename === this._file.name) {
-                this.editor.session.setBreakpoint(breakpoint.location.line-1, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
-            }
-        });
-
-        this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
-            if (breakpoint.location.filename === this._file.name) {
-                this.editor.session.setBreakpoint(breakpoint.location.line-1, (breakpoint.pending)?"breakpoint_pending":"breakpoint_set");
-            }
-        });
-
-        this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
-            if (breakpoint.location.filename === this._file.name) {
-                this.editor.session.clearBreakpoint(breakpoint.location.line-1);
-            }
-        });
-
-        this.runService.stopped.subscribe((location: ISourceLocation) => {
-            const row = location.line - 1;
-            console.log(row);
-            this.breakpointLineMarker = this.editor.session.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
-        });
-        this.runService.continued.subscribe(() => {
-            if (this.breakpointLineMarker) {
-                this.editor.session.removeMarker(this.breakpointLineMarker);
-                this.breakpointLineMarker = null;
-            }
-        });
-        */
     }
 
     /**
      * Sets the editor's text.
      */
     @Input()
-    set session(session: IEditSession) {
+    set session(session: Session) {
 
         console.log('set session');
         console.log(session);
         this._session = session;
-        this.editor.setSession(session);
+        this.editor.setSession(session.ace);
         // focus return an error: https://github.com/angular/angular/issues/6005
         // this.editor.focus();
     }

@@ -9,18 +9,20 @@ import {EditorComponent} from "./editor/EditorComponent";
 import {FileNameEndingService} from './FileNameEndingService'
 import {EditSessionService} from './editor/EditSessionService';
 import {Session} from "./editor/Session";
+import {ProjectService} from "./ProjectService";
+import {BreakpointService} from "./BreakpointService";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
     directives: [NewFileFormComponent, EditorComponent],
-	providers: [SocketService, RunService, FileNameEndingService, EditSessionService]
+	providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService]
 })
 export class ProjectComponent implements OnInit{
-	@Input() public project: Project;
+	private _project: Project;
 	private sessionSet: Array<{key; value}> = [];
 
-	constructor(private socketService: SocketService, private runService: RunService, private editSessionService: EditSessionService) {
+	constructor(private socketService: SocketService, private runService: RunService, private editSessionService: EditSessionService, private projectService: ProjectService) {
 		editSessionService.setChanged.subscribe((set) => {
 			this.sessionSet = set;
 		});
@@ -35,7 +37,7 @@ export class ProjectComponent implements OnInit{
 	}
 
 	deleteFile(file: File) {
-		this.project.files.splice(this.project.files.indexOf(file), 1);
+		this._project.files.splice(this._project.files.indexOf(file), 1);
 	}
 
 	closeSession(session: Session) {
@@ -43,7 +45,13 @@ export class ProjectComponent implements OnInit{
 	}
 
 	newFile(file: File) {
-		this.project.files.push(file);
+		this._project.files.push(file);
 		this.selectFile(file);
 	}
+
+	@Input()
+	public set project(project: Project) {
+		this._project = project;
+		this.projectService.project = project;
+	};
 }
