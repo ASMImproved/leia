@@ -51,13 +51,15 @@ export class EditSessionService {
 
         this.runService.stopped.subscribe((location: ISourceLocation) => {
             console.log(location);
-            let session = this.getOrCreateSession(this.projectService.getFileByName(location.filename));
+            let file: File = this.projectService.getFileByName(location.filename);
+            let session = this.getOrCreateSession(file);
             const row = location.line - 1;
             let breakpointLineMarker: number = session.ace.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
             this.breakpointMarker = {
                 marker: breakpointLineMarker,
                 session: session
-            }
+            };
+            this.selectFile(file);
         });
         this.runService.continued.subscribe(() => {
             console.log('continued');
