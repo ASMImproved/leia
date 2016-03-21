@@ -9,7 +9,7 @@ export class Project {
 		file.content = `
 .data
 hellostring:  .ascii "Hello "
-              .asciiz "World!\n"
+              .asciiz "World!\\n"
 
 .text
 .globl main
