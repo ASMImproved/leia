@@ -18,7 +18,6 @@ var watching = false;
 // Main task
 gulp.task('default' , function () {
 	runSequence(
-		'install-typings',
 		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass', 'ace-mips-mode']
 	);
 });
