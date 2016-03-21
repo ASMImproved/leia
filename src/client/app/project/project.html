@@ -9,15 +9,18 @@
 </header>
 <div>
 	<div class="file-structure">
+		<h4>Open Files</h4>
+		<ul>
+			<li *ngFor="#item of sessionSet"><span (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span><span class="close" (click)="closeSession(item.value)">[X]</span></li>
+		</ul>
+		<h4>Files</h4>
 		<ul>
 			<li *ngFor="#file of project.files"><span (click)="selectFile(file)">{{file.name}}</span><span class="delete" (click)="deleteFile(file)">[Delete]</span></li>
 		</ul>
 		<new-file-form (newFile)="newFile($event)"></new-file-form>
 	</div>
-	<editor-panel>
-		<h4>{{selectedFile.name}}</h4>
-		<ace-editor [file]="selectedFile"></ace-editor>
-	</editor-panel>
+	<lea-editor>
+	</lea-editor>
 	<clear></clear>
 </div>
 <lea-console>

@@ -4,7 +4,7 @@ body {
 	font-family: arial;
 }
 
-editor-panel { 
+lea-editor {
     width: 80%; 
     float:right;
     h4 {
@@ -39,7 +39,7 @@ ace-editor {
 		li {
 			display: block;
     		list-style: none;
-    		.delete {
+    		.delete, .close {
     			float: right;
     		}
 		}

@@ -1,12 +1,11 @@
-/// <reference path="../../../../typings/main/ambient/ace/index.d.ts" />
+/// <reference path="../../../../../typings/main/ambient/ace/index.d.ts" />
 
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
-import {File} from '../../../common/File';
-import {BreakpointService} from "./BreakpointService";
-import {RunService} from "./RunService";
-import {Breakpoint, SourceLocation} from '../../../common/Debugger';
-import {ISourceLocation} from "../../../common/Debugger";
-import {FileNameEndingService} from "./FileNameEndingService";
+import {BreakpointService} from "./../BreakpointService";
+import {RunService} from "./../RunService";
+import {Breakpoint, SourceLocation} from '../../../../common/Debugger';
+import {ISourceLocation} from "../../../../common/Debugger";
+import IEditSession = AceAjax.IEditSession;
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -27,32 +26,29 @@ declare interface AceEvent extends Event {
     outputs: [
         "textChanged"
     ],
-    bindings: [BreakpointService, FileNameEndingService]
+    bindings: [BreakpointService]
 })
 export class AceDirective { 
     private editor: AceAjax.Editor;
     public textChanged: EventEmitter<string>;
-    private _file: File;
     private breakpointLineMarker: number;
     private mips_mode: any;
+    private _session: IEditSession;
 
 
-    constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService, private fileNameEndingService: FileNameEndingService) {
+    constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService) {
         this.textChanged = new EventEmitter<string>();
 
         let el = elementRef.nativeElement;
         this.editor = ace.edit(el);
         this.editor.setTheme("ace/theme/github");
 
-        this.mips_mode = new (ace.require("ace/mode/mips").Mode);
-        this.editor.getSession().setMode('ace/mode/text');
-
         this.editor.addEventListener("change", (e) => {
             // discard the delta (e), and provide whole document
-            this.textChanged.next(this.editor.getValue());
-            this._file.content = this.editor.getValue();
+            this.textChanged.emit(this.editor.getValue());
         });
 
+        /*
         this.editor.addEventListener("guttermousedown", (event: AceEvent) => {
             console.log("guttermousedown");
             var line: number = event.getDocumentPosition().row+1;
@@ -94,27 +90,20 @@ export class AceDirective {
                 this.breakpointLineMarker = null;
             }
         });
+        */
     }
 
     /**
      * Sets the editor's text.
      */
     @Input()
-    set file(file: File) {
-        this._file = file;
-        this.editor.setValue(file.content);
-        this.editor.clearSelection();
-        this.editor.focus();
-        switch (this.fileNameEndingService.getFileNameEnding(file.name)) {
-            case 's':
-                this.editor.getSession().setMode(this.mips_mode);
-                break;
-            case 'c':
-            case 'h':
-                this.editor.getSession().setMode('ace/mode/c_cpp');
-                break;
-            default:
-                this.editor.getSession().setMode('ace/mode/text');
-        }
+    set session(session: IEditSession) {
+
+        console.log('set session');
+        console.log(session);
+        this._session = session;
+        this.editor.setSession(session);
+        // focus return an error: https://github.com/angular/angular/issues/6005
+        // this.editor.focus();
     }
 }
