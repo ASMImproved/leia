@@ -20,7 +20,7 @@ export class NewFileFormComponent {
 
   onSubmit() { 
   	console.log("new file %s", this.model); 
-	this.newFile.next(this.model);
+	this.newFile.emit(this.model);
 	this.model = new File("");
   }
 }
