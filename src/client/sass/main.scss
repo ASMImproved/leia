@@ -34,14 +34,29 @@ ace-editor {
 .file-structure {
 	width: 20%; 
 	float:left;
+	h4{
+		background-color: #79C3E6;
+		color: white;
+		margin: 0;
+		padding: 10px;
+	}
 	ul {
-		padding: 0px 10px;
+		padding: 0px;
+		margin: 0px;
+		cursor: default;
 		li {
 			display: block;
     		list-style: none;
+			padding: 5px 10px;
     		.delete, .close {
     			float: right;
+				&:hover {
+					text-decoration: underline;
+				}
     		}
+			&:hover {
+				background-color: #ADADAD;
+			}
 		}
 	}
 }
