@@ -1,23 +1,26 @@
 <header>
-	<h2>{{project.name}}</h2>
+	<h2>{{_project.name}}</h2>
 	<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
 	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.continue()">Continue</button>
 	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.step()">Step</button>
 
-	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runService.run(project)">Run</button>
+	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runService.run(_project)">Run</button>
 	<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()">Stop</button>
 </header>
 <div>
 	<div class="file-structure">
+		<h4>Open Files</h4>
 		<ul>
-			<li *ngFor="#file of project.files"><span (click)="selectFile(file)">{{file.name}}</span><span class="delete" (click)="deleteFile(file)">[Delete]</span></li>
+			<li *ngFor="#item of sessionSet"><span (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span><span class="close" (click)="closeSession(item.value)">[X]</span></li>
+		</ul>
+		<h4>Files</h4>
+		<ul>
+			<li *ngFor="#file of _project.files"><span (click)="selectFile(file)">{{file.name}}</span><span class="delete" (click)="deleteFile(file)">[Delete]</span></li>
 		</ul>
 		<new-file-form (newFile)="newFile($event)"></new-file-form>
 	</div>
-	<editor-panel>
-		<h4>{{selectedFile.name}}</h4>
-		<ace-editor [file]="selectedFile"></ace-editor>
-	</editor-panel>
+	<lea-editor>
+	</lea-editor>
 	<clear></clear>
 </div>
 <lea-console>
