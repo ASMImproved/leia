@@ -4,7 +4,7 @@
 	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.continue()">Continue</button>
 	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.step()">Step</button>
 
-	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runService.run(_project)">Run</button>
+	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runProject()">Run</button>
 	<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()">Stop</button>
 </header>
 <div>

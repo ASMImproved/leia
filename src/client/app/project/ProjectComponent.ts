@@ -49,6 +49,13 @@ export class ProjectComponent implements OnInit{
 		this.selectFile(file);
 	}
 
+	runProject() {
+		this.sessionSet.forEach((session: {key: File; value: Session; }) => {
+			session.value.save();
+		});
+		this.runService.run(this._project);
+	}
+
 	@Input()
 	public set project(project: Project) {
 		this._project = project;
