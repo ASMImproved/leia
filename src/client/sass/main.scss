@@ -4,9 +4,14 @@ body {
 	font-family: arial;
 }
 
+.projectview {
+	display: flex;
+	flex-flow: row wrap;
+}
+
 lea-editor {
-    width: 80%; 
-    float:right;
+	order: 2;
+	flex-grow: 5;
     h4 {
     	margin: 0;
 		background-color: #79C3E6;
@@ -32,8 +37,8 @@ ace-editor {
 }
 
 .file-structure {
-	width: 20%; 
-	float:left;
+	order: 1;
+	flex-grow: 1;
 	h4{
 		background-color: #79C3E6;
 		color: white;
