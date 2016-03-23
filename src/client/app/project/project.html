@@ -7,7 +7,7 @@
 	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runProject()">Run</button>
 	<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()">Stop</button>
 </header>
-<div>
+<div class="projectview">
 	<div class="file-structure">
 		<h4>Open Files</h4>
 		<ul>
@@ -21,7 +21,6 @@
 	</div>
 	<lea-editor>
 	</lea-editor>
-	<clear></clear>
 </div>
 <lea-console>
 	<h4>Console {{runService.running ? "- Running" : ""}}</h4>
