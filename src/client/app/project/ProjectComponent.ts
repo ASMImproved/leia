@@ -23,13 +23,13 @@ export class ProjectComponent implements OnInit{
 	private sessionSet: Array<{key; value}> = [];
 
 	constructor(private socketService: SocketService, private runService: RunService, private editSessionService: EditSessionService, private projectService: ProjectService) {
-		editSessionService.setChanged.subscribe((set) => {
-			this.sessionSet = set;
-		});
+
 	}
 
 	ngOnInit() {
-
+		this.editSessionService.setChanged.subscribe((set) => {
+			this.sessionSet = set;
+		});
 	}
 
 	selectFile(file: File) {
@@ -42,11 +42,6 @@ export class ProjectComponent implements OnInit{
 
 	closeSession(session: Session) {
 		this.editSessionService.closeSession(session);
-	}
-
-	newFile(file: File) {
-		this._project.files.push(file);
-		this.selectFile(file);
 	}
 
 	runProject() {

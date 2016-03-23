@@ -1,26 +1,49 @@
 import {Component, Output, EventEmitter} from 'angular2/core';
 import {NgForm}    from 'angular2/common';
 import { File }    from '../../../../common/File';
+import {ProjectService} from "../ProjectService";
+import {FormBuilder} from "angular2/common";
+import {ControlGroup} from "angular2/common";
+import {Validators} from "angular2/common";
+import {Control} from "angular2/common";
+import {OnInit} from "angular2/core";
 
 @Component({
   selector: 'new-file-form',
-  templateUrl: 'client/app/project/new-file/new-file-form.html',
-  outputs: [
-	"newFile"
-  ]
+  templateUrl: 'client/app/project/new-file/new-file-form.html'
 })
-export class NewFileFormComponent {
-  name: string;
-  model = new File("");
-  public newFile: EventEmitter<File>;
+export class NewFileFormComponent implements OnInit{
+    private model: File = new File("");
+    private form: ControlGroup;
 
-  constructor() {
-	  this.newFile = new EventEmitter<File>();
-  }
+    constructor(private projectService: ProjectService, private fb: FormBuilder) {
 
-  onSubmit() { 
-  	console.log("new file %s", this.model); 
-	this.newFile.emit(this.model);
-	this.model = new File("");
-  }
+    }
+
+    ngOnInit():any {
+        this.form = this.fb.group({
+            'name': ['', Validators.compose([Validators.required,
+                (control: Control): {[s: string]: boolean} => {
+                    if(this.projectService.fileExists(control.value)) {
+                        return {fileExists: true}
+                    }
+                }
+            ])
+            ]
+        });
+    }
+
+
+    onSubmit() {
+        if(!this.form.valid) {
+            console.log('new file form not valid');
+            return;
+        }
+        try {
+            this.projectService.addFile(this.model);
+            this.model = new File("");
+        } catch(e) {
+            console.log('Failed to create file');
+        }
+    }
 }
