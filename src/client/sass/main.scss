@@ -11,7 +11,7 @@ body {
 
 lea-editor {
 	order: 2;
-	flex-grow: 5;
+	flex-grow: 8;
     h4 {
     	margin: 0;
 		background-color: #79C3E6;
@@ -66,6 +66,18 @@ ace-editor {
 	}
 }
 
+lea-registers {
+	order: 3;
+	flex-grow: 1;
+
+	h4 {
+		background-color: #79C3E6;
+		color: white;
+		margin: 0;
+		padding: 10px;
+	}
+}
+
 header {
 	justify-content: space-between;
 	display: flex;
@@ -81,11 +93,6 @@ header {
 new-file-form {
 	display: block;
     padding: 10px 20px;
-}
-
-clear {
-	display: block;
-	clear: both;
 }
 
 lea-console {

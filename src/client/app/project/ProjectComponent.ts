@@ -2,9 +2,9 @@ import {Component, Input, OnInit} from 'angular2/core';
 import {File} from '../../../common/File'
 import {Project} from '../../../common/Project'
 import {NewFileFormComponent} from './new-file/NewFileFormComponent'
+import {RegistersComponent} from "./registers/RegistersComponent";
 import {SocketService} from "./SocketService";
 import {RunService} from "./RunService";
-import {ProgramStoppedEvent} from "../../../common/Debugger";
 import {EditorComponent} from "./editor/EditorComponent";
 import {FileNameEndingService} from './FileNameEndingService'
 import {EditSessionService} from './editor/EditSessionService';
@@ -15,7 +15,7 @@ import {BreakpointService} from "./BreakpointService";
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
-    directives: [NewFileFormComponent, EditorComponent],
+    directives: [NewFileFormComponent, EditorComponent, RegistersComponent],
 	providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService]
 })
 export class ProjectComponent implements OnInit{

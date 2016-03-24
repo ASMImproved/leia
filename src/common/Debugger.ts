@@ -22,3 +22,12 @@ export class SourceLocation implements ISourceLocation {
         this.locationString = this.filename + ':' + this.line;
     }
 }
+
+export interface Registers {
+    [index: number]: Register;
+}
+
+export interface Register {
+    name: string;
+    value: number;
+}
