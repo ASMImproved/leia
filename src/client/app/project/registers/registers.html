@@ -1,0 +1,6 @@
+<h4>Registers</h4>
+<table>
+    <tr *ngFor="#register of integerRegisters">
+        <td>{{register.name}}</td><td>{{register.value | register }}</td>
+    </tr>
+</table>

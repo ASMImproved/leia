@@ -5,8 +5,9 @@ import {Gcc} from '../Gcc'
 import path = require('path');
 import cp = require('child_process');
 import * as dbgmits from "asmimproved-dbgmits";
-import {ProgramStoppedEvent, ISourceLocation, SourceLocation, Breakpoint} from "../../common/Debugger";
+import {ProgramStoppedEvent, ISourceLocation, SourceLocation, Breakpoint, Registers} from "../../common/Debugger";
 import {basename} from 'path';
+import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
 
 export interface ResultCallback<ResultType> {
 	(result: ResultType, error: any): void;
@@ -113,12 +114,52 @@ export class Session {
 				location: new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line),
 				breakpointId: stoppedEvent.breakpointId
 			});
+			this.sendRegisterUpdate(socket);
 		});
 		this.mipsProgram.debug.on(dbgmits.EVENT_STEP_FINISHED, (stoppedEvent: dbgmits.IStepFinishedEvent) => {
 			console.log("stepped");
 			socket.emit("programStopped", {
 				location: new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line)
 			});
+			this.sendRegisterUpdate(socket);
+		});
+	}
+
+	private sendRegisterUpdate(socket: SocketIO.Socket): void {
+		console.log("sending registers");
+		let registers: Registers = [];
+		//TODO cache names?
+		let registerNames: Promise<void> =
+			this.mipsProgram.debug
+				.getRegisterNames()
+				.then((names: string[]) => {
+					for (let i = 0; i < names.length; ++i) {
+						if (registers[i] === undefined) {
+							registers[i] = {
+								name: null,
+								value: 0
+							}
+						}
+						registers[i].name = names[i];
+					}
+				});
+		let registerValues: Promise<void> =
+			this.mipsProgram.debug
+				.getRegisterValues(RegisterValueFormatSpec.Binary)
+				.then((values: Map<number, string>) => {
+					values.forEach((registerValue:string, registerNumber:number) => {
+						if (registers[registerNumber] === undefined) {
+							registers[registerNumber] = {
+								name: null,
+								value: 0
+							}
+						}
+						registers[registerNumber].value = Number.parseInt(registerValue, 2);
+					});
+				});
+		Promise.all([registerValues, registerNames]).then(() => {
+			console.log(registers);
+			socket.emit('updateRegisters', registers);
 		});
 	}
 }
