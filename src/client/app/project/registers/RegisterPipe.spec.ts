@@ -20,4 +20,8 @@ describe("RegisterPipe", () => {
         });
     });
 
+    it("does not display negative numbers", () => {
+        expect( () => pipe.transform(-1) ).toThrow(new Error("invalid data in register: -1"));
+    })
+
 });

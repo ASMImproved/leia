@@ -145,7 +145,7 @@ export class Session {
 				});
 		let registerValues: Promise<void> =
 			this.mipsProgram.debug
-				.getRegisterValues(RegisterValueFormatSpec.Decimal)
+				.getRegisterValues(RegisterValueFormatSpec.Binary)
 				.then((values: Map<number, string>) => {
 					values.forEach((registerValue:string, registerNumber:number) => {
 						if (registers[registerNumber] === undefined) {
@@ -154,7 +154,7 @@ export class Session {
 								value: 0
 							}
 						}
-						registers[registerNumber].value = Number.parseInt(registerValue, 10);
+						registers[registerNumber].value = Number.parseInt(registerValue, 2);
 					});
 				});
 		Promise.all([registerValues, registerNames]).then(() => {
