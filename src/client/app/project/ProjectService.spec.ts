@@ -12,11 +12,11 @@ describe('ProjectService', function() {
         projectService.project = new Project("Test");
     });
 
-    xit('an attempt to add a file that already exists should return an exception', function() {
+    it('an attempt to add a file that already exists should return an exception', function() {
         let file1: File = new File("test.ext");
         let file2: File = new File("test.ext");
         projectService.addFile(file1);
-        expect(projectService.addFile(file2)).toThrow();
+        expect(projectService.addFile.bind(null, file2)).toThrow();
     });
 
     it('fileExists should return false if file does not exists', function() {
