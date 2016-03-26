@@ -17,6 +17,7 @@ export class Session {
 	running: boolean = false;
 	stage: string;
 	private mipsProgram: MipsRunner = null;
+	private memoryFrame: {start: number, length: number};
 
 	public hookSocket(socket: SocketIO.Socket) {
 		socket.on('run', (project: Project, onProgramStarted:(error:any)=>void) => {
@@ -48,6 +49,7 @@ export class Session {
 						.connectDebugger()
 						.then(() => {
 							console.log("connected debugger");
+							this.updateMemoryFrame(socket);
 							this.setupSignals(socket);
 							onProgramStarted(null);
 						})
@@ -65,6 +67,9 @@ export class Session {
 				this.mipsProgram.execution.kill('SIGKILL');
 				this.running = false;
 			}
+		});
+		socket.on('memoryFrameChange', (frame) => {
+			this.memoryFrame = frame;
 		});
 	}
 
@@ -160,6 +165,13 @@ export class Session {
 		Promise.all([registerValues, registerNames]).then(() => {
 			console.log(registers);
 			socket.emit('updateRegisters', registers);
+		});
+	}
+
+	public updateMemoryFrame(socket: SocketIO.Socket) {
+		this.mipsProgram.debug.readMemory("&hellostring", 10000)
+		.then((blocks: dbgmits.IMemoryBlock[]) => {
+			socket.emit("memoryUpdate", blocks);
 		});
 	}
 }

@@ -1,0 +1,5 @@
+<button (click)="moveDown()">&#60;-</button>
+<button (click)="moveUp()">-&#62;</button>
+<div *ngFor="#frame of memoryService.MemoryFrame">
+    {{frame.contents}}
+</div>
