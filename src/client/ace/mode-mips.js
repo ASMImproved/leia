@@ -40,8 +40,10 @@ ace.define("ace/mode/mips",["require","exports","module","ace/lib/oop","ace/mode
                 regex: /(li|\S*)(\s+)(\$\S+\s*)(,)(\s*[0-9]+)($)/
             }, {
                 // label definition
-                token: 'variable.other',
-                regex: /.*:\s*/
+                token: function (label, colon, whitespace) {
+                    return ['variable.other', 'text', ''];
+                },
+                regex: /(.*)(:)(\s*)/
             }, {
                 // .ascii[z]
                 token: function(ascii, string) {
@@ -51,8 +53,10 @@ ace.define("ace/mode/mips",["require","exports","module","ace/lib/oop","ace/mode
                 next: "string"
             }, {
                 // directive
-                token: 'directive.keyword.control',
-                regex: /[.]\S*/
+                token: function(directive, whitespace) {
+                    return ['directive.keyword.control', ''];
+                },
+                regex: /([.]\S+)(\s+)/
             },{
                 defaultToken : "text"
             }],
