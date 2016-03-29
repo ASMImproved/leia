@@ -17,7 +17,7 @@ describe("LabelService", () => {
         });
         expect(labelService.labels.length).toBe(1);
         expect(labelService.labels[0].name).toBe('localLabel');
-        expect(labelService.labels[0].file).toBe('testfile.s');
+        expect(labelService.labels[0].file.name).toBe('testfile.s');
         expect(labelService.labels[0].line).toBe(1);
         expect(labelService.labels[0].global).toBe(false);
     });
@@ -29,7 +29,7 @@ describe("LabelService", () => {
         });
         expect(labelService.labels.length).toBe(1);
         expect(labelService.labels[0].name).toBe('globalLabel');
-        expect(labelService.labels[0].file).toBe('testfile.s');
+        expect(labelService.labels[0].file.name).toBe('testfile.s');
         expect(labelService.labels[0].line).toBe(2);
         expect(labelService.labels[0].global).toBe(true);
     });

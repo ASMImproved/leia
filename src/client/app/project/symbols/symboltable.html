@@ -2,10 +2,10 @@
 <table>
 	<tr><th>Globals</th></tr>
 	<tr *ngFor="#symbol of globalSymbols">
-		<td>{{symbol.name}}</td>
+		<td><a (click)="goto(symbol)">{{symbol.name}}</a></td>
 	</tr>
 	<tr><th>Locals</th></tr>
 	<tr *ngFor="#symbol of localSymbols">
-		<td>{{symbol.name}}</td>
+		<td><a (click)="goto(symbol)">{{symbol.name}}</a></td>
 	</tr>
 </table>

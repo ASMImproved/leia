@@ -1,5 +1,6 @@
 import {Component} from "angular2/core";
 import {LabelService, Label} from "../LabelService";
+import {EditSessionService} from "../editor/EditSessionService";
 
 @Component({
     selector: 'lea-symboltable',
@@ -9,7 +10,7 @@ export class SymboleTableComponent {
     private globalSymbols: Label[] = [];
     private localSymbols: Label[] = [];
 
-    constructor(private labelService: LabelService) {
+    constructor(private labelService: LabelService, private editSessionService: EditSessionService) {
         labelService.labelsChanged.subscribe((labels: Label[]) => {
             console.log("labels changed");
             console.log(labels);
@@ -27,5 +28,9 @@ export class SymboleTableComponent {
                 }
             })
         });
+    }
+
+    public goto(label: Label) {
+        this.editSessionService.goto(label.file, label.line);
     }
 }

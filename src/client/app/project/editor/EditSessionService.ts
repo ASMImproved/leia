@@ -113,10 +113,13 @@ export class EditSessionService {
     }
 
     public selectFile(file: File) {
-        let session = this.getOrCreateSession(file);
-        this.activeSession = session;
+        this.activeSession = this.getOrCreateSession(file);
         this.activeSessionChanged.emit(this.activeSession);
     }
 
+    public goto(file: File, line: number) {
+        this.selectFile(file);
+        this.activeSession.ace.selection.moveCursorToPosition({row: line-1, column: 0});
+    }
 
 }

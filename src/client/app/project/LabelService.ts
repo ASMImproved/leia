@@ -5,7 +5,7 @@ import {Project} from "../../../common/Project";
 export interface Label {
     global?: boolean;
     name: string;
-    file: string;
+    file: File;
     line: number;
 }
 
@@ -26,7 +26,7 @@ export class LabelService {
 
     public clear(file: File) {
         this._labels = this._labels.filter((label: Label) => {
-            return label.file != file.name;
+            return label.file != file;
         })
     }
 
@@ -49,7 +49,7 @@ export class LabelService {
             }
             while ((match = LABEL_REGEX.exec(line)) !== null) {
                 this._labels.push({
-                    file: file.name,
+                    file: file,
                     name: match[1],
                     line: lineNo+1,
                     global: globals.indexOf(match[1]) >= 0
