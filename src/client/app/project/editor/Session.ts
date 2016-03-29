@@ -39,39 +39,6 @@ export class Session {
     }
 
     private updateLabels(change: AceAjax.EditorChangeEvent) {
-        const globals: string[] = [];
-        const labels: Label[] = [];
-        for (let line: number = 0; line < this.ace.getLength(); ++line) {
-            const tokens = <TokenInfo[]>this.ace.getTokens(line);
-            if (tokens.length < 1) {
-                continue;
-            }
-            if (tokens[0].type === "directive.keyword.control"
-                && tokens[0].value === ".globl") {
-                if (tokens.length < 3) {
-                    continue;
-                }
-                let labelFound = false;
-                labels.forEach((label: Label) => {
-                    if (label.name == tokens[2].value) {
-                        label.global = true;
-                        labelFound = true;
-                    }
-                });
-                if (!labelFound) {
-                    globals.push(tokens[2].value);
-                }
-            } else if (tokens[0].type === "variable.other"
-                && tokens[1].value === ":") {
-                labels.push({
-                    file: this.file.name,
-                    global: globals.indexOf(tokens[0].value) >= 0,
-                    line: line+1,
-                    name: tokens[0].value
-                });
-            }
-        }
-        this.labelService.clear(this.file);
-        this.labelService.addLabels(labels);
+        this.labelService.parse(this.file, this.ace.getValue());
     }
 }

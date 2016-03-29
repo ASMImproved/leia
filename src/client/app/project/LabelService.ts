@@ -8,6 +8,10 @@ export interface Label {
     line: number;
 }
 
+//TODO regex are too easy and will find elements within strings, too
+const LABEL_REGEX = /(\S+)\s*:/g;
+const GLOBAL_REGEX = /\.globl\s+(\S+)/g;
+
 export class LabelService {
     private _labels: Label[] = [];
     public labelsChanged: EventEmitter<Label[]> = new EventEmitter<Label[]>();
@@ -25,17 +29,32 @@ export class LabelService {
         })
     }
 
-    public addLabel(label:Label) {
-        this._labels.push(label);
-        this.labelsChanged.emit(this._labels);
-        console.log("add label: ");
-        console.log(label);
-    }
+    public parse(file: File, content?: string) {
+        this.clear(file);
+        if (!content) {
+            content = file.content;
+        }
+        if (!content) {
+            return;
+        }
 
-    public addLabels(labels: Label[]) {
-        this._labels = this._labels.concat(labels);
+        let globals: string[] = [];
+        let lines: string[] = content.split(/\n/);
+        for (let lineNo: number = 0; lineNo < lines.length; lineNo++) {
+            let match: RegExpExecArray;
+            const line = lines[lineNo];
+            while ((match = GLOBAL_REGEX.exec(line)) !== null) {
+                globals.push(match[1]);
+            }
+            while ((match = LABEL_REGEX.exec(line)) !== null) {
+                this._labels.push({
+                    file: file.name,
+                    name: match[1],
+                    line: lineNo+1,
+                    global: globals.indexOf(match[1]) >= 0
+                });
+            }
+        }
         this.labelsChanged.emit(this._labels);
-        console.log("add labels: ");
-        console.log(labels);
     }
 }
