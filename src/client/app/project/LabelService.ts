@@ -1,5 +1,6 @@
 import {File} from '../../../common/File'
 import {EventEmitter} from "angular2/core";
+import {Project} from "../../../common/Project";
 
 export interface Label {
     global?: boolean;
@@ -56,5 +57,12 @@ export class LabelService {
             }
         }
         this.labelsChanged.emit(this._labels);
+    }
+
+    parseProject(project:Project) {
+        this._labels = [];
+        for (let file of project.files) {
+            this.parse(file);
+        }
     }
 }

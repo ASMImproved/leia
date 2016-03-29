@@ -24,7 +24,12 @@ export class ProjectComponent implements OnInit{
 	private _project: Project;
 	private sessionSet: Array<{key; value}> = [];
 
-	constructor(private socketService: SocketService, private runService: RunService, private editSessionService: EditSessionService, private projectService: ProjectService) {
+	constructor(
+		private socketService: SocketService,
+		private runService: RunService,
+		private editSessionService: EditSessionService,
+		private projectService: ProjectService,
+		private labelService: LabelService) {
 
 	}
 
@@ -57,5 +62,6 @@ export class ProjectComponent implements OnInit{
 	public set project(project: Project) {
 		this._project = project;
 		this.projectService.project = project;
+		this.labelService.parseProject(this._project);
 	};
 }
