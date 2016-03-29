@@ -48,6 +48,9 @@ export class Session {
             }
             if (tokens[0].type === "directive.keyword.control"
                 && tokens[0].value === ".globl") {
+                if (tokens.length < 3) {
+                    continue;
+                }
                 let labelFound = false;
                 labels.forEach((label: Label) => {
                     if (label.name == tokens[2].value) {
