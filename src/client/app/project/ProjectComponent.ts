@@ -12,11 +12,12 @@ import {Session} from "./editor/Session";
 import {ProjectService} from "./ProjectService";
 import {BreakpointService} from "./BreakpointService";
 import {LabelService} from "./LabelService";
+import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
-    directives: [NewFileFormComponent, EditorComponent, RegistersComponent],
+    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, SymboleTableComponent],
 	providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService, LabelService]
 })
 export class ProjectComponent implements OnInit{

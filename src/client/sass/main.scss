@@ -82,6 +82,22 @@ lea-registers {
 	}
 }
 
+lea-symboltable {
+  order: 4;
+  flex-grow: 1;
+
+  h4 {
+	background-color: #79C3E6;
+	color: white;
+	margin: 0;
+	padding: 10px;
+  }
+
+  table {
+	font-family: monospace;
+  }
+}
+
 header {
 	justify-content: space-between;
 	display: flex;
