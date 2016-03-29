@@ -2,7 +2,7 @@ import {File} from '../../../common/File'
 import {EventEmitter} from "angular2/core";
 import {Project} from "../../../common/Project";
 
-export interface Label {
+export interface Symbol {
     global?: boolean;
     name: string;
     file: File;
@@ -10,23 +10,23 @@ export interface Label {
 }
 
 //TODO regex are too easy and will find elements within strings, too
-const LABEL_REGEX = /(\S+)\s*:/g;
+const SYMBOL_REGEX = /(\S+)\s*:/g;
 const GLOBAL_REGEX = /\.globl\s+(\S+)/g;
 
-export class LabelService {
-    private _labels: Label[] = [];
-    public labelsChanged: EventEmitter<Label[]> = new EventEmitter<Label[]>();
+export class SymbolService {
+    private _symbols: Symbol[] = [];
+    public symbolsChanged: EventEmitter<Symbol[]> = new EventEmitter<Symbol[]>();
 
     constructor() {
     }
 
-    public get labels() {
-        return this._labels;
+    public get symbols() {
+        return this._symbols;
     }
 
     public clear(file: File) {
-        this._labels = this._labels.filter((label: Label) => {
-            return label.file != file;
+        this._symbols = this._symbols.filter((symbol: Symbol) => {
+            return symbol.file != file;
         })
     }
 
@@ -47,8 +47,8 @@ export class LabelService {
             while ((match = GLOBAL_REGEX.exec(line)) !== null) {
                 globals.push(match[1]);
             }
-            while ((match = LABEL_REGEX.exec(line)) !== null) {
-                this._labels.push({
+            while ((match = SYMBOL_REGEX.exec(line)) !== null) {
+                this._symbols.push({
                     file: file,
                     name: match[1],
                     line: lineNo+1,
@@ -56,11 +56,11 @@ export class LabelService {
                 });
             }
         }
-        this.labelsChanged.emit(this._labels);
+        this.symbolsChanged.emit(this._symbols);
     }
 
     parseProject(project:Project) {
-        this._labels = [];
+        this._symbols = [];
         for (let file of project.files) {
             this.parse(file);
         }

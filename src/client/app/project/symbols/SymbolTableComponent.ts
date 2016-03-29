@@ -1,5 +1,5 @@
 import {Component} from "angular2/core";
-import {LabelService, Label} from "../LabelService";
+import {SymbolService, Symbol} from "../SymbolService";
 import {EditSessionService} from "../editor/EditSessionService";
 
 @Component({
@@ -7,30 +7,30 @@ import {EditSessionService} from "../editor/EditSessionService";
     templateUrl: 'client/app/project/symbols/symboltable.html'
 })
 export class SymboleTableComponent {
-    private globalSymbols: Label[] = [];
-    private localSymbols: Label[] = [];
+    private globalSymbols: Symbol[] = [];
+    private localSymbols: Symbol[] = [];
 
-    constructor(private labelService: LabelService, private editSessionService: EditSessionService) {
-        labelService.labelsChanged.subscribe((labels: Label[]) => {
-            console.log("labels changed");
-            console.log(labels);
+    constructor(private symbolService: SymbolService, private editSessionService: EditSessionService) {
+        symbolService.symbolsChanged.subscribe((symbols: Symbol[]) => {
+            console.log("symbols changed");
+            console.log(symbols);
             this.globalSymbols = [];
             this.localSymbols = [];
-            labels.forEach((label: Label) => {
-                if (label.global) {
+            symbols.forEach((symbol: Symbol) => {
+                if (symbol.global) {
                     console.log("global symbol");
-                    console.log(label);
-                    this.globalSymbols.push(label);
+                    console.log(symbol);
+                    this.globalSymbols.push(symbol);
                 } else {
                     console.log("local symbol");
-                    console.log(label);
-                    this.localSymbols.push(label);
+                    console.log(symbol);
+                    this.localSymbols.push(symbol);
                 }
             })
         });
     }
 
-    public goto(label: Label) {
-        this.editSessionService.goto(label.file, label.line);
+    public goto(symbol: Symbol) {
+        this.editSessionService.goto(symbol.file, symbol.line);
     }
 }

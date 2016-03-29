@@ -10,7 +10,7 @@ import {Breakpoint} from "../../../../common/Debugger";
 import {ProjectService} from "../ProjectService";
 import {RunService} from "../RunService";
 import {ISourceLocation} from "../../../../common/Debugger";
-import {LabelService} from "../LabelService";
+import {SymbolService} from "../SymbolService";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -25,7 +25,7 @@ export class EditSessionService {
     private activeSession: Session;
     private breakpointMarker: {marker: number, session: Session};
 
-    constructor(private fileNameEndingService: FileNameEndingService, private breakpointService: BreakpointService, private projectService: ProjectService, private runService: RunService, private labelService: LabelService) {
+    constructor(private fileNameEndingService: FileNameEndingService, private breakpointService: BreakpointService, private projectService: ProjectService, private runService: RunService, private symbolService: SymbolService) {
         this.setChanged = new EventEmitter();
         this.activeSessionChanged = new EventEmitter();
 
@@ -90,7 +90,7 @@ export class EditSessionService {
     }
 
     private createSession(file:File): Session {
-        let session: Session = new Session(file, this.labelService);
+        let session: Session = new Session(file, this.symbolService);
         this.set.push({
             key: file,
             value: session

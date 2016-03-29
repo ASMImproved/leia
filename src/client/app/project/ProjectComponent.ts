@@ -11,26 +11,30 @@ import {EditSessionService} from './editor/EditSessionService';
 import {Session} from "./editor/Session";
 import {ProjectService} from "./ProjectService";
 import {BreakpointService} from "./BreakpointService";
-import {LabelService} from "./LabelService";
+import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
     directives: [NewFileFormComponent, EditorComponent, RegistersComponent, SymboleTableComponent],
-	providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService, LabelService]
+	providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService, SymbolService]
 })
 export class ProjectComponent implements OnInit{
 	private _project: Project;
 	private sessionSet: Array<{key; value}> = [];
+	/**
+	 * required in the HTML code
+	 */
+	private socketService: SocketService;
 
 	constructor(
-		private socketService: SocketService,
+		socketService: SocketService,
 		private runService: RunService,
 		private editSessionService: EditSessionService,
 		private projectService: ProjectService,
-		private labelService: LabelService) {
-
+		private symbolService: SymbolService) {
+		this.socketService = socketService;
 	}
 
 	ngOnInit() {
@@ -62,6 +66,6 @@ export class ProjectComponent implements OnInit{
 	public set project(project: Project) {
 		this._project = project;
 		this.projectService.project = project;
-		this.labelService.parseProject(this._project);
+		this.symbolService.parseProject(this._project);
 	};
 }
