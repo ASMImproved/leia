@@ -32,8 +32,7 @@ export class ProjectComponent implements OnInit{
 		socketService: SocketService,
 		private runService: RunService,
 		private editSessionService: EditSessionService,
-		private projectService: ProjectService,
-		private symbolService: SymbolService) {
+		private projectService: ProjectService) {
 		this.socketService = socketService;
 	}
 
@@ -66,6 +65,5 @@ export class ProjectComponent implements OnInit{
 	public set project(project: Project) {
 		this._project = project;
 		this.projectService.project = project;
-		this.symbolService.parseProject(this._project);
 	};
 }

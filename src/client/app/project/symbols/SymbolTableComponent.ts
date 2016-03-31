@@ -11,7 +11,7 @@ export class SymboleTableComponent {
     private localSymbols: Symbol[] = [];
 
     constructor(private symbolService: SymbolService, private editSessionService: EditSessionService) {
-        symbolService.symbolsChanged.subscribe((symbols: Symbol[]) => {
+        symbolService.symbolsChanged$.subscribe((symbols: Symbol[]) => {
             console.log("symbols changed");
             console.log(symbols);
             this.globalSymbols = [];

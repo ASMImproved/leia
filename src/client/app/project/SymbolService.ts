@@ -1,6 +1,8 @@
 import {File} from '../../../common/File'
-import {EventEmitter} from "angular2/core";
+import {Injectable} from "angular2/core";
+import {BehaviorSubject} from 'rxjs/Rx'
 import {Project} from "../../../common/Project";
+import {ProjectService} from "./ProjectService";
 
 export interface Symbol {
     global?: boolean;
@@ -13,21 +15,25 @@ export interface Symbol {
 const SYMBOL_REGEX = /(\S+)\s*:/g;
 const GLOBAL_REGEX = /\.globl\s+(\S+)/g;
 
+@Injectable()
 export class SymbolService {
-    private _symbols: Symbol[] = [];
-    public symbolsChanged: EventEmitter<Symbol[]> = new EventEmitter<Symbol[]>();
+    private _symbolsSource = new BehaviorSubject<Symbol[]>([]);
+    public symbolsChanged$ = this._symbolsSource.asObservable();
 
-    constructor() {
+    constructor(private projectService: ProjectService) {
+        projectService.projectChanged$.subscribe((project: Project) => {
+            this.parseProject(project);
+        })
     }
 
-    public get symbols() {
-        return this._symbols;
+    public get symbols(): Symbol[] {
+        return this._symbolsSource.getValue();
     }
 
     public clear(file: File) {
-        this._symbols = this._symbols.filter((symbol: Symbol) => {
-            return symbol.file != file;
-        })
+        this._symbolsSource.next(
+            this.symbols.filter(symbol => symbol.file != file)
+        );
     }
 
     public parse(file: File, content?: string) {
@@ -39,6 +45,8 @@ export class SymbolService {
             return;
         }
 
+        let newSymbols: Symbol[] = [];
+
         let globals: string[] = [];
         let lines: string[] = content.split(/\n/);
         for (let lineNo: number = 0; lineNo < lines.length; lineNo++) {
@@ -48,7 +56,7 @@ export class SymbolService {
                 globals.push(match[1]);
             }
             while ((match = SYMBOL_REGEX.exec(line)) !== null) {
-                this._symbols.push({
+                newSymbols.push({
                     file: file,
                     name: match[1],
                     line: lineNo+1,
@@ -56,11 +64,11 @@ export class SymbolService {
                 });
             }
         }
-        this.symbolsChanged.emit(this._symbols);
+        this._symbolsSource.next(this.symbols.concat(newSymbols));
     }
 
-    parseProject(project:Project) {
-        this._symbols = [];
+    public parseProject(project:Project) {
+        this._symbolsSource.next([]);
         for (let file of project.files) {
             this.parse(file);
         }

@@ -5,9 +5,14 @@ import objectContaining = jasmine.objectContaining;
 
 describe("SymbolService", () => {
     var symbolService: SymbolService;
+    var projectService: any = {
+        projectChanged: {
+             subscribe: (observer: Function) => {}
+        }
+    };
 
     beforeEach(() => {
-        symbolService = new SymbolService();
+        symbolService = new SymbolService(projectService);
     });
 
     it("recognizes a local label", () => {
