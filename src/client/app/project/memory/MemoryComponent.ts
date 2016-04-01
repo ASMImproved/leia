@@ -17,7 +17,7 @@ export class MemoryComponent implements  OnInit{
     }
 
     ngOnInit():any {
-        this.memoryService.memoryContentUpdate.subscribe((blocks) => {
+        this.memoryService.memoryBlocksChanged$.subscribe((blocks) => {
             blocks.forEach((block) => {
                 let offset = parseInt(block.offset.substring(2), 16);
                 for(let i: number = 0; i < block.contents.length; i += 2) {

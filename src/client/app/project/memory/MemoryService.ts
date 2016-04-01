@@ -2,25 +2,22 @@
 import {Injectable, EventEmitter} from "angular2/core";
 import {SocketService} from "../SocketService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
+import {BehaviorSubject} from "rxjs/Rx";
 
 @Injectable()
 export class MemoryService {
-    public memoryContentUpdate: EventEmitter<any> = new EventEmitter();
     private _frame: MemoryFrame;
     private _blocks;
+    public memoryBlocksChanged$;
 
     public constructor(private socketService: SocketService) {
-
+        this._blocks = new BehaviorSubject<any>([]);
+        this.memoryBlocksChanged$ = this._blocks.asObservable();
         this.socketService.socket.on('memoryUpdate', (blocks) => {
             this._blocks = blocks;
             console.log(blocks);
-            this.memoryContentUpdate.emit(blocks);
+            this._blocks.next(blocks);
         });
-
-    }
-
-    public get MemoryContent() {
-        return this._blocks;
     }
     
     public get MemoryFrame() : MemoryFrame {
