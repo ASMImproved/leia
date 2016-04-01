@@ -8,6 +8,7 @@ import * as dbgmits from "asmimproved-dbgmits";
 import {ProgramStoppedEvent, ISourceLocation, SourceLocation, Breakpoint, Registers} from "../../common/Debugger";
 import {basename} from 'path';
 import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
+import {MemoryFrame} from "../../common/MemoryFrame";
 
 export interface ResultCallback<ResultType> {
 	(result: ResultType, error: any): void;
@@ -17,7 +18,7 @@ export class Session {
 	running: boolean = false;
 	stage: string;
 	private mipsProgram: MipsRunner = null;
-	private memoryFrame: {start: number, length: number};
+	private memoryFrame: MemoryFrame;
 
 	public hookSocket(socket: SocketIO.Socket) {
 		socket.on('run', (project: Project, onProgramStarted:(error:any)=>void) => {
@@ -70,6 +71,7 @@ export class Session {
 		});
 		socket.on('memoryFrameChange', (frame) => {
 			this.memoryFrame = frame;
+            this.updateMemoryFrame(socket);
 		});
 	}
 
@@ -169,9 +171,13 @@ export class Session {
 	}
 
 	public updateMemoryFrame(socket: SocketIO.Socket) {
-		this.mipsProgram.debug.readMemory("&hellostring", 10000)
-		.then((blocks: dbgmits.IMemoryBlock[]) => {
-			socket.emit("memoryUpdate", blocks);
-		});
+        if(this.mipsProgram) {
+            this.mipsProgram.debug.readMemory("0x" + this.memoryFrame.start.toString(16), 10000)
+            .then((blocks: dbgmits.IMemoryBlock[]) => {
+                socket.emit("memoryUpdate", blocks);
+            }, (err) => {
+                console.log('read mem failed');
+            });
+        }
 	}
 }
