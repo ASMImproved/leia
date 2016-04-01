@@ -2,9 +2,7 @@
 
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {BreakpointService} from "./../BreakpointService";
-import {RunService} from "./../RunService";
-import {Breakpoint, SourceLocation} from '../../../../common/Debugger';
-import {ISourceLocation} from "../../../../common/Debugger";
+import {SourceLocation} from '../../../../common/Debugger';
 import IEditSession = AceAjax.IEditSession;
 import {Session} from "./Session";
 
@@ -32,7 +30,7 @@ export class AceDirective {
     private _session: Session;
 
 
-    constructor(elementRef: ElementRef, private breakpointService: BreakpointService, private runService: RunService) {
+    constructor(elementRef: ElementRef, private breakpointService: BreakpointService) {
         this.textChanged = new EventEmitter<string>();
 
         let el = elementRef.nativeElement;

@@ -10,6 +10,7 @@ import {Breakpoint} from "../../../../common/Debugger";
 import {ProjectService} from "../ProjectService";
 import {RunService} from "../RunService";
 import {ISourceLocation} from "../../../../common/Debugger";
+import {SymbolService} from "../SymbolService";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -24,7 +25,7 @@ export class EditSessionService {
     private activeSession: Session;
     private breakpointMarker: {marker: number, session: Session};
 
-    constructor(private fileNameEndingService: FileNameEndingService, private breakpointService: BreakpointService, private projectService: ProjectService, private runService: RunService) {
+    constructor(private fileNameEndingService: FileNameEndingService, private breakpointService: BreakpointService, private projectService: ProjectService, private runService: RunService, private symbolService: SymbolService) {
         this.setChanged = new EventEmitter();
         this.activeSessionChanged = new EventEmitter();
 
@@ -89,7 +90,7 @@ export class EditSessionService {
     }
 
     private createSession(file:File): Session {
-        let session: Session = new Session(file);
+        let session: Session = new Session(file, this.symbolService);
         this.set.push({
             key: file,
             value: session
@@ -112,10 +113,13 @@ export class EditSessionService {
     }
 
     public selectFile(file: File) {
-        let session = this.getOrCreateSession(file);
-        this.activeSession = session;
+        this.activeSession = this.getOrCreateSession(file);
         this.activeSessionChanged.emit(this.activeSession);
     }
 
+    public goto(file: File, line: number) {
+        this.selectFile(file);
+        this.activeSession.ace.selection.moveCursorToPosition({row: line-1, column: 0});
+    }
 
 }

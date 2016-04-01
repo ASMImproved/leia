@@ -1,12 +1,14 @@
 import {Project} from "../../../common/Project";
 import {File} from "../../../common/File";
+import {BehaviorSubject} from 'rxjs/Rx'
 
 export class ProjectService {
-    public project: Project;
+    private _projectSource = new BehaviorSubject<Project>(new Project("Empty"));
+    public projectChanged$ = this._projectSource.asObservable();
 
     public getFileByName(name: string) : File {
         let foundFile: File = null;
-        this.project.files.forEach((file: File) => {
+        this._projectSource.getValue().files.forEach((file: File) => {
             if(file.name == name) {
                 foundFile = file;
             }
@@ -18,12 +20,12 @@ export class ProjectService {
         if(this.fileExists(newFile.name)) {
             throw new Error("File already exists");
         }
-        this.project.files.push(newFile);
+        this._projectSource.getValue().files.push(newFile);
     }
 
     public fileExists(name: string) : boolean {
         let conflictedFile: File = null;
-        this.project.files.forEach((existingFile: File) => {
+        this._projectSource.getValue().files.forEach((existingFile: File) => {
             if(name == existingFile.name) {
                 conflictedFile = existingFile;
             }
@@ -33,5 +35,13 @@ export class ProjectService {
         } else {
             return false;
         }
+    }
+
+    public get project() {
+        return this._projectSource.getValue();
+    }
+
+    public set project(project: Project) {
+        this._projectSource.next(project);
     }
 }

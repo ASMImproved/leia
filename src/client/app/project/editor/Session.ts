@@ -1,13 +1,20 @@
 import IEditSession = AceAjax.IEditSession;
+import EditorChangeEvent = AceAjax.EditorChangeEvent;
 import {FileNameEndingService} from "../FileNameEndingService";
 import {File} from "../../../../common/File";
+import {SymbolService, Symbol} from "../SymbolService";
+
+interface TokenInfo extends AceAjax.TokenInfo {
+    // AceAjax.TokenInfo is incomplete
+    type: string;
+}
 
 export class Session {
     public ace: IEditSession;
     private fileNameEndingService: FileNameEndingService;
     public dirty: boolean = false;
 
-    constructor(public file: File) {
+    constructor(public file: File, private symbolService: SymbolService) {
         this.fileNameEndingService = new FileNameEndingService();
         switch (this.fileNameEndingService.getFileNameEnding(file.name)) {
             case 's':
@@ -20,13 +27,18 @@ export class Session {
             default:
                 this.ace = ace.createEditSession(file.content, new (ace.require('ace/mode/text').Mode));
         }
-        this.ace.on("change", () => {
+        this.ace.on("change", (changeEvent: EditorChangeEvent) => {
             this.dirty = true;
-        })
+            this.updateSymbols();
+        });
     }
 
     public save() {
         this.file.content = this.ace.getValue();
         this.dirty = false;
+    }
+
+    private updateSymbols() {
+        this.symbolService.parse(this.file, this.ace.getValue());
     }
 }
