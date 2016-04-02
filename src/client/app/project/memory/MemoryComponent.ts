@@ -47,7 +47,11 @@ export class MemoryComponent implements  OnInit{
     }
     
     private moveUp() {
-        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.MemoryFrame.start + MEMORY_FRAME_SIZE, MEMORY_FRAME_SIZE));
+        let jumpAddress = this.memoryService.MemoryFrame.start + MEMORY_FRAME_SIZE;
+        if(jumpAddress < 0) {
+            jumpAddress = 0;
+        }
+        this.memoryService.updateMemoryFrame(new MemoryFrame(jumpAddress, MEMORY_FRAME_SIZE));
     } 
     
     private moveDown() {
