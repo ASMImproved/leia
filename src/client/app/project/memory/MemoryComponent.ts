@@ -2,16 +2,21 @@ import {Component, OnInit} from "angular2/core";
 import {MemoryService} from "./MemoryService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
 
+const HELLO_WORLD_ADDRESS: number = 4874208;
+const BYTES_PER_CELL: number = 4;
+const CELLS_PER_ROW: number = 10;
+const ROWS: number = 10;
+const MEMORY_FRAME_SIZE: number = ROWS * CELLS_PER_ROW * BYTES_PER_CELL;
+
 @Component({
     selector: 'lea-memory',
     templateUrl: 'client/app/project/memory/memory.html'
 })
 export class MemoryComponent implements  OnInit{
-    private length: number = 400;
     private matrix: Array<Array<string>> = [];
     
     public constructor(private memoryService: MemoryService) {
-        for(let i: number = 0; i < 10; i++) {
+        for(let i: number = 0; i < ROWS; i++) {
             this.matrix[i] = [];
         }
     }
@@ -22,11 +27,11 @@ export class MemoryComponent implements  OnInit{
                 let offset = parseInt(block.offset.substring(2), 16);
                 for(let i: number = 0; i < block.contents.length; i += 2) {
                     let positionOffset = offset + (i/2);
-                    let rowOffset = Math.floor(positionOffset / 40);
-                    let colOffset = Math.floor((positionOffset - rowOffset * 40) / 4);
-                    let localOffset = positionOffset % 4;
+                    let rowOffset = Math.floor(positionOffset / (BYTES_PER_CELL * CELLS_PER_ROW));
+                    let colOffset = Math.floor((positionOffset - rowOffset * (BYTES_PER_CELL * CELLS_PER_ROW)) / BYTES_PER_CELL);
+                    let localOffset = positionOffset % BYTES_PER_CELL;
                     //console.log('pos: %s, row: %s, col: %s, loc: %s', positionOffset, rowOffset, colOffset, localOffset);
-                    if(rowOffset < 0 || rowOffset >= 10 || colOffset < 0 || colOffset >= 10)
+                    if(rowOffset < 0 || rowOffset >= ROWS || colOffset < 0 || colOffset >= ROWS)
                         continue;
                     if(!this.matrix[rowOffset][colOffset]) {
                         this.matrix[rowOffset][colOffset] = '0xjjjjjjjj';
@@ -38,15 +43,15 @@ export class MemoryComponent implements  OnInit{
                 }
             });
         });
-        this.memoryService.updateMemoryFrame(new MemoryFrame(4874208, 100));
+        this.memoryService.updateMemoryFrame(new MemoryFrame(HELLO_WORLD_ADDRESS, MEMORY_FRAME_SIZE));
     }
     
     private moveUp() {
-        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.MemoryFrame.start + this.length, this.length));
+        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.MemoryFrame.start + MEMORY_FRAME_SIZE, MEMORY_FRAME_SIZE));
     } 
     
     private moveDown() {
-        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.MemoryFrame.start - this.length, this.length));
+        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.MemoryFrame.start - MEMORY_FRAME_SIZE, MEMORY_FRAME_SIZE));
     }
 
 
