@@ -36,6 +36,13 @@ RUN npm install
 
 RUN npm install -g typings
 
+RUN mkdir -p dist/public/vendor/ && \
+    curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/ace.js -o dist/public/vendor/ace.js && \
+    curl -sL https://github.com/gildas-lormeau/zip.js/tarball/1bead0a -o /zip.js.tar.gz && \
+    tar xvzf /zip.js.tar.gz -C / && \
+    cp -R /gildas-lormeau-zip.js-1bead0a/WebContent/ dist/public/vendor/zipjs
+
+
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
