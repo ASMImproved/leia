@@ -1,0 +1,8 @@
+<button (click)="moveDown()">&#60;-</button>
+<button (click)="moveUp()">-&#62;</button>
+<span>Start at : 0x{{memoryService.MemoryFrame.start.toString(16)}}</span>
+<table>
+    <tr *ngFor="#row of matrix">
+        <td *ngFor="#cell of row">{{cell}}</td>
+    </tr>
+</table>

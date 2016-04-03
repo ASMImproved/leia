@@ -11,14 +11,16 @@ import {EditSessionService} from './editor/EditSessionService';
 import {Session} from "./editor/Session";
 import {ProjectService} from "./ProjectService";
 import {BreakpointService} from "./BreakpointService";
+import {MemoryService} from "./memory/MemoryService";
+import {MemoryComponent} from "./memory/MemoryComponent";
 import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
-    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, SymboleTableComponent],
-	providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService, SymbolService]
+    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent],
+	  providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService, MemoryService, SymbolService]
 })
 export class ProjectComponent implements OnInit{
 	private _project: Project;
@@ -32,7 +34,9 @@ export class ProjectComponent implements OnInit{
 		socketService: SocketService,
 		private runService: RunService,
 		private editSessionService: EditSessionService,
-		private projectService: ProjectService) {
+		private projectService: ProjectService,
+	    private memoryService: MemoryService
+	) {
 		this.socketService = socketService;
 	}
 
