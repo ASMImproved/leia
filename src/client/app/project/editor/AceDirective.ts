@@ -35,7 +35,6 @@ export class AceDirective {
 
         let el = elementRef.nativeElement;
         this.editor = ace.edit(el);
-        this.editor.setTheme("ace/theme/github");
 
         this.editor.addEventListener("change", (e) => {
             // discard the delta (e), and provide whole document
