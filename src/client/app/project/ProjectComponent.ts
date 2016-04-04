@@ -15,12 +15,23 @@ import {MemoryService} from "./memory/MemoryService";
 import {MemoryComponent} from "./memory/MemoryComponent";
 import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
+import {PersistenceService} from "./persistence/PersistenceService";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
     directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent],
-	  providers: [SocketService, RunService, FileNameEndingService, EditSessionService, ProjectService, BreakpointService, MemoryService, SymbolService]
+	providers: [
+		SocketService,
+		RunService,
+		FileNameEndingService,
+		EditSessionService,
+		ProjectService,
+		BreakpointService,
+		MemoryService,
+		SymbolService,
+		PersistenceService
+	]
 })
 export class ProjectComponent implements OnInit{
 	private _project: Project;
@@ -35,7 +46,8 @@ export class ProjectComponent implements OnInit{
 		private runService: RunService,
 		private editSessionService: EditSessionService,
 		private projectService: ProjectService,
-	    private memoryService: MemoryService
+	    private memoryService: MemoryService,
+		private persistenceService: PersistenceService
 	) {
 		this.socketService = socketService;
 	}
@@ -63,6 +75,12 @@ export class ProjectComponent implements OnInit{
 			session.value.save();
 		});
 		this.runService.run(this._project);
+	}
+
+	persist() {
+		this.persistenceService.persist(this._project, function(err) {
+			console.log(err);
+		});
 	}
 
 	@Input()
