@@ -55,14 +55,24 @@ gulp.task('browser-sync', function() {
 gulp.task('test_server', function() {
 	runSequence(
 		['typescript-server', 'vendor'],
-		'jasmine-server'
+		'jasmine-server',
+		function (err) {
+			if (err) {
+				failOnSingleBuild();
+			}
+		}
 	)
 });
 
 gulp.task('test_client', function() {
 	runSequence(
 		['typescript-client', 'index', 'vendor', 'template', 'sass'],
-		'karma'
+		'karma',
+		function (err) {
+			if (err) {
+				failOnSingleBuild();
+			}
+		}
 	)
 });
 
@@ -70,7 +80,7 @@ var tsProject = ts.createProject('tsconfig.json', {
 	typescript: typescript
 });
 
-function failOnTypescriptError() {
+function failOnSingleBuild() {
 	if (!watching)
 		process.exit(1);
 }
@@ -79,7 +89,7 @@ gulp.task('typescript-client', function () {
 	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
 		.pipe(ts(tsProject))
-		.on('error', failOnTypescriptError)
+		.on('error', failOnSingleBuild)
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist/public/'))
 		.pipe(browserSync.stream());
@@ -95,7 +105,7 @@ gulp.task('typescript-server', function() {
 			module: "commonjs",
 			moduleResolution: "node"
 		}))
-		.on('error', failOnTypescriptError)
+		.on('error', failOnSingleBuild)
 		.pipe(gulp.dest('dist'));
 });
 gulp.task('typescript-server-watch', function() {
