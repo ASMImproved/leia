@@ -1,4 +1,4 @@
-/// <reference path="../../typings/main.d.ts" />
+/// <reference path="../../../../typings/main.d.ts" />
 
 import * as dbgmits from "asmimproved-dbgmits";
 import {EventEmitter} from 'events';
@@ -9,6 +9,7 @@ export class MipsRunner extends EventEmitter {
 	public port: number = 60000;
 	public execution: cp.ChildProcess;
 	public debug: dbgmits.DebugSession;
+	public debuggerStartedPromise: Promise<void>;
 
 	constructor(private elfFile: string) {
 		super();
@@ -19,7 +20,7 @@ export class MipsRunner extends EventEmitter {
 		//TODO better detection than timeout
 		setTimeout(
 			() => {
-				this.emit("debuggerReady");
+				this.emit("debuggerPortReady");
 			},
 			1000
 		);
@@ -27,10 +28,11 @@ export class MipsRunner extends EventEmitter {
 
 	public connectDebugger() : Promise<void> {
 		this.debug = dbgmits.startDebugSession(dbgmits.DebuggerType.GDB, "gdb-multiarch");
-		return this.debug
+		this.debuggerStartedPromise = this.debug
 			.setExecutableFile(this.elfFile)
 			.then(() => {
 				return this.debug.connectToRemoteTarget("localhost", this.port)
 			});
+		return this.debuggerStartedPromise;
 	};
 }

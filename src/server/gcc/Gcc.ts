@@ -1,11 +1,11 @@
-/// <reference path="../../typings/main.d.ts" />
+/// <reference path="../../../typings/main.d.ts" />
 
 import util = require('util');
 import cp = require('child_process');
 import fs = require('fs');
 import path = require('path');
 import async = require('async');
-import {Project} from '../common/Project.ts';
+import {Project} from '../../common/Project.ts';
 var temp = require('temp');
 var rimraf = require('rimraf');
 var gccParser = require('gcc-output-parser');

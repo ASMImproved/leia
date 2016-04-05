@@ -6,7 +6,7 @@ import expressSocketioSession = require('express-socket.io-session');
 
 var app: express.Express = express();
 import http = require('http')
-import {SessionManager} from './session/SessionManager'
+import {SocketSessionManager} from "./socket/SocketSessionManager";
 var server: http.Server = http.createServer(app);
 var io: SocketIO.Server = require('socket.io')(server);
 
@@ -27,8 +27,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 io.use(expressSocketioSession(session));
 
-var sessionManager: SessionManager = new SessionManager(io);
-sessionManager.startListening();
+var socketSessionManager: SocketSessionManager = new SocketSessionManager(io);
+socketSessionManager.startListening();
  
 server.listen(process.env.port || 80);
 console.log("server starts accepting connections");

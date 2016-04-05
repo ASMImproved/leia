@@ -203,3 +203,10 @@ gulp.task('karma-watch', function(done) {
 		singleRun: false
 	}, done).start()
 });
+
+gulp.task('api-tests', function (done) {
+	new Karma({
+		singleRun: true,
+		
+	}, done).start();
+})
