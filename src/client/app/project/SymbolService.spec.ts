@@ -6,7 +6,7 @@ import objectContaining = jasmine.objectContaining;
 describe("SymbolService", () => {
     var symbolService: SymbolService;
     var projectService: any = {
-        projectChanged: {
+        projectChanged$: {
              subscribe: (observer: Function) => {}
         }
     };

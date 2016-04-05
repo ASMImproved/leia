@@ -7,8 +7,10 @@ cd /lea
 if [ "$1" == "test" ]; then
     Xvfb $DISPLAY -screen 0 1024x768x24 -fbdir /var/run -ac > /dev/null 2>&1 &
 
-    gulp test_client
-    gulp test_server
+	result=0
+    gulp test_client; result=$((result+$?))
+    gulp test_server; result=$((result+$?))
+    exit $result
 elif [ "$1" == "watch" ]; then
     Xvfb $DISPLAY -screen 0 1024x768x24 -fbdir /var/run -ac > /dev/null 2>&1 &
 
