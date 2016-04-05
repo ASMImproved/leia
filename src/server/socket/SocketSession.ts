@@ -1,10 +1,12 @@
 /// <reference path="../../../typings/main.d.ts" />
 
 import {CommandDispatcher} from "../command/CommandDispatcher";
-import {ExecutionContext} from "../command/ExecutionContext";
+import {MipsSession} from "../arch/mips/MipsSession";
+import {MemoryFrame} from "../../common/MemoryFrame";
 
 export class SocketSession {
-    private executionContext: ExecutionContext = new ExecutionContext(this);
+    public mipsSession: MipsSession;
+    public memoryFrame: MemoryFrame;
 
     constructor(private socket: SocketIO.Socket, private commandExecuter: CommandDispatcher, private removeCallback: (socket: SocketSession) => any) {
         socket.on('close', this.handleConnectionClose);
@@ -28,7 +30,7 @@ export class SocketSession {
     private processEvent(data, ack) {
         // check data
 
-        this.commandExecuter.executeCommand(data.command, data.payload, this.executionContext, (err, answer, answerContext) => {
+        this.commandExecuter.executeCommand(data.command, data.payload, this, (err, answer, answerContext) => {
             this.sendResponse(err, answer, answerContext, data.command, ack);
         });
     }
@@ -50,6 +52,7 @@ export class SocketSession {
     }
 
     private dispose() {
+        this.mipsSession.dispose();
         this.removeCallback(this);
         this.socket.removeAllListeners();
     }

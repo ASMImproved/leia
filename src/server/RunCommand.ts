@@ -6,16 +6,16 @@ import {ExecutionContext} from "./command/ExecutionContext";
 export class RunCommand implements ICommand {
 
     execute(payload:any, executionContext: ExecutionContext, callback:any) {
-        if(executionContext.mipsSession) {
-            if(executionContext.mipsSession.state != "terminated") {
+        if(executionContext.socketSession.mipsSession) {
+            if(executionContext.socketSession.mipsSession.state != "terminated") {
                 return callback(new Error("Session is already running"));
             } else {
-                executionContext.mipsSession.dispose();
-                delete executionContext.mipsSession;
+                executionContext.socketSession.mipsSession.dispose();
+                delete executionContext.socketSession.mipsSession;
             }
         }
-        let mips = executionContext.mipsSession = new MipsSession(payload.project);
-        executionContext.mipsSession.run((err) => {
+        let mips = executionContext.socketSession.mipsSession = new MipsSession(payload.project);
+        mips.run((err) => {
             if(err) {
                 return callback(err);
             }
@@ -27,14 +27,13 @@ export class RunCommand implements ICommand {
             }, []);
         });
         mips.mipsProgram.execution.stdout.on('data', (chunk) => {
-            executionContext.socketSocket.emit('stdout', chunk);
+            executionContext.socketSession.emit('stdout', chunk);
         });
         mips.mipsProgram.execution.on('exit', (code: number, signal: string) => {
-            executionContext.socketSocket.emit('exit', {
+            executionContext.socketSession.emit('exit', {
                 code: code,
                 signal: signal
             });
         });
-        // handle session dispose
     }
 }
