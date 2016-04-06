@@ -2,6 +2,7 @@
 import {ICommand} from "./command/ICommand";
 import {MemoryFrame} from "../common/MemoryFrame";
 import {ExecutionContext} from "./command/ExecutionContext";
+import {AnswerContext} from "./command/AnswerContext";
 
 export class ChangeMemoryFrameCommand implements ICommand{
 
@@ -12,7 +13,7 @@ export class ChangeMemoryFrameCommand implements ICommand{
                 let debug = executionContext.socketSession.mipsSession.mipsProgram.debug;
                 debug.readMemory("0x" + payload.start.toString(16), 10000)
                 .then((blocks: dbgmits.IMemoryBlock[]) => {
-                    callback(null, {}, [blocks]);
+                    callback(null, {}, [new AnswerContext("memoryUpdate", blocks)]);
                 }, (err) => {
                     console.log('read mem failed', err);
                     callback(null, {

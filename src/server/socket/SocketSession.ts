@@ -20,10 +20,11 @@ export class SocketSession {
         this.dispose();
     }
 
-    public emit(name: string, payload: any) {
+    public emit(name: string, payload: any, answerContext: any) {
         this.socket.emit('event', {
             name: name,
-            payload: payload
+            payload: payload,
+            context: answerContext
         });
     }
     
