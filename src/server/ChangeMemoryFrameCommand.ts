@@ -1,4 +1,5 @@
 
+import * as dbgmits from "asmimproved-dbgmits";
 import {ICommand} from "./command/ICommand";
 import {MemoryFrame} from "../common/MemoryFrame";
 import {ExecutionContext} from "./command/ExecutionContext";

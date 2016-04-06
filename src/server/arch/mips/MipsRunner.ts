@@ -35,4 +35,8 @@ export class MipsRunner extends EventEmitter {
 			});
 		return this.debuggerStartedPromise;
 	};
+
+	public dispose() {
+		this.removeAllListeners();
+	}
 }
