@@ -104,7 +104,9 @@ gulp.task('typescript-server', function() {
 		.pipe(ts({
 			target: "es6",
 			module: "commonjs",
-			moduleResolution: "node"
+			moduleResolution: "node",
+			experimentalDecorators: true,
+			emitDecoratorMetadata: true
 		}))
 		.on('error', failOnSingleBuild)
 		.pipe(sourcemaps.write())

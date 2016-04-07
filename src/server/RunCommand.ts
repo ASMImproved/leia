@@ -1,10 +1,13 @@
 
-import {ICommand} from "./command/ICommand";
+import {AbstractCommand, Command} from "./command/Command";
 import {MipsSession} from "./arch/mips/MipsSession";
 import {ExecutionContext} from "./command/ExecutionContext";
 import {AnswerContext} from "../common/AnswerContext";
 
-export class RunCommand implements ICommand {
+@Command({
+    name: 'run'
+})
+export class RunCommand extends AbstractCommand {
 
     execute(payload:any, executionContext: ExecutionContext, callback:any) {
         if(executionContext.socketSession.mipsSession) {

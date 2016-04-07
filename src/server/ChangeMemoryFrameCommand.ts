@@ -1,11 +1,14 @@
 
 import * as dbgmits from "asmimproved-dbgmits";
-import {ICommand} from "./command/ICommand";
+import {AbstractCommand, Command} from "./command/Command";
 import {MemoryFrame} from "../common/MemoryFrame";
 import {ExecutionContext} from "./command/ExecutionContext";
 import {AnswerContext} from "./../common/AnswerContext";
 
-export class ChangeMemoryFrameCommand implements ICommand{
+@Command({
+    name: 'changeMemoryFrame'
+})
+export class ChangeMemoryFrameCommand extends AbstractCommand {
 
     execute(payload: MemoryFrame, executionContext: ExecutionContext, callback:any) {
         executionContext.socketSession.memoryFrame = payload;

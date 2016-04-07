@@ -1,32 +1,18 @@
-
-import {ICommand} from "./ICommand";
-import {RunCommand} from "../RunCommand";
 import {ExecutionContext} from "./ExecutionContext";
 import {SocketSession} from "../socket/SocketSession";
-import {ContinueCommand} from "../ContinueCommand";
-import {ChangeMemoryFrameCommand} from "../ChangeMemoryFrameCommand";
+import {CommandRegistry} from "./CommandRegistry";
+
 
 export class CommandDispatcher {
     constructor() {
-        
     }
     
     public executeCommand(name: string, payload: any, socketService: SocketSession, callback: (err, answer?, answerContext?) => any) {
-        let command: ICommand;
-        switch (name) {
-            case 'run':
-                command = new RunCommand();
-                break;
-            case 'continue':
-                command = new ContinueCommand();
-                break;
-            case 'changeMemoryFrame':
-                command = new ChangeMemoryFrameCommand();
-                break;
+        try {
+            let command = CommandRegistry.createCommand(name);
+            command.execute(payload, new ExecutionContext(socketService), callback);
+        } catch (error) {
+            return callback(error);
         }
-        if(!command) {
-            return callback(new Error("Command not available"));
-        }
-        command.execute(payload, new ExecutionContext(socketService), callback);
     }
 }
