@@ -26,10 +26,12 @@ export class MipsSession extends events.EventEmitter{
 
             this._state = "starting";
             this._mipsProgram = new MipsRunner(path.join(dirPath, "proj.out"));
+            this._mipsProgram.run();
             this._mipsProgram.on('debuggerPortReady', () => {
                 this._mipsProgram
                     .connectDebugger()
                     .then(() => {
+                        this._state = "broken";
                         console.log("connected debugger");
                         cb();
                     })
@@ -39,13 +41,37 @@ export class MipsSession extends events.EventEmitter{
                         cb(error);
                     });
             });
-            this._mipsProgram.execution.on('exit', (code: number, signal: string) => {
+            this._mipsProgram.on('stdout', (chunk) => {
+                this.emit('stdout', chunk);
+            });
+            this._mipsProgram.on('stderr', (chunk) => {
+                this.emit('stderr', chunk);
+            });
+            this._mipsProgram.on('exit', (code: number, signal: string) => {
+                this._state = "terminated";
+                this.emit('exit', code, signal);
                 console.log("terminated");
             });
         });
     }
 
+    public continue(cb) {
+        if(!(this._state == "broken")) {
+            return cb(new Error("Nothing to continue"));
+        }
+        this._mipsProgram.debug.resumeInferior()
+            .then(() => {
+                console.log('resumed');
+                cb();
+            })
+            .catch((err) => {
+                console.error('failed to resume', err);
+                cb(err);
+            });
+    }
+
     public dispose() {
+        this.removeAllListeners();
         this._mipsProgram.dispose();
     }
 

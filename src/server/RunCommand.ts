@@ -19,20 +19,21 @@ export class RunCommand implements ICommand {
             if(err) {
                 return callback(err);
             }
-            mips.mipsProgram.execution.stdout.on('data', (chunk) => {
-                executionContext.socketSession.emit('stdout', chunk, []);
-            });
-            mips.mipsProgram.execution.on('exit', (code: number, signal: string) => {
-                executionContext.socketSession.emit('exit', {
-                    code: code,
-                    signal: signal
-                }, []);
-            });
             mips.mipsProgram.debuggerStartedPromise.then(() => {
                 
             });
             callback(null, {
                 ok: true
+            }, []);
+        });
+        mips.on('stdout', (chunk) => {
+            console.log(chunk);
+            executionContext.socketSession.emit('stdout', chunk, []);
+        });
+        mips.on('exit', (code: number, signal: string) => {
+            executionContext.socketSession.emit('exit', {
+                code: code,
+                signal: signal
             }, []);
         });
     }
