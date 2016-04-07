@@ -1,5 +1,5 @@
 import {Output, EventEmitter, Injectable} from 'angular2/core';
-import {SocketService} from "./SocketService";
+import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";
 import {Breakpoint, SourceLocation} from "../../../common/Debugger"
 

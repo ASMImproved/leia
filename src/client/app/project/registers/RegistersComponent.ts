@@ -1,5 +1,5 @@
 import {Component} from "angular2/core";
-import {SocketService} from "../SocketService";
+import {SocketService} from "../socket/SocketService";
 import {Register} from "../../../../common/Debugger";
 import {RegisterPipe} from './RegisterPipe'
 

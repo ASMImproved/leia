@@ -1,9 +1,10 @@
 
 import {Injectable, EventEmitter} from "angular2/core";
-import {SocketService} from "../SocketService";
+import {SocketService} from "../socket/SocketService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
 import {BehaviorSubject} from "rxjs/Rx";
 import {MemoryBlock} from "../../../../common/MemoryBlock";
+import {AnswerContext} from "../../../../common/AnswerContext";
 
 @Injectable()
 export class MemoryService {
@@ -17,6 +18,10 @@ export class MemoryService {
         this.socketService.socket.on('memoryUpdate', (blocks: Array<MemoryBlock>) => {
             console.log(blocks);
             this._blocks.next(blocks);
+        });
+        this.socketService.subscribeToContext('memoryUpdate', (context: AnswerContext) => {
+            console.log(context.payload);
+            this._blocks.next(context.payload);
         });
     }
     

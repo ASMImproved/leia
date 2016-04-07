@@ -1,7 +1,7 @@
 /// <reference path="../../../../typings/browser/ambient/jasmine/index.d.ts" />
 import {describe, it, expect} from 'angular2/testing';
 import {BreakpointService} from "./BreakpointService";
-import {SocketService} from "./SocketService";
+import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";
 import {SourceLocation, Breakpoint} from "../../../common/Debugger";
 

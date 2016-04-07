@@ -3,7 +3,7 @@ import {File} from '../../../common/File'
 import {Project} from '../../../common/Project'
 import {NewFileFormComponent} from './new-file/NewFileFormComponent'
 import {RegistersComponent} from "./registers/RegistersComponent";
-import {SocketService} from "./SocketService";
+import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";
 import {EditorComponent} from "./editor/EditorComponent";
 import {FileNameEndingService} from './FileNameEndingService'
