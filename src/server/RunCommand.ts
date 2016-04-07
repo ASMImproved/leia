@@ -2,6 +2,7 @@
 import {ICommand} from "./command/ICommand";
 import {MipsSession} from "./arch/mips/MipsSession";
 import {ExecutionContext} from "./command/ExecutionContext";
+import {AnswerContext} from "../common/AnswerContext";
 
 export class RunCommand implements ICommand {
 
@@ -20,11 +21,15 @@ export class RunCommand implements ICommand {
                 return callback(err);
             }
             mips.mipsProgram.debuggerStartedPromise.then(() => {
-                
+                executionContext.socketSession.mipsSession.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {
+                    if(err) {
+                        return callback(err);
+                    }
+                    callback(null, {
+                        ok: true
+                    }, [new AnswerContext("memoryUpdate", blocks)]);
+                });
             });
-            callback(null, {
-                ok: true
-            }, []);
         });
         mips.on('stdout', (chunk) => {
             console.log(chunk);

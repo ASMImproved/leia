@@ -4,6 +4,7 @@ import {RunCommand} from "../RunCommand";
 import {ExecutionContext} from "./ExecutionContext";
 import {SocketSession} from "../socket/SocketSession";
 import {ContinueCommand} from "../ContinueCommand";
+import {ChangeMemoryFrameCommand} from "../ChangeMemoryFrameCommand";
 
 export class CommandDispatcher {
     constructor() {
@@ -18,6 +19,9 @@ export class CommandDispatcher {
                 break;
             case 'continue':
                 command = new ContinueCommand();
+                break;
+            case 'changeMemoryFrame':
+                command = new ChangeMemoryFrameCommand();
                 break;
         }
         if(!command) {

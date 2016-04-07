@@ -39,7 +39,7 @@ export class SocketSession {
     private sendResponse(err, answer, context, command, ack) {
         if(err) {
             return ack({
-                err: err
+                err: err.toString()
             });
         }
         return ack({

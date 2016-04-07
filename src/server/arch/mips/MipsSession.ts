@@ -5,6 +5,8 @@ import {Gcc} from "../../gcc/Gcc";
 import {MipsRunner} from "./MipsRunner";
 import path = require('path');
 import events = require('events');
+import {MemoryFrame} from "../../../common/MemoryFrame";
+import * as dbgmits from "asmimproved-dbgmits";
 
 export class MipsSession extends events.EventEmitter{
     private _mipsProgram: MipsRunner;
@@ -81,5 +83,17 @@ export class MipsSession extends events.EventEmitter{
 
     public get state(): string {
         return this._state;
+    }
+
+    public readMemory(frame: MemoryFrame, cb: (err:any, blocks?: dbgmits.IMemoryBlock[])=>any) {
+        if(this._state != "broken" && this._state != "terminated") {
+            return cb(new Error("Not in state to read memory"));
+        }
+        this._mipsProgram.debug.readMemory("0x" + frame.start.toString(16), frame.length)
+            .then((blocks: dbgmits.IMemoryBlock[]) => {
+                return cb(null, blocks);
+            }, (err) => {
+                cb(err);
+            });
     }
 }

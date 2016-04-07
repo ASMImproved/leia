@@ -10,20 +10,15 @@ export class ChangeMemoryFrameCommand implements ICommand{
     execute(payload: MemoryFrame, executionContext: ExecutionContext, callback:any) {
         executionContext.socketSession.memoryFrame = payload;
         if(executionContext.socketSession.mipsSession) {
-            try {
-                let debug = executionContext.socketSession.mipsSession.mipsProgram.debug;
-                debug.readMemory("0x" + payload.start.toString(16), 10000)
-                .then((blocks: dbgmits.IMemoryBlock[]) => {
-                    callback(null, {}, [new AnswerContext("memoryUpdate", blocks)]);
-                }, (err) => {
-                    console.log('read mem failed', err);
-                    callback(null, {
-                        memoryReadFailed: true
+            executionContext.socketSession.mipsSession.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {
+                if(err) {
+                    return callback(null, {
+                        memoryReadFailed: true,
+                        err: err.toString()
                     }, []);
-                });
-            } catch(e) {
-                callback(e);
-            }
+                }
+                callback(null, {}, [new AnswerContext("memoryUpdate", blocks)]);
+            });
         } else {
             callback(null, {}, []);
         }

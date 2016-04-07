@@ -15,10 +15,6 @@ export class MemoryService {
     public constructor(private socketService: SocketService) {
         this._blocks = new BehaviorSubject<Array<MemoryBlock>>([]);
         this.memoryBlocksChanged$ = this._blocks.asObservable();
-        this.socketService.socket.on('memoryUpdate', (blocks: Array<MemoryBlock>) => {
-            console.log(blocks);
-            this._blocks.next(blocks);
-        });
         this.socketService.subscribeToContext('memoryUpdate', (context: AnswerContext) => {
             console.log(context.payload);
             this._blocks.next(context.payload);
@@ -31,7 +27,9 @@ export class MemoryService {
 
     public updateMemoryFrame(frame: MemoryFrame) {
         this._frame = frame;
-        this.socketService.socket.emit('memoryFrameChange', frame);
+        this.socketService.sendCommand('changeMemoryFrame', frame, () => {
+            
+        });
     }
     
 }
