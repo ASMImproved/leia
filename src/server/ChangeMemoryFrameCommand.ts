@@ -3,7 +3,7 @@ import * as dbgmits from "asmimproved-dbgmits";
 import {ICommand} from "./command/ICommand";
 import {MemoryFrame} from "../common/MemoryFrame";
 import {ExecutionContext} from "./command/ExecutionContext";
-import {AnswerContext} from "./command/AnswerContext";
+import {AnswerContext} from "./../common/AnswerContext";
 
 export class ChangeMemoryFrameCommand implements ICommand{
 
