@@ -100,12 +100,14 @@ gulp.task('typescript-client-watch', function() {
 
 gulp.task('typescript-server', function() {
 	return gulp.src(['src/server/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
+		.pipe(sourcemaps.init())
 		.pipe(ts({
 			target: "es6",
 			module: "commonjs",
 			moduleResolution: "node"
 		}))
 		.on('error', failOnSingleBuild)
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist'));
 });
 gulp.task('typescript-server-watch', function() {

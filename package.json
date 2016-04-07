@@ -28,6 +28,7 @@
     "rimraf": "2.5.2",
     "rxjs": "5.0.0-beta.2",
     "socket.io": "^1.4.4",
+    "source-map-support": "^0.4.0",
     "systemjs": "0.19.6",
     "temp": "0.8.3",
     "zone.js": "0.5.15"
