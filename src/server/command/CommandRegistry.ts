@@ -11,6 +11,7 @@ export class CommandRegistry {
         if (CommandRegistry._commands.hasOwnProperty(metaInfo.name)) {
             throw new Error(`Command '${metaInfo.name}' is already registered`);
         }
+        console.log(`registering command '${metaInfo.name}'`);
         CommandRegistry._commands[metaInfo.name] = constructor;
     }
 
@@ -27,3 +28,9 @@ export class CommandRegistry {
         }
     }
 }
+
+import {ChangeMemoryFrameCommand} from '../ChangeMemoryFrameCommand'
+import {ContinueCommand} from '../ContinueCommand'
+import {RunCommand} from '../RunCommand'
+
+ChangeMemoryFrameCommand;ContinueCommand;RunCommand;
