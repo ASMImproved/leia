@@ -178,7 +178,6 @@ export class MipsSession extends events.EventEmitter{
             }
             let memory: any = results["memory"];
             let registers: any = results["registers"];
-            console.log(results);
             cb(err, memory, registers);
         });
     }

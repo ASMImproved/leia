@@ -12,18 +12,12 @@ export class SymboleTableComponent {
 
     constructor(private symbolService: SymbolService, private editSessionService: EditSessionService) {
         symbolService.symbolsChanged$.subscribe((symbols: Symbol[]) => {
-            console.log("symbols changed");
-            console.log(symbols);
             this.globalSymbols = [];
             this.localSymbols = [];
             symbols.forEach((symbol: Symbol) => {
                 if (symbol.global) {
-                    console.log("global symbol");
-                    console.log(symbol);
                     this.globalSymbols.push(symbol);
                 } else {
-                    console.log("local symbol");
-                    console.log(symbol);
                     this.localSymbols.push(symbol);
                 }
             })
