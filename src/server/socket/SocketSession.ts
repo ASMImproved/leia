@@ -9,7 +9,7 @@ export class SocketSession {
     public memoryFrame: MemoryFrame;
 
     constructor(private socket: SocketIO.Socket, private commandExecuter: CommandDispatcher, private removeCallback: (socket: SocketSession) => any) {
-        socket.on('close', this.handleConnectionClose);
+        socket.on('disconnect', this.handleConnectionClose.bind(this));
         socket.on('event', (data, ack) => {
             this.processEvent(data, ack);
         });
@@ -53,6 +53,7 @@ export class SocketSession {
     }
 
     private dispose() {
+        console.log('dispose session');
         this.mipsSession.dispose();
         this.removeCallback(this);
         this.socket.removeAllListeners();
