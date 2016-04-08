@@ -7,6 +7,7 @@ import path = require('path');
 import events = require('events');
 import {MemoryFrame} from "../../../common/MemoryFrame";
 import * as dbgmits from "asmimproved-dbgmits";
+import {Registers} from "../../../common/Debugger";
 
 export class MipsSession extends events.EventEmitter{
     private _mipsProgram: MipsRunner;
@@ -42,6 +43,17 @@ export class MipsSession extends events.EventEmitter{
                         console.error('debugger failed', error);
                         cb(error);
                     });
+                this._mipsProgram.debuggerStartedPromise.then(()=> {
+                    let debug = this._mipsProgram.debug;
+                    debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
+                        this._state = "broke";
+                        this.emit("hitBreakpoint", stoppedEvent);
+
+                    });
+                    debug.on(dbgmits.EVENT_STEP_FINISHED, () => {
+                        this.emit('finishedStep');
+                    });
+                });
             });
             this._mipsProgram.on('stdout', (chunk) => {
                 this.emit('stdout', chunk);
@@ -85,7 +97,7 @@ export class MipsSession extends events.EventEmitter{
         return this._state;
     }
 
-    public readMemory(frame: MemoryFrame, cb: (err:any, blocks?: dbgmits.IMemoryBlock[])=>any) {
+    public readMemory(frame: MemoryFrame, cb: (err:any, blocks?: dbgmits.IMemoryBlock[])=>any) : void {
         if(this._state != "broken" && this._state != "terminated") {
             return cb(new Error("Not in state to read memory"));
         }
@@ -95,5 +107,55 @@ export class MipsSession extends events.EventEmitter{
             }, (err) => {
                 cb(err);
             });
+    }
+
+    public readRegisters(cb: (err: any, registers?: Registers) => any) : void {
+        if(this._state != "broken" && this._state != "terminated") {
+            return cb(new Error("Not in state to read registers"));
+        }
+        let registers: Registers = [];
+        let registerNames: Promise<void> =
+            this.mipsProgram.debug
+                .getRegisterNames()
+                .then((names: string[]) => {
+                    for (let i = 0; i < names.length; ++i) {
+                        if (registers[i] === undefined) {
+                            registers[i] = {
+                                name: null,
+                                value: 0
+                            }
+                        }
+                        registers[i].name = names[i];
+                    }
+                });
+        let registerValues: Promise<void> =
+            this.mipsProgram.debug
+                .getRegisterValues(RegisterValueFormatSpec.Binary)
+                .then((values: Map<number, string>) => {
+                    values.forEach((registerValue:string, registerNumber:number) => {
+                        if (registers[registerNumber] === undefined) {
+                            registers[registerNumber] = {
+                                name: null,
+                                value: 0
+                            }
+                        }
+                        registers[registerNumber].value = Number.parseInt(registerValue, 2);
+                    });
+                });
+        Promise.all([registerValues, registerNames]).then(() => {
+            console.log(registers);
+            cb(null, registers);
+        }, (err) => {
+            cb(err);
+        });
+    }
+
+    public getMachineState(frame: MemoryFrame, cb: (err, memoryBlocks: dbgmits.IMemoryBlock[], registers?: Registers) => any) : void {
+        async.parallel([
+            this.readMemory.apply(this, frame),
+            this.readRegisters.bind(this)
+        ], function(err, results) {
+            cb(err, results[0], results[1]);
+        });
     }
 }
