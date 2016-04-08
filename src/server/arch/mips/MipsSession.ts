@@ -195,4 +195,14 @@ export class MipsSession extends events.EventEmitter{
                 cb(err);
             });
     }
+
+    removeBreakpoint(breakpointId:number, cb:(err)=> any) {
+        this.mipsProgram.debug.removeBreakpoint(breakpointId)
+            .then(() => {
+                cb(null);
+            })
+            .catch((err) => {
+                cb(err);
+            })
+    }
 }

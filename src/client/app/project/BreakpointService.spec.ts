@@ -36,11 +36,14 @@ describe("BreakpointService", () => {
             if (commandName === 'addBreakpoint') {
                 expect(args[0]).toBe(location);
                 expect(typeof(args[1])).toBe('function');
-                args[1](<Breakpoint>{
-                    location: location,
-                    pending: false,
-                    id: 420
-                }, null);
+                args[1](
+                    null,
+                    <Breakpoint>{
+                        location: location,
+                        pending: false,
+                        id: 420
+                    }
+                );
             } else if (commandName === 'removeBreakpoint') {
                 expect(args[0]).toBe(420);
             } else {

@@ -6,10 +6,11 @@ import {ChangeMemoryFrameCommand} from "../commands/ChangeMemoryFrameCommand";
 import {RunCommand} from "../commands/RunCommand";
 import {ContinueCommand} from "../commands/ContinueCommand";
 import {AddBreakpointCommand} from "../commands/AddBreakpointCommand";
+import {RemoveBreakpointCommand} from "../commands/RemoveBreakpointCommand";
 
 export class CommandDispatcher {
     /** only required to ensure loading of all commands */
-    private commands = [RunCommand, ContinueCommand, ChangeMemoryFrameCommand, AddBreakpointCommand];
+    private commands = [RunCommand, ContinueCommand, ChangeMemoryFrameCommand, AddBreakpointCommand, RemoveBreakpointCommand];
 
     constructor() {
     }

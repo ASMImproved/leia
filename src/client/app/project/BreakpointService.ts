@@ -78,7 +78,11 @@ export class BreakpointService {
 
         if (breakpoint.id && this.runService.running) {
             console.log("sending remove request for id " + breakpoint.id);
-            this.socketService.socket.emit('removeBreakpoint', breakpoint.id);
+            this.socketService.sendCommand('removeBreakpoint', breakpoint.id, (err) => {
+                if (err) {
+                    return console.log(err)
+                }
+            });
         }
 
         console.log("removing breakpoint from client's breakpoints");
