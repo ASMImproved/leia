@@ -74,7 +74,9 @@ export class RunService {
 
     step() {
         console.log("step");
-        this.socketService.socket.emit('step');
+        this.socketService.sendCommand('step', {}, (err, answerPayload: ProgramStoppedEvent) => {
+            this.stopped.emit(answerPayload.location);
+        });
     }
 
     continue() {

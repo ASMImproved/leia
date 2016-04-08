@@ -47,9 +47,6 @@ export class RunCommand extends AbstractCommand {
         mips.on('hitBreakpoint', (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
             this.sendProgramStoppedEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
         });
-        mips.on('finishedStep', (stoppedEvent: dbgmits.IStepFinishedEvent) => {
-            this.sendProgramStoppedEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line))
-        });
         mips.on('exit', (code: number, signal: string) => {
             executionContext.socketSession.emit('exit', {
                 code: code,

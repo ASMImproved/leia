@@ -50,5 +50,6 @@ export class MipsRunner extends EventEmitter {
 
 	public dispose() {
 		this.removeAllListeners();
+		this.debug.removeAllListeners();
 	}
 }

@@ -33,5 +33,6 @@ import {ChangeMemoryFrameCommand} from '../ChangeMemoryFrameCommand'
 import {ContinueCommand} from '../ContinueCommand'
 import {RunCommand} from '../RunCommand'
 import {AddBreapointCommand} from '../AddBreapointCommand'
+import {StepCommand} from "../StepCommand";
 
-ChangeMemoryFrameCommand;ContinueCommand;RunCommand;AddBreapointCommand;
+ChangeMemoryFrameCommand;ContinueCommand;RunCommand;AddBreapointCommand;StepCommand

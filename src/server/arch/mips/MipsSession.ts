@@ -52,10 +52,6 @@ export class MipsSession extends events.EventEmitter{
                         this.emit("hitBreakpoint", stoppedEvent);
 
                     });
-                    debug.on(dbgmits.EVENT_STEP_FINISHED, () => {
-                        this._state = "broken";
-                        this.emit('finishedStep');
-                    });
                 });
             });
             this._mipsProgram.on('stdout', (chunk) => {
@@ -83,6 +79,21 @@ export class MipsSession extends events.EventEmitter{
             })
             .catch((err) => {
                 console.error('failed to resume', err);
+                cb(err);
+            });
+    }
+
+    public step(cb) {
+        if(!(this._state == "broken")) {
+            return cb(new Error("Nothing to continue"));
+        }
+        let stepFinishedCb = (stoppedEvent: dbgmits.IStepFinishedEvent) => {
+            cb(null, stoppedEvent);
+        };
+        this.mipsProgram.debug.once(dbgmits.EVENT_STEP_FINISHED, stepFinishedCb);
+        this._mipsProgram.debug.stepIntoInstruction()
+            .catch((err) => {
+                this.mipsProgram.debug.removeListener(dbgmits.EVENT_STEP_FINISHED, stepFinishedCb);
                 cb(err);
             });
     }
