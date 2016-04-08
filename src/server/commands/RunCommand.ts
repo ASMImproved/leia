@@ -1,11 +1,11 @@
-/// <reference path="../../typings/main.d.ts" />
+/// <reference path="../../../typings/main.d.ts" />
 
-import {AbstractCommand, Command} from "./command/Command";
-import {MipsSession} from "./arch/mips/MipsSession";
-import {ExecutionContext} from "./command/ExecutionContext";
-import {AnswerContext} from "../common/AnswerContext";
+import {AbstractCommand, Command} from "./../command/Command";
+import {MipsSession} from "./../arch/mips/MipsSession";
+import {ExecutionContext} from "./../command/ExecutionContext";
+import {AnswerContext} from "../../common/AnswerContext";
 import {basename} from "path";
-import {SourceLocation, Registers} from "../common/Debugger";
+import {SourceLocation, Registers} from "../../common/Debugger";
 import * as dbgmits from "asmimproved-dbgmits";
 
 @Command({

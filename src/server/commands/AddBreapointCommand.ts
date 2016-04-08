@@ -1,7 +1,7 @@
 
-import {Command, AbstractCommand} from "./command/Command";
-import {ExecutionContext} from "./command/ExecutionContext";
-import {AnswerContext} from "../common/AnswerContext";
+import {Command, AbstractCommand} from "./../command/Command";
+import {ExecutionContext} from "./../command/ExecutionContext";
+import {AnswerContext} from "../../common/AnswerContext";
 
 @Command({
     name: 'addBreakpoint'

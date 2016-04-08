@@ -29,10 +29,10 @@ export class CommandRegistry {
     }
 }
 
-import {ChangeMemoryFrameCommand} from '../ChangeMemoryFrameCommand'
-import {ContinueCommand} from '../ContinueCommand'
-import {RunCommand} from '../RunCommand'
-import {AddBreapointCommand} from '../AddBreapointCommand'
-import {StepCommand} from "../StepCommand";
+import {ChangeMemoryFrameCommand} from '../commands/ChangeMemoryFrameCommand'
+import {ContinueCommand} from '../commands/ContinueCommand'
+import {RunCommand} from '../commands/RunCommand'
+import {AddBreapointCommand} from '../commands/AddBreapointCommand'
+import {StepCommand} from "../commands/StepCommand";
 
 ChangeMemoryFrameCommand;ContinueCommand;RunCommand;AddBreapointCommand;StepCommand

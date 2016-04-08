@@ -1,6 +1,6 @@
 
-import {AbstractCommand, Command} from "./command/Command";
-import {ExecutionContext} from "./command/ExecutionContext";
+import {AbstractCommand, Command} from "./../command/Command";
+import {ExecutionContext} from "./../command/ExecutionContext";
 
 @Command({
     name: 'continue'

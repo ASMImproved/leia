@@ -1,8 +1,8 @@
 
-import {Command, AbstractCommand} from "./command/Command";
-import {ExecutionContext} from "./command/ExecutionContext";
-import {AnswerContext} from "../common/AnswerContext";
-import {SourceLocation} from "../common/Debugger";
+import {Command, AbstractCommand} from "./../command/Command";
+import {ExecutionContext} from "./../command/ExecutionContext";
+import {AnswerContext} from "../../common/AnswerContext";
+import {SourceLocation} from "../../common/Debugger";
 import {basename} from "path";
 import * as dbgmits from "asmimproved-dbgmits";
 

@@ -1,9 +1,9 @@
 
 import * as dbgmits from "asmimproved-dbgmits";
-import {AbstractCommand, Command} from "./command/Command";
-import {MemoryFrame} from "../common/MemoryFrame";
-import {ExecutionContext} from "./command/ExecutionContext";
-import {AnswerContext} from "./../common/AnswerContext";
+import {AbstractCommand, Command} from "./../command/Command";
+import {MemoryFrame} from "../../common/MemoryFrame";
+import {ExecutionContext} from "./../command/ExecutionContext";
+import {AnswerContext} from "./../../common/AnswerContext";
 
 @Command({
     name: 'changeMemoryFrame'
