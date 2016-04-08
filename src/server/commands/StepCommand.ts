@@ -1,5 +1,5 @@
 
-import {Command, AbstractCommand} from "./../command/Command";
+import {Command, AbstractCommand, CommandCallback} from "./../command/Command";
 import {ExecutionContext} from "./../command/ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
 import {SourceLocation} from "../../common/Debugger";
@@ -11,7 +11,7 @@ import * as dbgmits from "asmimproved-dbgmits";
 })
 export class StepCommand extends AbstractCommand {
 
-    execute(payload:any, executionContext:ExecutionContext, callback:(err:any, answer?:any, answerContext?:Array<AnswerContext>)=>any) {
+    execute(payload:any, executionContext:ExecutionContext, callback:CommandCallback) {
         if(!executionContext.socketSession.mipsSession) {
             return callback(new Error("No active session"));
         }

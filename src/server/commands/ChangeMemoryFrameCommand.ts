@@ -1,6 +1,4 @@
-
-import * as dbgmits from "asmimproved-dbgmits";
-import {AbstractCommand, Command} from "./../command/Command";
+import {AbstractCommand, Command, CommandCallback} from "./../command/Command";
 import {MemoryFrame} from "../../common/MemoryFrame";
 import {ExecutionContext} from "./../command/ExecutionContext";
 import {AnswerContext} from "./../../common/AnswerContext";
@@ -10,7 +8,7 @@ import {AnswerContext} from "./../../common/AnswerContext";
 })
 export class ChangeMemoryFrameCommand extends AbstractCommand {
 
-    execute(payload: MemoryFrame, executionContext: ExecutionContext, callback:any) {
+    execute(payload: MemoryFrame, executionContext: ExecutionContext, callback:CommandCallback) {
         executionContext.socketSession.memoryFrame = payload;
         if(executionContext.socketSession.mipsSession) {
             executionContext.socketSession.mipsSession.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {

@@ -1,6 +1,6 @@
 /// <reference path="../../../typings/main.d.ts" />
 
-import {AbstractCommand, Command} from "./../command/Command";
+import {AbstractCommand, Command, CommandCallback} from "./../command/Command";
 import {MipsSession} from "./../arch/mips/MipsSession";
 import {ExecutionContext} from "./../command/ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
@@ -14,7 +14,7 @@ import * as dbgmits from "asmimproved-dbgmits";
 export class RunCommand extends AbstractCommand {
     private executionContext: ExecutionContext;
 
-    execute(payload:any, executionContext: ExecutionContext, callback:any) {
+    execute(payload:any, executionContext: ExecutionContext, callback: CommandCallback) {
         this.executionContext = executionContext;
         if(executionContext.socketSession.mipsSession) {
             if(executionContext.socketSession.mipsSession.state != "terminated") {

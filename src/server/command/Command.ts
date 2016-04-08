@@ -5,8 +5,12 @@ export interface CommandMetaInfo {
     name: string;
 }
 
+export interface CommandCallback {
+    (err: any, answer?: any, answerContext?: Array<AnswerContext>): any
+}
+
 export abstract class AbstractCommand {
-    public abstract execute(payload: any, executionContext: ExecutionContext, callback: (err: any, answer?: any, answerContext?: Array<AnswerContext>) => any);
+    public abstract execute(payload: any, executionContext: ExecutionContext, callback: CommandCallback);
 
     public static isCommand(command: any): command is AbstractCommand {
         return command instanceof AbstractCommand

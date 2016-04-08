@@ -7,7 +7,7 @@ import {ExecutionContext} from "./../command/ExecutionContext";
 })
 export class AddBreakpointCommand extends AbstractCommand {
 
-    execute(payload:any, executionContext:ExecutionContext, callback:(err:any, answer?:any, answerContext?:Array<AnswerContext>)=>any) {
+    execute(payload:any, executionContext:ExecutionContext, callback:CommandCallback) {
         executionContext.socketSession.mipsSession.addBreakpoint(payload, (err, breakpoint) => {
             if(err) {
                 return callback(err);
