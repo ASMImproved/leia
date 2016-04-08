@@ -1,6 +1,5 @@
 import {describe, it, expect} from 'angular2/testing';
-import {CommandRegistry} from "./CommandRegistry";
-import {AbstractCommand, Command} from "./Command";
+import {AbstractCommand, Command, CommandRegistry} from "./Command";
 import {ExecutionContext} from "./ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
 

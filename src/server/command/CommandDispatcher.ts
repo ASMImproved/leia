@@ -1,9 +1,15 @@
 import {ExecutionContext} from "./ExecutionContext";
 import {SocketSession} from "../socket/SocketSession";
-import {CommandRegistry} from "./CommandRegistry";
+import {CommandRegistry} from "./Command";
 
+import {ChangeMemoryFrameCommand} from "../commands/ChangeMemoryFrameCommand";
+import {RunCommand} from "../commands/RunCommand";
+import {ContinueCommand} from "../commands/ContinueCommand";
 
 export class CommandDispatcher {
+    /** only required to ensure loading of all commands */
+    private commands = [RunCommand, ContinueCommand, ChangeMemoryFrameCommand];
+
     constructor() {
     }
     
