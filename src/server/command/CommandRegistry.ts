@@ -32,5 +32,6 @@ export class CommandRegistry {
 import {ChangeMemoryFrameCommand} from '../ChangeMemoryFrameCommand'
 import {ContinueCommand} from '../ContinueCommand'
 import {RunCommand} from '../RunCommand'
+import {AddBreapointCommand} from '../AddBreapointCommand'
 
-ChangeMemoryFrameCommand;ContinueCommand;RunCommand;
+ChangeMemoryFrameCommand;ContinueCommand;RunCommand;AddBreapointCommand;

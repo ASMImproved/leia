@@ -1,3 +1,4 @@
+/// <reference path="../../typings/main.d.ts" />
 
 import {AbstractCommand, Command} from "./command/Command";
 import {MipsSession} from "./arch/mips/MipsSession";
@@ -5,6 +6,7 @@ import {ExecutionContext} from "./command/ExecutionContext";
 import {AnswerContext} from "../common/AnswerContext";
 import {basename} from "path";
 import {SourceLocation, Registers} from "../common/Debugger";
+import * as dbgmits from "asmimproved-dbgmits";
 
 @Command({
     name: 'run'
@@ -57,9 +59,10 @@ export class RunCommand extends AbstractCommand {
     }
 
     sendProgramStoppedEvent(location: SourceLocation, breakpointId?: any) {
-        this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks: dbgmits.IMemoryBlock[], registers?: Registers) => {
+        this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?: dbgmits.IMemoryBlock[], registers?: Registers) => {
             if(err) {
-                this.executionContext.socketSession.emit('programStopped', {
+                console.error(err);
+                return this.executionContext.socketSession.emit('programStopped', {
                     location: location,
                     breakpointId: breakpointId
                 }, []);

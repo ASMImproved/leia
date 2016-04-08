@@ -7,7 +7,9 @@ import path = require('path');
 import events = require('events');
 import {MemoryFrame} from "../../../common/MemoryFrame";
 import * as dbgmits from "asmimproved-dbgmits";
-import {Registers} from "../../../common/Debugger";
+import {Registers, ISourceLocation} from "../../../common/Debugger";
+import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
+import async = require('async');
 
 export class MipsSession extends events.EventEmitter{
     private _mipsProgram: MipsRunner;
@@ -46,11 +48,12 @@ export class MipsSession extends events.EventEmitter{
                 this._mipsProgram.debuggerStartedPromise.then(()=> {
                     let debug = this._mipsProgram.debug;
                     debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
-                        this._state = "broke";
+                        this._state = "broken";
                         this.emit("hitBreakpoint", stoppedEvent);
 
                     });
                     debug.on(dbgmits.EVENT_STEP_FINISHED, () => {
+                        this._state = "broken";
                         this.emit('finishedStep');
                     });
                 });
@@ -150,12 +153,36 @@ export class MipsSession extends events.EventEmitter{
         });
     }
 
-    public getMachineState(frame: MemoryFrame, cb: (err, memoryBlocks: dbgmits.IMemoryBlock[], registers?: Registers) => any) : void {
-        async.parallel([
-            this.readMemory.apply(this, frame),
-            this.readRegisters.bind(this)
-        ], function(err, results) {
-            cb(err, results[0], results[1]);
+    public getMachineState(frame: MemoryFrame, cb: (err, memoryBlocks?: dbgmits.IMemoryBlock[], registers?: Registers) => any) : void {
+        async.parallel({
+            memory: (cb) => {
+                this.readMemory(frame, cb);
+            },
+            registers: (cb) => {
+                this.readRegisters(cb);
+            }
+        }, function(err, results) {
+            if(err) {
+                return cb(err);
+            }
+            let memory: any = results["memory"];
+            let registers: any = results["registers"];
+            console.log(results);
+            cb(err, memory, registers);
         });
+    }
+
+    public addBreakpoint(location: ISourceLocation, cb: (err, breakpoint?) => any) {
+        this.mipsProgram.debug.addBreakpoint(location.locationString)
+            .then((breakpoint: dbgmits.IBreakpointInfo) => {
+                cb(null, {
+                    location: location,
+                    pending: breakpoint.pending !== undefined,
+                    id: breakpoint.id
+                });
+            })
+            .catch((err: any) => {
+                cb(err);
+            });
     }
 }

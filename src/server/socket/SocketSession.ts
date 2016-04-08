@@ -44,7 +44,7 @@ export class SocketSession {
         }
         return ack({
             answer: answer,
-            context: context
+            context: context || []
         });
     }
 
