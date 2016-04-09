@@ -19,7 +19,11 @@ export class CommandDispatcher {
     public executeCommand(name: string, payload: any, socketService: SocketSession, callback:CommandCallback) {
         try {
             let command = CommandRegistry.createCommand(name);
-            command.execute(payload, new ExecutionContext(socketService), callback);
+            if (command.canUse(payload)) {
+                command.execute(payload, new ExecutionContext(socketService), callback);
+            } else {
+                throw new Error(`Incorrect payload for command: ${name}`);
+            }
         } catch (error) {
             return callback(error);
         }

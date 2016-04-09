@@ -7,14 +7,19 @@ import {AnswerContext} from "../../common/AnswerContext";
 import {basename} from "path";
 import {SourceLocation, Registers} from "../../common/Debugger";
 import * as dbgmits from "asmimproved-dbgmits";
+import {Project} from "../../common/Project";
+
+interface RunPayload {
+    project:Project
+}
 
 @Command({
     name: 'run'
 })
-export class RunCommand extends AbstractCommand {
+export class RunCommand extends AbstractCommand<RunPayload> {
     private executionContext: ExecutionContext;
 
-    execute(payload:any, executionContext: ExecutionContext, callback: CommandCallback) {
+    execute(payload:RunPayload, executionContext: ExecutionContext, callback: CommandCallback) {
         this.executionContext = executionContext;
         if(executionContext.socketSession.mipsSession) {
             if(executionContext.socketSession.mipsSession.state != "terminated") {
@@ -69,5 +74,11 @@ export class RunCommand extends AbstractCommand {
                 breakpointId: breakpointId
             }, [new AnswerContext("memoryUpdate", memoryBlocks), new AnswerContext("registerUpdate", registers)]);
         });
+    }
+
+    public canUse(payload:any):payload is RunPayload {
+        return typeof payload.project !== 'undefined'
+            && payload.project.files instanceof Array
+            && typeof payload.project.name == 'string';
     }
 }

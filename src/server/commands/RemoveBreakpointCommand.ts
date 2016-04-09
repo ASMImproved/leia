@@ -4,7 +4,7 @@ import {ExecutionContext} from "./../command/ExecutionContext";
 @Command({
     name: 'removeBreakpoint'
 })
-export class RemoveBreakpointCommand extends AbstractCommand {
+export class RemoveBreakpointCommand extends AbstractCommand<number> {
 
     execute(payload:any, executionContext:ExecutionContext, callback:CommandCallback) {
         executionContext.socketSession.mipsSession.removeBreakpoint(payload, (err) => {
@@ -13,5 +13,9 @@ export class RemoveBreakpointCommand extends AbstractCommand {
             }
             callback(null);
         });
+    }
+
+    public canUse(payload:any):payload is number {
+        return typeof payload == 'number';
     }
 }

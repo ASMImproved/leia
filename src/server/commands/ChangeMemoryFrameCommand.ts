@@ -6,7 +6,7 @@ import {AnswerContext} from "./../../common/AnswerContext";
 @Command({
     name: 'changeMemoryFrame'
 })
-export class ChangeMemoryFrameCommand extends AbstractCommand {
+export class ChangeMemoryFrameCommand extends AbstractCommand<MemoryFrame> {
 
     execute(payload: MemoryFrame, executionContext: ExecutionContext, callback:CommandCallback) {
         executionContext.socketSession.memoryFrame = payload;
@@ -23,5 +23,10 @@ export class ChangeMemoryFrameCommand extends AbstractCommand {
         } else {
             callback(null, {}, []);
         }
+    }
+
+    public canUse(payload:any):payload is MemoryFrame {
+        return typeof payload.start == 'number'
+            && typeof payload.length == 'number';
     }
 }

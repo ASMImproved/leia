@@ -9,10 +9,11 @@ export interface CommandCallback {
     (err: any, answer?: any, answerContext?: Array<AnswerContext>): any
 }
 
-export abstract class AbstractCommand {
-    public abstract execute(payload: any, executionContext: ExecutionContext, callback: CommandCallback);
+export abstract class AbstractCommand<Payload> {
+    public abstract execute(payload: Payload, executionContext: ExecutionContext, callback: CommandCallback);
+    public abstract canUse(payload: any): payload is Payload;
 
-    public static isCommand(command: any): command is AbstractCommand {
+    public static isCommand(command: any): command is AbstractCommand<any> {
         return command instanceof AbstractCommand
     }
 }
@@ -28,7 +29,7 @@ export class CommandRegistry {
         CommandRegistry._commands[metaInfo.name] = constructor;
     }
 
-    public static createCommand(name: string): AbstractCommand {
+    public static createCommand(name: string): AbstractCommand<any> {
         let Command = CommandRegistry._commands[name];
         if (!Command) {
             throw new Error(`Could not find command '${name}'`)

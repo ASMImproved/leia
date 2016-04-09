@@ -9,9 +9,8 @@ import * as dbgmits from "asmimproved-dbgmits";
 @Command({
     name: 'step'
 })
-export class StepCommand extends AbstractCommand {
-
-    execute(payload:any, executionContext:ExecutionContext, callback:CommandCallback) {
+export class StepCommand extends AbstractCommand<void> {
+    execute(payload:void, executionContext:ExecutionContext, callback:CommandCallback) {
         if(!executionContext.socketSession.mipsSession) {
             return callback(new Error("No active session"));
         }
@@ -27,6 +26,10 @@ export class StepCommand extends AbstractCommand {
                 }, [new AnswerContext("memoryUpdate", memoryBlocks), new AnswerContext("registerUpdate", registers)]);
             })
         });
+    }
+
+    public canUse(payload:any):payload is void {
+        return true;
     }
 
 }
