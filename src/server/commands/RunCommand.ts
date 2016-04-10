@@ -1,7 +1,7 @@
 /// <reference path="../../../typings/main.d.ts" />
 
 import {AbstractCommand, Command, CommandCallback} from "./../command/Command";
-import {MipsSession} from "./../arch/mips/MipsSession";
+import {MipsSession, MipsSessionState} from "./../arch/mips/MipsSession";
 import {ExecutionContext} from "./../command/ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
 import {basename} from "path";
@@ -22,7 +22,7 @@ export class RunCommand extends AbstractCommand<RunPayload> {
     execute(payload:RunPayload, executionContext: ExecutionContext, callback: CommandCallback) {
         this.executionContext = executionContext;
         if(executionContext.socketSession.mipsSession) {
-            if(executionContext.socketSession.mipsSession.state != "terminated") {
+            if(executionContext.socketSession.mipsSession.state != MipsSessionState.Terminated) {
                 return callback(new Error("Session is already running"));
             } else {
                 executionContext.socketSession.mipsSession.dispose();

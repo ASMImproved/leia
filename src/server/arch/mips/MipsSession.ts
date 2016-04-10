@@ -11,44 +11,54 @@ import {Registers, ISourceLocation} from "../../../common/Debugger";
 import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
 import async = require('async');
 
+export enum MipsSessionState {
+    Init,
+    Compiling,
+    Starting,
+    Broken,
+    Running,
+    Terminated,
+    DebuggerClosed,
+    Error
+}
+
 export class MipsSession extends events.EventEmitter{
     private _mipsProgram: MipsRunner;
-    private _state: string;
+    private _state: MipsSessionState = MipsSessionState.Init;
 
     constructor(private project: Project) {
         super();
-        this._state = "init";
     }
 
     public run(cb) {
-        this._state = "compiling";
+        this._state = MipsSessionState.Compiling;
         let gcc: Gcc = new Gcc(this.project);
         gcc.compile((err, stdout, stderr, dirPath) => {
             if(err) {
-                this._state = "error";
+                this._state = MipsSessionState.Error;
                 return cb(err);
             }
 
-            this._state = "starting";
+            this._state = MipsSessionState.Starting;
             this._mipsProgram = new MipsRunner(path.join(dirPath, "proj.out"));
             this._mipsProgram.run();
             this._mipsProgram.on('debuggerPortReady', () => {
                 this._mipsProgram
                     .connectDebugger()
                     .then(() => {
-                        this._state = "broken";
+                        this._state = MipsSessionState.Broken;
                         console.log("connected debugger");
                         cb();
                     })
                     .catch((error) => {
-                        this._state = "error";
+                        this._state = MipsSessionState.Error;
                         console.error('debugger failed', error);
                         cb(error);
                     });
                 this._mipsProgram.debuggerStartedPromise.then(()=> {
                     let debug = this._mipsProgram.debug;
                     debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
-                        this._state = "broken";
+                        this._state = MipsSessionState.Broken;
                         this.emit("hitBreakpoint", stoppedEvent);
 
                     });
@@ -61,7 +71,7 @@ export class MipsSession extends events.EventEmitter{
                 this.emit('stderr', chunk);
             });
             this._mipsProgram.on('exit', (code: number, signal: string) => {
-                this._state = "terminated";
+                this._state = MipsSessionState.Terminated;
                 this.emit('exit', code, signal);
                 console.log("terminated");
             });
@@ -69,7 +79,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public continue(cb) {
-        if(!(this._state == "broken")) {
+        if(!(this._state == MipsSessionState.Broken)) {
             return cb(new Error("Nothing to continue"));
         }
         this._mipsProgram.debug.resumeInferior()
@@ -84,7 +94,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public step(cb) {
-        if(!(this._state == "broken")) {
+        if(!(this._state == MipsSessionState.Broken)) {
             return cb(new Error("Nothing to continue"));
         }
         let stepFinishedCb = (stoppedEvent: dbgmits.IStepFinishedEvent) => {
@@ -107,12 +117,12 @@ export class MipsSession extends events.EventEmitter{
         return this._mipsProgram;
     }
 
-    public get state(): string {
+    public get state(): MipsSessionState {
         return this._state;
     }
 
     public readMemory(frame: MemoryFrame, cb: (err:any, blocks?: dbgmits.IMemoryBlock[])=>any) : void {
-        if(this._state != "broken" && this._state != "terminated") {
+        if(this._state != MipsSessionState.Broken && this._state != MipsSessionState.Terminated) {
             return cb(new Error("Not in state to read memory"));
         }
         this._mipsProgram.debug.readMemory("0x" + frame.start.toString(16), frame.length)
@@ -124,7 +134,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public readRegisters(cb: (err: any, registers?: Registers) => any) : void {
-        if(this._state != "broken" && this._state != "terminated") {
+        if(this._state != MipsSessionState.Broken && this._state != MipsSessionState.Terminated) {
             return cb(new Error("Not in state to read registers"));
         }
         let registers: Registers = [];
