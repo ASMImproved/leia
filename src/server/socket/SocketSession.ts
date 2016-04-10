@@ -54,7 +54,9 @@ export class SocketSession {
 
     private dispose() {
         console.log('dispose session');
-        this.mipsSession.dispose();
+        if(this.mipsSession) {
+            this.mipsSession.dispose();
+        }
         this.removeCallback(this);
         this.socket.removeAllListeners();
     }
