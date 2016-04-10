@@ -27,6 +27,14 @@ export class SocketSession {
             context: answerContext
         });
     }
+
+    public stopMipsSession(cb: () => void) {
+        this.mipsSession.dispose();
+        process.nextTick(() => {
+            cb();
+        });
+        delete this.mipsSession;
+    }
     
     private processEvent(data, ack) {
         // check data

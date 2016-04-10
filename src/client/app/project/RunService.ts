@@ -69,7 +69,9 @@ export class RunService {
 
     stop() {
         console.log("stop");
-        this.socketService.socket.emit('stop');
+        this.socketService.sendCommand('stop', {}, () => {
+            this.setRunningState(false);
+        });
     }
 
     step() {
