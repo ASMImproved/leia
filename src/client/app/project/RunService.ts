@@ -1,5 +1,5 @@
 import {Injectable, EventEmitter} from "angular2/core";
-import {SocketService} from "./SocketService";
+import {SocketService} from "./socket/SocketService";
 import {Project} from "../../../common/Project";
 import {ProgramStoppedEvent, ISourceLocation} from "../../../common/Debugger";
 
@@ -13,16 +13,16 @@ export class RunService {
     public continued: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private socketService: SocketService) {
-        socketService.socket.on('stdout', (buffer) => {
-            this._stdout += buffer;
+        socketService.subscribeToServerEvent('stdout', (event) => {
+            this._stdout += event.payload;
+        });
+        socketService.subscribeToServerEvent('exit', () => {
+            this.setRunningState(false);
+            console.log('exit');
         });
         socketService.socket.on('gcc-error', (err) => {
             this._gccErr = err.toString();
             console.log(this._gccErr);
-        });
-        socketService.socket.on('exit', () => {
-            this.setRunningState(false);
-            console.log('exit');
         });
         socketService.socket.on('programStopped', (programStoppedEvent: ProgramStoppedEvent) => {
             console.log("programStopped");
@@ -51,7 +51,9 @@ export class RunService {
         this._stdout = "";
         this._gccErr = "";
         console.log("run %s", project);
-        this.socketService.socket.emit('run', project, (error: string) => {
+        this.socketService.sendCommand('run', {
+            project: project
+        }, (error: string) => {
             if (error) {
                 return console.error(error);
             }
@@ -67,16 +69,25 @@ export class RunService {
 
     stop() {
         console.log("stop");
-        this.socketService.socket.emit('stop');
+        this.socketService.sendCommand('stop', {}, () => {
+            this.setRunningState(false);
+        });
     }
 
     step() {
         console.log("step");
-        this.socketService.socket.emit('step');
+        this.socketService.sendCommand('step', {}, (err, answerPayload: ProgramStoppedEvent) => {
+            this.stopped.emit(answerPayload.location);
+        });
     }
 
     continue() {
         console.log("continue");
-        this.socketService.socket.emit('continue');
+        this.socketService.sendCommand('continue', {}, (err) => {
+            if(err) {
+                console.error(err);
+            }
+            console.log('continued');
+        });
     }
 }

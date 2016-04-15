@@ -100,12 +100,16 @@ gulp.task('typescript-client-watch', function() {
 
 gulp.task('typescript-server', function() {
 	return gulp.src(['src/server/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
+		.pipe(sourcemaps.init())
 		.pipe(ts({
 			target: "es6",
 			module: "commonjs",
-			moduleResolution: "node"
+			moduleResolution: "node",
+			experimentalDecorators: true,
+			emitDecoratorMetadata: true
 		}))
 		.on('error', failOnSingleBuild)
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist'));
 });
 gulp.task('typescript-server-watch', function() {
@@ -203,3 +207,10 @@ gulp.task('karma-watch', function(done) {
 		singleRun: false
 	}, done).start()
 });
+
+gulp.task('api-tests', function (done) {
+	new Karma({
+		singleRun: true,
+		
+	}, done).start();
+})

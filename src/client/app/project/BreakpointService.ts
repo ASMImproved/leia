@@ -1,5 +1,5 @@
 import {Output, EventEmitter, Injectable} from 'angular2/core';
-import {SocketService} from "./SocketService";
+import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";
 import {Breakpoint, SourceLocation} from "../../../common/Debugger"
 
@@ -55,18 +55,16 @@ export class BreakpointService {
         return new Promise<Breakpoint>(
             (resolve:(breakpoint:Breakpoint)=>void, reject:(error:any)=>void) => {
                 console.log("sending breakpoint " + breakpoint.location.locationString);
-                this.socketService.socket
-                    .emit('addBreakpoint', breakpoint.location, (breakpointSetResult:Breakpoint, error:any) => {
-                        if (error) {
-                            reject(error);
-                            return console.log(error);
-                        }
-                        breakpoint.pending = breakpointSetResult.pending !== undefined;
-                        breakpoint.id = breakpointSetResult.id;
-                        this.breakpoints[breakpoint.location.locationString] = breakpoint;
-                        this.breakpointAdded.emit(breakpoint);
-                        resolve(breakpoint);
-                    });
+                this.socketService.sendCommand("addBreakpoint", breakpoint.location, (err, breakpointSetResult:Breakpoint) => {
+                    if(err) {
+                        return reject(err);
+                    }
+                    breakpoint.pending = breakpointSetResult.pending !== undefined;
+                    breakpoint.id = breakpointSetResult.id;
+                    this.breakpoints[breakpoint.location.locationString] = breakpoint;
+                    this.breakpointAdded.emit(breakpoint);
+                    resolve(breakpoint);
+                });
             }
         );
     };
@@ -80,7 +78,11 @@ export class BreakpointService {
 
         if (breakpoint.id && this.runService.running) {
             console.log("sending remove request for id " + breakpoint.id);
-            this.socketService.socket.emit('removeBreakpoint', breakpoint.id);
+            this.socketService.sendCommand('removeBreakpoint', breakpoint.id, (err) => {
+                if (err) {
+                    return console.log(err)
+                }
+            });
         }
 
         console.log("removing breakpoint from client's breakpoints");
