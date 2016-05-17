@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/main.d.ts" />
+/// <reference path="../../../../typings/index.d.ts" />
 
 import {Project} from "../../../common/Project";
 import {Gcc} from "../../gcc/Gcc";

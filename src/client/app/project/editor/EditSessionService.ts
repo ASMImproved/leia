@@ -1,4 +1,4 @@
-/// <reference path="../../../../../typings/main/ambient/ace/index.d.ts" />
+/// <reference path="../../../../../typings/globals/ace/index.d.ts" />
 
 import {Injectable, EventEmitter} from 'angular2/core';
 import IEditSession = AceAjax.IEditSession;

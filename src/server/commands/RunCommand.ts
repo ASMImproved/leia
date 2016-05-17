@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/main.d.ts" />
+/// <reference path="../../../typings/index.d.ts" />
 
 import {AbstractCommand, Command, CommandCallback} from "./../command/Command";
 import {MipsSession, MipsSessionState} from "./../arch/mips/MipsSession";
