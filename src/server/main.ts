@@ -1,6 +1,6 @@
 /// <reference path="../../typings/index.d.ts" />
 require('source-map-support').install();
-import express = require('express')
+import * as express from "express";
 import path = require('path');
 import expressSession = require('express-session');
 import expressSocketioSession = require('express-socket.io-session');

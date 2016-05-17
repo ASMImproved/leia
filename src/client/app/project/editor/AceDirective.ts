@@ -1,4 +1,4 @@
-/// <reference path="../../../../../typings/main/ambient/ace/index.d.ts" />
+/// <reference path="../../../../../typings/globals/ace/index.d.ts" />
 
 import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
 import {BreakpointService} from "./../BreakpointService";

@@ -1,4 +1,4 @@
-/// <reference path="../../../../../typings/main/ambient/ace/index.d.ts" />
+/// <reference path="../../../../../typings/globals/ace/index.d.ts" />
 import {Component, Input, OnInit} from 'angular2/core';
 import {AceDirective} from './AceDirective'
 import {File} from '../../../../common/File'
