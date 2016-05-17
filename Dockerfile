@@ -2,7 +2,8 @@ FROM ubuntu:14.04.4
 
 ADD ./emdebian-toolchain-archive.key .
 
-RUN apt-get install -y curl && \
+RUN apt-get update && \
+    apt-get install -y curl && \
     curl -fsL http://de.archive.ubuntu.com/ubuntu/pool/universe/g/gmp4/libgmp3c2_4.3.2+dfsg-2ubuntu1_amd64.deb -o libgmp3c2_4.3.2+dfsg-1_amd64.deb && \
     dpkg -i /libgmp3c2_4.3.2+dfsg-1_amd64.deb && \
     echo "deb http://www.emdebian.org/debian stable main" >> /etc/apt/sources.list && \
@@ -26,7 +27,7 @@ RUN apt-get install -y curl && \
 
 RUN mkdir /lea
 
-RUN npm install -g tsd
+#RUN npm install -g tsd
 RUN npm install -g gulp-cli
 
 WORKDIR /lea
@@ -34,7 +35,7 @@ WORKDIR /lea
 ADD package.json ./
 RUN npm install
 
-RUN npm install -g typings
+RUN npm install -g typings@1.0.3
 
 RUN mkdir -p dist/public/vendor/ && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/ace.js -o dist/public/vendor/ace.js && \

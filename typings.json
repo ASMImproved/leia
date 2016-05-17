@@ -5,14 +5,14 @@
     "serve-static": "file:src/typings/serve-static.d.ts"
   },
   "devDependencies": {},
-  "ambientDependencies": {
-    "ace": "github:DefinitelyTyped/DefinitelyTyped/ace/ace.d.ts#7de6c3dd94feaeb21f20054b9f30d5dabc5efabd",
-    "async": "github:DefinitelyTyped/DefinitelyTyped/async/async.d.ts#4de74cb527395c13ba20b438c3a7a419ad931f1c",
-    "bunyan": "github:DefinitelyTyped/DefinitelyTyped/bunyan/bunyan.d.ts#44db8b563316354d4a6c7a418fe86d377e6f6142",
-    "express": "github:DefinitelyTyped/DefinitelyTyped/express/express.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4",
-    "express-session": "github:DefinitelyTyped/DefinitelyTyped/express-session/express-session.d.ts#3ca0e0306a56b3dff5e6999dbd1627bf30201cfc",
-    "jasmine": "github:DefinitelyTyped/DefinitelyTyped/jasmine/jasmine.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4",
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#366b936e62a6244a15f011e0ee0559b903d1dd65",
-    "socket.io": "github:DefinitelyTyped/DefinitelyTyped/socket.io/socket.io.d.ts#4128f7af06c355e3526b7cf7cbb85e2e43bff167"
+  "globalDependencies": {
+    "ace": "registry:dt/ace#0.0.0+20160317120654",
+    "async": "registry:dt/async#1.4.2+20160501155344",
+    "bunyan": "registry:dt/bunyan#0.0.0+20160412155112",
+    "express": "registry:dt/express#4.0.0+20160317120654",
+    "express-session": "registry:dt/express-session#0.0.0+20160331200931",
+    "jasmine": "registry:dt/jasmine#2.2.0+20160505161446",
+    "node": "registry:dt/node#6.0.0+20160514165920",
+    "socket.io": "registry:dt/socket.io#1.4.4+20160317120654"
   }
 }

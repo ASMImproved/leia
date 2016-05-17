@@ -1,4 +1,4 @@
-/// <reference path="../../../../typings/browser/ambient/jasmine/index.d.ts" />
+/// <reference path="../../../../typings/globals/jasmine/index.d.ts" />
 import {ProjectService} from './ProjectService'
 import {File} from "../../../common/File";
 import {Project} from "../../../common/Project";

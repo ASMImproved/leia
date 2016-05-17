@@ -1,4 +1,4 @@
-/// <reference path="../../../../../typings/browser/ambient/jasmine/index.d.ts" />
+/// <reference path="../../../../../typings/globals/jasmine/index.d.ts" />
 import {it, describe, expect, beforeEach} from 'angular2/testing'
 import {RegisterPipe} from "./RegisterPipe";
 
