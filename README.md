@@ -14,7 +14,7 @@ This project is still in development. Use with care!
 
 Requires: Docker
 
-Run ` docker run -p 80:80 asmimproved/lea`
+Run ` docker run -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock asmimproved/lea`
 
 Open `http://[docker-machine]` in your browser
 
