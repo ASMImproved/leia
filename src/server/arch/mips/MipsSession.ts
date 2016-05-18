@@ -6,6 +6,7 @@ let tar = require('tar');
 let fstream = require('fstream');
 var temp = require('temp');
 import fs = require('fs');
+import http = require('http');
 import util = require('util');
 import {MipsRunner} from "./MipsRunner";
 import path = require('path');
@@ -36,6 +37,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public run(cb) {
+        this._state = MipsSessionState.Compiling;
         this.createContainer((err, containerId) => {
             if(err) {
                 return cb(err);
@@ -50,15 +52,40 @@ export class MipsSession extends events.EventEmitter{
                     if(err) {
                         return cb(err);
                     }
-                    console.log('compilation successfull');
-                    cb();
+                    this._state = MipsSessionState.Starting;
+                    this.startQemu(containerId, (err, socket) => {
+                        if(err) {
+                            return cb(err);
+                        }
+                        socket.on('close', () => {
+                            this._state = MipsSessionState.Terminated;
+                            this.inspectContainer(containerId, (exitCode) => {
+                                if(err) {
+                                    return this.emit('exit', null, null);
+                                }
+                                this.emit('exit', exitCode);
+                                this.removeContainer(containerId, (err) => {
+                                    if(err) {
+                                        console.error(`Failed to delete container ${containerId}`, err);
+                                    }
+                                });
+                            });
+                        });
+                        socket.setEncoding('ascii');
+                        socket.on('data', (chunk) => {
+                            this.emit('stdout', chunk);
+                        });
+                        /*
+                        this._mipsProgram.on('stderr', (chunk) => {
+                            this.emit('stderr', chunk);
+                        });
+                        */
+                        cb();
+                    });
                 })
             });
         });
         /*
-        this._state = MipsSessionState.Compiling;
-        this._state = MipsSessionState.Starting;
-
         this._mipsProgram.on('debuggerPortReady', () => {
             this._mipsProgram
                 .connectDebugger()
@@ -80,17 +107,6 @@ export class MipsSession extends events.EventEmitter{
 
                 });
             });
-        });
-        this._mipsProgram.on('stdout', (chunk) => {
-            this.emit('stdout', chunk);
-        });
-        this._mipsProgram.on('stderr', (chunk) => {
-            this.emit('stderr', chunk);
-        });
-        this._mipsProgram.on('exit', (code: number, signal: string) => {
-            this._state = MipsSessionState.Terminated;
-            this.emit('exit', code, signal);
-            console.log("terminated");
         });
         */
     }
@@ -275,6 +291,90 @@ export class MipsSession extends events.EventEmitter{
                     }
                 });
             });
+        });
+    }
+
+    private startQemu(containerId, cb) {
+        request.post({
+            url: `http://unix:/var/run/docker.sock:/containers/${containerId}/exec`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {
+                "AttachStdin": true,
+                "AttachStdout": true,
+                "AttachStderr": true,
+                "Tty": false,
+                "Cmd": [
+                    "qemu-mips",
+                    /*"-g",
+                    String(567),*/
+                    "/out/proj.out"
+                ]
+            },
+            json: true
+        }, (err, response, body) => {
+            if (err) {
+                return cb(err);
+            }
+            if (response.statusCode !== 201) {
+                return cb(new Error(`Docker create exec return error status code ${response.statusCode} ${body}`));
+            }
+            let execId = body.Id;
+            let execReqBody = JSON.stringify({ });
+            let execReq = http.request({
+                path: `/exec/${execId}/start?stream=1&stdout=1&stderr=1`,
+                method: 'POST',
+                socketPath: '/var/run/docker.sock',
+                headers: {
+                    'Content-Length': execReqBody.length,
+                    'Connection': 'Upgrade',
+                    'Content-Type': 'application/json',
+                    'Upgrade': 'tcp'
+                }
+            });
+            execReq.write(execReqBody);
+            execReq.end();
+            execReq.on('response', (response) => {
+                // if this event is triggered it didn't upgrade the connection, so it failed
+                return cb(new Error(`Docker exec start failed with status code ${response.statusCode}`));
+            });
+            execReq.on('upgrade', (res, socket, upgradeHead) => {
+                // it should require to analyse the input stream but it return just plain text
+                return cb(null, socket);
+            });
+        });
+
+    }
+
+    private inspectContainer(containerId, cb) {
+        request.get({
+            url: `http://unix:/var/run/docker.sock:/containers/${containerId}/json`,
+            json: true
+        }, (err, response, body) => {
+            if(err) {
+                return cb(err);
+            }
+            if(response.statusCode !== 200) {
+                return cb(new Error(`Docker inspect return error status code ${response.statusCode} ${body}`));
+            }
+            return cb(body.State.ExitCode);
+        });
+    }
+
+    private removeContainer(containerId, cb) {
+        request({
+            method: "DELETE",
+            url: `http://unix:/var/run/docker.sock:/containers/${containerId}?v=1&force=1`,
+            json: true
+        }, (err, response, body) => {
+            if(err) {
+                return cb(err);
+            }
+            if(response.statusCode !== 204) {
+                return cb(new Error(`Docker remove return error status code ${response.statusCode} ${body}`));
+            }
+            return cb(null);
         });
     }
 

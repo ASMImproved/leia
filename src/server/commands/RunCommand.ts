@@ -34,6 +34,7 @@ export class RunCommand extends AbstractCommand<RunPayload> {
             if(err) {
                 return callback(err);
             }
+            /*
             mips.mipsProgram.debuggerStartedPromise.then(() => {
                 executionContext.socketSession.mipsSession.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {
                     if(err) {
@@ -44,6 +45,7 @@ export class RunCommand extends AbstractCommand<RunPayload> {
                     }, [new AnswerContext("memoryUpdate", blocks)]);
                 });
             });
+            */
         });
         mips.on('stdout', (chunk) => {
             console.log(chunk);
