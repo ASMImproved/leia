@@ -1,7 +1,12 @@
 /// <reference path="../../../../typings/index.d.ts" />
 
 import {Project} from "../../../common/Project";
-import {Gcc} from "../../gcc/Gcc";
+import * as request from "request";
+let tar = require('tar');
+let fstream = require('fstream');
+var temp = require('temp');
+import fs = require('fs');
+import util = require('util');
 import {MipsRunner} from "./MipsRunner";
 import path = require('path');
 import events = require('events');
@@ -31,49 +36,244 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public run(cb) {
-        this._state = MipsSessionState.Compiling;
-        let gcc: Gcc = new Gcc(this.project);
-        gcc.compile((err, stdout, stderr, dirPath) => {
+        this.createContainer((err, containerId) => {
             if(err) {
-                this._state = MipsSessionState.Error;
                 return cb(err);
             }
+            this.copyProjectIntoContainer(containerId, (err, files) => {
+                if(err) {
+                    return cb(err);
+                }
+                console.log('container id of successfully created container with project', containerId);
 
-            this._state = MipsSessionState.Starting;
-            this._mipsProgram = new MipsRunner(path.join(dirPath, "proj.out"));
-            this._mipsProgram.run();
-            this._mipsProgram.on('debuggerPortReady', () => {
-                this._mipsProgram
-                    .connectDebugger()
-                    .then(() => {
-                        this._state = MipsSessionState.Broken;
-                        console.log("connected debugger");
-                        cb();
-                    })
-                    .catch((error) => {
-                        this._state = MipsSessionState.Error;
-                        console.error('debugger failed', error);
-                        cb(error);
-                    });
-                this._mipsProgram.debuggerStartedPromise.then(()=> {
-                    let debug = this._mipsProgram.debug;
-                    debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
-                        this._state = MipsSessionState.Broken;
-                        this.emit("hitBreakpoint", stoppedEvent);
+                this.compile(containerId, files, (err) => {
+                    if(err) {
+                        return cb(err);
+                    }
+                    console.log('compilation successfull');
+                    cb();
+                })
+            });
+        });
+        /*
+        this._state = MipsSessionState.Compiling;
+        this._state = MipsSessionState.Starting;
 
-                    });
+        this._mipsProgram.on('debuggerPortReady', () => {
+            this._mipsProgram
+                .connectDebugger()
+                .then(() => {
+                    this._state = MipsSessionState.Broken;
+                    console.log("connected debugger");
+                    cb();
+                })
+                .catch((error) => {
+                    this._state = MipsSessionState.Error;
+                    console.error('debugger failed', error);
+                    cb(error);
+                });
+            this._mipsProgram.debuggerStartedPromise.then(()=> {
+                let debug = this._mipsProgram.debug;
+                debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
+                    this._state = MipsSessionState.Broken;
+                    this.emit("hitBreakpoint", stoppedEvent);
+
                 });
             });
-            this._mipsProgram.on('stdout', (chunk) => {
-                this.emit('stdout', chunk);
+        });
+        this._mipsProgram.on('stdout', (chunk) => {
+            this.emit('stdout', chunk);
+        });
+        this._mipsProgram.on('stderr', (chunk) => {
+            this.emit('stderr', chunk);
+        });
+        this._mipsProgram.on('exit', (code: number, signal: string) => {
+            this._state = MipsSessionState.Terminated;
+            this.emit('exit', code, signal);
+            console.log("terminated");
+        });
+        */
+    }
+
+    private createContainer(cb) {
+        request.post({
+            url: 'http://unix:/var/run/docker.sock:/containers/create',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {
+                "Tty": false,
+                "OpenStdin": true,
+                "StdinOnce": false,
+                "Image": "mips",
+                "Labels": {
+                    "com.github.asmimproved.leia": "true"
+                },
+                "NetworkDisabled": true
+            },
+            json: true
+        }, (err, response, body) => {
+            if(err) {
+                return cb(err);
+            }
+            if(response.statusCode !== 201) {
+                return cb(new Error(`Docker create returned error status code: ${response.statusCode} ${body}`));
+            }
+            if(body.Warnings) {
+                console.warn('Docker create returned warnings:', body.Warnings);
+            }
+            let containerId = body.Id;
+            request.post({
+                url: `http://unix:/var/run/docker.sock:/containers/${containerId}/start`
+            }, (err, response, body) => {
+                if(err) {
+                    return cb(err);
+                }
+                if(response.statusCode !== 204) {
+                    return cb(new Error(`Docker start return error status code ${response.statusCode} ${body}`));
+                }
+                return cb(null, containerId);
             });
-            this._mipsProgram.on('stderr', (chunk) => {
-                this.emit('stderr', chunk);
+        });
+    }
+
+    private copyProjectIntoContainer(containerId, cb) {
+        let lastErr;
+        function cbWithError(err) {
+            if(!lastErr) {
+                lastErr = err;
+                return cb(err);
+            }
+        }
+        function cbWithSuccess(files) {
+            // while docker might return success, there might have been something wrong on the way
+            if(lastErr) {
+                console.warn('Docker archive returned success while the following error has happened before: ', lastErr);
+            }
+            cb(null, files);
+        }
+
+        temp.mkdir('', (err, tempDirPath) => {
+            if(err) {
+                cbWithError(err);
+            }
+            let srcDirPath: string = path.join(tempDirPath, 'src');
+            fs.mkdir(srcDirPath, (err) => {
+                if(err) {
+                    return cbWithError(err);
+                }
+                async.parallel(this.project.files.map((file) => {
+                    return function (cb) {
+                        var filepath:string = path.join(srcDirPath, file.name);
+                        fs.writeFile(filepath, file.content, (err:NodeJS.ErrnoException) => {
+                            cb(err, file.name);
+                        });
+                    }
+                }), (err, result:Array<string>) => {
+                    if (err) {
+                        return cbWithError(err);
+                    }
+
+                    let packer = tar.Pack({noProprietary: true});
+                    packer.on('error', (err) => {
+                        cbWithError(err);
+                    });
+
+                    let dockerRequestStream = request.put({
+                        url: `http://unix:/var/run/docker.sock:/containers/${containerId}/archive?path=/import`,
+                        headers: {
+                            'Content-Type': 'application/x-tar'
+                        }
+                    }, (err, response, body) => {
+                        if (err) {
+                            return cbWithError(err);
+                        }
+                        if (response.statusCode !== 200) {
+                            return cbWithError(new Error(`Failed to extract in container with status code ${response.statusCode} ${body}`));
+                        }
+                        let files = result.map((file) => {
+                            return path.join('/import/src', file);
+                        });
+                        return cbWithSuccess(files);
+                    });
+
+                    let projectFileStream = fstream.Reader({path: srcDirPath, type: "Directory"})
+                        .on('error', (err) => {
+                            cbWithError(err);
+                        })
+                        .pipe(packer)
+                        .pipe(dockerRequestStream)
+                });
             });
-            this._mipsProgram.on('exit', (code: number, signal: string) => {
-                this._state = MipsSessionState.Terminated;
-                this.emit('exit', code, signal);
-                console.log("terminated");
+        });
+    }
+
+    private compile(containerId, files, cb) {
+        request.post({
+            url: `http://unix:/var/run/docker.sock:/containers/${containerId}/exec`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: {
+                "AttachStdin": false,
+                "AttachStdout": true,
+                "AttachStderr": true,
+                "Tty": false,
+                "Cmd": [
+                    "mips-linux-gnu-gcc",
+                    "-g",
+                    "-static",
+                    "-mips32r5",
+                    "-o",
+                    "/out/proj.out"
+                ].concat(files)
+            },
+            json: true
+        }, (err, response, body) => {
+            if(err) {
+                return cb(err);
+            }
+            if(response.statusCode !== 201) {
+                return cb(new Error(`Docker create exec return error status code ${response.statusCode} ${body}`));
+            }
+            let execId = body.Id;
+            let gccCommand = util.format("mips-linux-gnu-gcc -g -static -mips32r5 -o %s %s", '/out/proj.out', files.join(' '));
+            console.log('run gcc "%s"', gccCommand);
+            let execRequestBody = JSON.stringify({
+                
+            });
+            request.post({
+                url: `http://unix:/var/run/docker.sock:/exec/${execId}/start`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': execRequestBody.length
+                },
+                body: execRequestBody
+            }, (err, response, body) => {
+                if(err) {
+                    return cb(err);
+                }
+                if(response.statusCode !== 200) {
+                    return cb(new Error(`Docker start exec return an error status code ${response.statusCode} ${body}`));
+                }
+                let stdout = body, stderr = '';
+                request.get({
+                    url: `http://unix:/var/run/docker.sock:/exec/${execId}/json`,
+                    json: true
+                }, (err, response, body) => {
+                    if(err) {
+                        return cb(err);
+                    }
+                    if(response.statusCode !== 200) {
+                        return cb(new Error(`Docker exec inspect return error status code ${response.statusCode} ${body}`));
+                    }
+                    if(body.ExitCode != 0) {
+                        console.log(body);
+                        return cb(new Error(`Gcc return non-zero exit code ${body.ExitCode} ${stdout}`));
+                    } else {
+                        return cb(null, stdout, stderr);
+                    }
+                });
             });
         });
     }
