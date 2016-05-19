@@ -1,14 +1,13 @@
 /// <reference path="../../../../typings/index.d.ts" />
 
 import {Project} from "../../../common/Project";
-import * as request from "request";
 let tar = require('tar');
 let fstream = require('fstream');
 var temp = require('temp');
 import fs = require('fs');
-import http = require('http');
 import util = require('util');
 import {MipsRunner} from "./MipsRunner";
+import {DockerClient} from "../../docker/DockerClient"
 import path = require('path');
 import events = require('events');
 import {MemoryFrame} from "../../../common/MemoryFrame";
@@ -31,9 +30,13 @@ export enum MipsSessionState {
 export class MipsSession extends events.EventEmitter{
     private _mipsProgram: MipsRunner;
     private _state: MipsSessionState = MipsSessionState.Init;
+    private docker: DockerClient;
 
     constructor(private project: Project) {
         super();
+        this.docker = new DockerClient({
+            unixSocketPath: '/var/run/docker.sock'
+        });
     }
 
     public run(cb) {
@@ -46,25 +49,23 @@ export class MipsSession extends events.EventEmitter{
                 if(err) {
                     return cb(err);
                 }
-                console.log('container id of successfully created container with project', containerId);
-
                 this.compile(containerId, files, (err) => {
                     if(err) {
                         return cb(err);
                     }
                     this._state = MipsSessionState.Starting;
-                    this.startQemu(containerId, (err, socket) => {
+                    this.startQemu(containerId, (err, socket, execId) => {
                         if(err) {
                             return cb(err);
                         }
                         socket.on('close', () => {
                             this._state = MipsSessionState.Terminated;
-                            this.inspectContainer(containerId, (exitCode) => {
+                            this.getQemuExitCode(execId, (err, exitCode) => {
                                 if(err) {
                                     return this.emit('exit', null, null);
                                 }
                                 this.emit('exit', exitCode);
-                                this.removeContainer(containerId, (err) => {
+                                this.docker.removeContainer(containerId, (err) => {
                                     if(err) {
                                         console.error(`Failed to delete container ${containerId}`, err);
                                     }
@@ -112,41 +113,22 @@ export class MipsSession extends events.EventEmitter{
     }
 
     private createContainer(cb) {
-        request.post({
-            url: 'http://unix:/var/run/docker.sock:/containers/create',
-            headers: {
-                'Content-Type': 'application/json'
+        this.docker.createContainer({
+            "Tty": false,
+            "OpenStdin": true,
+            "StdinOnce": false,
+            "Image": "mips",
+            "Labels": {
+                "com.github.asmimproved.leia": "true"
             },
-            body: {
-                "Tty": false,
-                "OpenStdin": true,
-                "StdinOnce": false,
-                "Image": "mips",
-                "Labels": {
-                    "com.github.asmimproved.leia": "true"
-                },
-                "NetworkDisabled": true
-            },
-            json: true
-        }, (err, response, body) => {
+            "NetworkDisabled": true
+        }, (err, containerId) => {
             if(err) {
                 return cb(err);
             }
-            if(response.statusCode !== 201) {
-                return cb(new Error(`Docker create returned error status code: ${response.statusCode} ${body}`));
-            }
-            if(body.Warnings) {
-                console.warn('Docker create returned warnings:', body.Warnings);
-            }
-            let containerId = body.Id;
-            request.post({
-                url: `http://unix:/var/run/docker.sock:/containers/${containerId}/start`
-            }, (err, response, body) => {
+            this.docker.startContainer(containerId, (err) => {
                 if(err) {
                     return cb(err);
-                }
-                if(response.statusCode !== 204) {
-                    return cb(new Error(`Docker start return error status code ${response.statusCode} ${body}`));
                 }
                 return cb(null, containerId);
             });
@@ -154,6 +136,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     private copyProjectIntoContainer(containerId, cb) {
+        // multiple error might be fired, however the callback function should only be called once
         let lastErr;
         function cbWithError(err) {
             if(!lastErr) {
@@ -195,186 +178,70 @@ export class MipsSession extends events.EventEmitter{
                         cbWithError(err);
                     });
 
-                    let dockerRequestStream = request.put({
-                        url: `http://unix:/var/run/docker.sock:/containers/${containerId}/archive?path=/import`,
-                        headers: {
-                            'Content-Type': 'application/x-tar'
-                        }
-                    }, (err, response, body) => {
-                        if (err) {
+                    let tarProjectFileStream = fstream.Reader({path: srcDirPath, type: "Directory"})
+                        .on('error', (err) => {
+                            cbWithError(err);
+                        })
+                        .pipe(packer);
+
+                    this.docker.copyFilesFromStreamIntoContainer(containerId, '/import/', tarProjectFileStream, (err) => {
+                        if(err) {
                             return cbWithError(err);
-                        }
-                        if (response.statusCode !== 200) {
-                            return cbWithError(new Error(`Failed to extract in container with status code ${response.statusCode} ${body}`));
                         }
                         let files = result.map((file) => {
                             return path.join('/import/src', file);
                         });
-                        return cbWithSuccess(files);
+                        cbWithSuccess(files);
                     });
-
-                    let projectFileStream = fstream.Reader({path: srcDirPath, type: "Directory"})
-                        .on('error', (err) => {
-                            cbWithError(err);
-                        })
-                        .pipe(packer)
-                        .pipe(dockerRequestStream)
                 });
             });
         });
     }
 
     private compile(containerId, files, cb) {
-        request.post({
-            url: `http://unix:/var/run/docker.sock:/containers/${containerId}/exec`,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: {
-                "AttachStdin": false,
-                "AttachStdout": true,
-                "AttachStderr": true,
-                "Tty": false,
-                "Cmd": [
-                    "mips-linux-gnu-gcc",
-                    "-g",
-                    "-static",
-                    "-mips32r5",
-                    "-o",
-                    "/out/proj.out"
-                ].concat(files)
-            },
-            json: true
-        }, (err, response, body) => {
-            if(err) {
-                return cb(err);
+        this.docker.execAsync(containerId, {
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "Cmd": [
+                "mips-linux-gnu-gcc",
+                "-g",
+                "-static",
+                "-mips32r5",
+                "-o",
+                "/out/proj.out"
+            ].concat(files)
+        }, (err, inspect, stdout, stderr) => {
+            if(inspect.ExitCode != 0) {
+                return cb(new Error(`Gcc returned non-zero exit code ${inspect.ExitCode} ${stdout}`));
+            } else {
+                return cb(null, stdout, stderr);
             }
-            if(response.statusCode !== 201) {
-                return cb(new Error(`Docker create exec return error status code ${response.statusCode} ${body}`));
-            }
-            let execId = body.Id;
-            let gccCommand = util.format("mips-linux-gnu-gcc -g -static -mips32r5 -o %s %s", '/out/proj.out', files.join(' '));
-            console.log('run gcc "%s"', gccCommand);
-            let execRequestBody = JSON.stringify({
-                
-            });
-            request.post({
-                url: `http://unix:/var/run/docker.sock:/exec/${execId}/start`,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': execRequestBody.length
-                },
-                body: execRequestBody
-            }, (err, response, body) => {
-                if(err) {
-                    return cb(err);
-                }
-                if(response.statusCode !== 200) {
-                    return cb(new Error(`Docker start exec return an error status code ${response.statusCode} ${body}`));
-                }
-                let stdout = body, stderr = '';
-                request.get({
-                    url: `http://unix:/var/run/docker.sock:/exec/${execId}/json`,
-                    json: true
-                }, (err, response, body) => {
-                    if(err) {
-                        return cb(err);
-                    }
-                    if(response.statusCode !== 200) {
-                        return cb(new Error(`Docker exec inspect return error status code ${response.statusCode} ${body}`));
-                    }
-                    if(body.ExitCode != 0) {
-                        console.log(body);
-                        return cb(new Error(`Gcc return non-zero exit code ${body.ExitCode} ${stdout}`));
-                    } else {
-                        return cb(null, stdout, stderr);
-                    }
-                });
-            });
         });
     }
 
     private startQemu(containerId, cb) {
-        request.post({
-            url: `http://unix:/var/run/docker.sock:/containers/${containerId}/exec`,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: {
-                "AttachStdin": true,
-                "AttachStdout": true,
-                "AttachStderr": true,
-                "Tty": false,
-                "Cmd": [
-                    "qemu-mips",
-                    /*"-g",
-                    String(567),*/
-                    "/out/proj.out"
-                ]
-            },
-            json: true
-        }, (err, response, body) => {
-            if (err) {
-                return cb(err);
-            }
-            if (response.statusCode !== 201) {
-                return cb(new Error(`Docker create exec return error status code ${response.statusCode} ${body}`));
-            }
-            let execId = body.Id;
-            let execReqBody = JSON.stringify({ });
-            let execReq = http.request({
-                path: `/exec/${execId}/start?stream=1&stdout=1&stderr=1`,
-                method: 'POST',
-                socketPath: '/var/run/docker.sock',
-                headers: {
-                    'Content-Length': execReqBody.length,
-                    'Connection': 'Upgrade',
-                    'Content-Type': 'application/json',
-                    'Upgrade': 'tcp'
-                }
-            });
-            execReq.write(execReqBody);
-            execReq.end();
-            execReq.on('response', (response) => {
-                // if this event is triggered it didn't upgrade the connection, so it failed
-                return cb(new Error(`Docker exec start failed with status code ${response.statusCode}`));
-            });
-            execReq.on('upgrade', (res, socket, upgradeHead) => {
-                // it should require to analyse the input stream but it return just plain text
-                return cb(null, socket);
-            });
-        });
-
+        this.docker.execAsStream(containerId, {
+            "AttachStdin": true,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "Cmd": [
+                "qemu-mips",
+                /*"-g",
+                 String(567),*/
+                "/out/proj.out"
+            ]
+        }, null, cb);
     }
 
-    private inspectContainer(containerId, cb) {
-        request.get({
-            url: `http://unix:/var/run/docker.sock:/containers/${containerId}/json`,
-            json: true
-        }, (err, response, body) => {
+    private getQemuExitCode(execId, cb) {
+        this.docker.inspectExec(execId, (err, inspect) => {
             if(err) {
                 return cb(err);
             }
-            if(response.statusCode !== 200) {
-                return cb(new Error(`Docker inspect return error status code ${response.statusCode} ${body}`));
-            }
-            return cb(body.State.ExitCode);
-        });
-    }
-
-    private removeContainer(containerId, cb) {
-        request({
-            method: "DELETE",
-            url: `http://unix:/var/run/docker.sock:/containers/${containerId}?v=1&force=1`,
-            json: true
-        }, (err, response, body) => {
-            if(err) {
-                return cb(err);
-            }
-            if(response.statusCode !== 204) {
-                return cb(new Error(`Docker remove return error status code ${response.statusCode} ${body}`));
-            }
-            return cb(null);
+            return cb(null, inspect.ExitCode);
         });
     }
 
@@ -410,7 +277,7 @@ export class MipsSession extends events.EventEmitter{
 
     public dispose() {
         this.removeAllListeners();
-        this._mipsProgram.dispose();
+        // todo: remove container
     }
 
     public get mipsProgram() {
