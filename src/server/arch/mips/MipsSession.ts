@@ -293,10 +293,12 @@ export class MipsSession extends events.EventEmitter{
         }
         this._debugger.resumeInferior()
             .then(() => {
+                this._state = MipsSessionState.Running;
                 console.log('resumed');
                 cb();
             })
             .catch((err) => {
+                this._state = MipsSessionState.Error;
                 console.error('failed to resume', err);
                 cb(err);
             });
