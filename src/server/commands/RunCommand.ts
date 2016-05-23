@@ -71,10 +71,7 @@ export class RunCommand extends AbstractCommand<RunPayload> {
             this.sendProgramStoppedEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
         });
         mips.on('exit', (code: number, signal: string) => {
-            executionContext.socketSession.emit('exit', {
-                code: code,
-                signal: signal
-            }, []);
+            this.sendExitEvent(code, signal);
         });
     }
 
@@ -91,6 +88,22 @@ export class RunCommand extends AbstractCommand<RunPayload> {
                 location: location,
                 breakpointId: breakpointId
             }, [new AnswerContext("memoryUpdate", memoryBlocks), new AnswerContext("registerUpdate", registers)]);
+        });
+    }
+
+    private sendExitEvent(code, signal) {
+        this.executionContext.socketSession.mipsSession.readMemory(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?: dbgmits.IMemoryBlock[]) => {
+            if(err) {
+                console.error(err);
+                return this.executionContext.socketSession.emit('exit', {
+                    code: code,
+                    signal: signal
+                }, []);
+            }
+            this.executionContext.socketSession.emit('exit', {
+                code: code,
+                signal: signal
+            }, [new AnswerContext("memoryUpdate", memoryBlocks)]);
         });
     }
 
