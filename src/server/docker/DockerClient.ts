@@ -1,6 +1,8 @@
 import http = require('http');
 import stream = require('stream');
 import * as request from "request";
+import {Readable} from "stream";
+import {DockerExecInstance} from "./DockerExecInstance";
 
 export class DockerClient{
     private unixSocketPath;
@@ -115,6 +117,9 @@ export class DockerClient{
     }
 
     public execAsStream(containerId: string, body, options, cb) {
+        if(!options) {
+            options = {}
+        }
         request.post({
             url: `http://unix:${this.unixSocketPath}:/containers/${containerId}/exec`,
             headers: {
@@ -131,8 +136,11 @@ export class DockerClient{
             }
             let execId = body.Id;
             let execReqBody = JSON.stringify({ });
+            let stdin = options.stdin ? "1" : "0";
+            let stdout = options.stdout ? (options.stdout === false ? "0" : "1") : "1";
+            let stderr = options.stderr ? (options.stderr === false ? "0" : "1") : "1";
             let execReq = http.request({
-                path: `/exec/${execId}/start?stream=1&stdout=1&stderr=1`,
+                path: `/exec/${execId}/start?stream=1&stdin=${stdin}&stdout=${stdout}&stderr=${stderr}`,
                 method: 'POST',
                 socketPath: this.unixSocketPath,
                 headers: {
@@ -149,8 +157,7 @@ export class DockerClient{
                 return cb(new Error(`Docker exec start failed with status code ${response.statusCode}`));
             });
             execReq.on('upgrade', (res, socket, upgradeHead) => {
-                // it should require to analyse the input stream but it return just plain text
-                return cb(null, socket, execId);
+                return cb(null, new DockerExecInstance(socket), execId);
             });
         });
     }

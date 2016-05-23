@@ -15,6 +15,8 @@ import * as dbgmits from "asmimproved-dbgmits";
 import {Registers, ISourceLocation} from "../../../common/Debugger";
 import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
 import async = require('async');
+import {Subject} from "rxjs/Rx";
+import {DockerExecInstance} from "../../docker/DockerExecInstance";
 
 export enum MipsSessionState {
     Init,
@@ -28,9 +30,14 @@ export enum MipsSessionState {
 }
 
 export class MipsSession extends events.EventEmitter{
-    private _mipsProgram: MipsRunner;
     private _state: MipsSessionState = MipsSessionState.Init;
+    private _debugger: dbgmits.DebugSession;
     private docker: DockerClient;
+    private containerId: string;
+    private containerRemovalRequested = false;
+    private static ELF_FILE_LOCATION = "/out/proj.out";
+    private static GDB_PORT = 5678;
+    public debuggerStartedPromise: Promise<void>;
 
     constructor(private project: Project) {
         super();
@@ -45,6 +52,7 @@ export class MipsSession extends events.EventEmitter{
             if(err) {
                 return cb(err);
             }
+            this.containerId = containerId;
             this.copyProjectIntoContainer(containerId, (err, files) => {
                 if(err) {
                     return cb(err);
@@ -54,62 +62,62 @@ export class MipsSession extends events.EventEmitter{
                         return cb(err);
                     }
                     this._state = MipsSessionState.Starting;
-                    this.startQemu(containerId, (err, socket, execId) => {
+                    this.startQemu(containerId, (err, qemu: DockerExecInstance, execId) => {
                         if(err) {
                             return cb(err);
                         }
-                        socket.on('close', () => {
+                        qemu.on('close', () => {
                             this._state = MipsSessionState.Terminated;
                             this.getQemuExitCode(execId, (err, exitCode) => {
                                 if(err) {
                                     return this.emit('exit', null, null);
                                 }
                                 this.emit('exit', exitCode);
-                                this.docker.removeContainer(containerId, (err) => {
-                                    if(err) {
-                                        console.error(`Failed to delete container ${containerId}`, err);
-                                    }
-                                });
+                                //this.removeContainer();
                             });
                         });
-                        socket.setEncoding('ascii');
-                        socket.on('data', (chunk) => {
-                            this.emit('stdout', chunk);
+                        qemu.stdout.on('data', (chunk) => {
+                            this.emit('stdout', chunk.toString());
                         });
-                        /*
-                        this._mipsProgram.on('stderr', (chunk) => {
-                            this.emit('stderr', chunk);
+                        qemu.stderr.on('data', (chunk) => {
+                            this.emit('stderr', chunk.toString());
                         });
-                        */
-                        cb();
+                        this.connectDebugger((err, debuggerStartedPromise) => {
+                            if(err) {
+                                return cb(err);
+                            }
+                            this.debuggerStartedPromise = debuggerStartedPromise;
+                            debuggerStartedPromise.then(() => {
+                                this._state = MipsSessionState.Broken;
+                                console.log("connected debugger");
+                                this._debugger.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
+                                    this._state = MipsSessionState.Broken;
+                                    this.emit("hitBreakpoint", stoppedEvent);
+                                });
+                                cb();
+                            }, (error) => {
+                                this._state = MipsSessionState.Error;
+                                console.error('debugger failed', error);
+                                cb(error);
+                            });
+                        });
                     });
                 })
             });
         });
-        /*
-        this._mipsProgram.on('debuggerPortReady', () => {
-            this._mipsProgram
-                .connectDebugger()
-                .then(() => {
-                    this._state = MipsSessionState.Broken;
-                    console.log("connected debugger");
-                    cb();
-                })
-                .catch((error) => {
-                    this._state = MipsSessionState.Error;
-                    console.error('debugger failed', error);
-                    cb(error);
-                });
-            this._mipsProgram.debuggerStartedPromise.then(()=> {
-                let debug = this._mipsProgram.debug;
-                debug.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
-                    this._state = MipsSessionState.Broken;
-                    this.emit("hitBreakpoint", stoppedEvent);
+    }
 
+    private removeContainer() {
+        if(this.containerId) {
+            if(!this.containerRemovalRequested) {
+                this.containerRemovalRequested = true;
+                this.docker.removeContainer(this.containerId, (err) => {
+                    if(err) {
+                        console.error(`Failed to delete container ${this.containerId}`, err);
+                    }
                 });
-            });
-        });
-        */
+            }
+        }
     }
 
     private createContainer(cb) {
@@ -210,7 +218,7 @@ export class MipsSession extends events.EventEmitter{
                 "-static",
                 "-mips32r5",
                 "-o",
-                "/out/proj.out"
+                MipsSession.ELF_FILE_LOCATION
             ].concat(files)
         }, (err, inspect, stdout, stderr) => {
             if(inspect.ExitCode != 0) {
@@ -229,9 +237,9 @@ export class MipsSession extends events.EventEmitter{
             "Tty": false,
             "Cmd": [
                 "qemu-mips",
-                /*"-g",
-                 String(567),*/
-                "/out/proj.out"
+                "-g",
+                String(MipsSession.GDB_PORT),
+                MipsSession.ELF_FILE_LOCATION
             ]
         }, null, cb);
     }
@@ -245,11 +253,46 @@ export class MipsSession extends events.EventEmitter{
         });
     }
 
+    private connectDebugger(cb) {
+        this.docker.execAsStream(this.containerId, {
+            "AttachStdin": true,
+            "AttachStdout": true,
+            "AttachStderr": false,
+            "Tty": false,
+            "Cmd": [
+                "gdb-multiarch",
+                "--interpreter",
+                "mi"
+            ]
+        }, {
+            stdin: true,
+            stdout: true,
+            stderr: false
+        }, (err, gdbProcess: DockerExecInstance) => {
+            if(err) {
+                return cb(err);
+            }
+            let debuggerSocketClosed: Promise<void> = new Promise<void>((resolve, reject) => {
+                gdbProcess.on('close', () => {
+                    console.log('debugger socket closed');
+                    resolve();
+                });
+            });
+            this._debugger = dbgmits.startGDBDebugSessionFromExistingProcess(gdbProcess.stdout, gdbProcess.socket, debuggerSocketClosed);
+            let debuggerStartedPromise = this._debugger
+                .setExecutableFile(MipsSession.ELF_FILE_LOCATION)
+                .then(() => {
+                    return this._debugger.connectToRemoteTarget("127.0.0.1", MipsSession.GDB_PORT);
+                });
+            return cb(null, debuggerStartedPromise);
+        });
+    }
+
     public continue(cb) {
         if(!(this._state == MipsSessionState.Broken)) {
             return cb(new Error("Nothing to continue"));
         }
-        this._mipsProgram.debug.resumeInferior()
+        this._debugger.resumeInferior()
             .then(() => {
                 console.log('resumed');
                 cb();
@@ -267,21 +310,17 @@ export class MipsSession extends events.EventEmitter{
         let stepFinishedCb = (stoppedEvent: dbgmits.IStepFinishedEvent) => {
             cb(null, stoppedEvent);
         };
-        this.mipsProgram.debug.once(dbgmits.EVENT_STEP_FINISHED, stepFinishedCb);
-        this._mipsProgram.debug.stepIntoInstruction()
+        this._debugger.once(dbgmits.EVENT_STEP_FINISHED, stepFinishedCb);
+        this._debugger.stepIntoInstruction()
             .catch((err) => {
-                this.mipsProgram.debug.removeListener(dbgmits.EVENT_STEP_FINISHED, stepFinishedCb);
+                this._debugger.removeListener(dbgmits.EVENT_STEP_FINISHED, stepFinishedCb);
                 cb(err);
             });
     }
 
     public dispose() {
+        this.removeContainer();
         this.removeAllListeners();
-        // todo: remove container
-    }
-
-    public get mipsProgram() {
-        return this._mipsProgram;
     }
 
     public get state(): MipsSessionState {
@@ -292,7 +331,7 @@ export class MipsSession extends events.EventEmitter{
         if(this._state != MipsSessionState.Broken && this._state != MipsSessionState.Terminated) {
             return cb(new Error("Not in state to read memory"));
         }
-        this._mipsProgram.debug.readMemory("0x" + frame.start.toString(16), frame.length)
+        this._debugger.readMemory("0x" + frame.start.toString(16), frame.length)
             .then((blocks: dbgmits.IMemoryBlock[]) => {
                 return cb(null, blocks);
             }, (err) => {
@@ -306,7 +345,7 @@ export class MipsSession extends events.EventEmitter{
         }
         let registers: Registers = [];
         let registerNames: Promise<void> =
-            this.mipsProgram.debug
+            this._debugger
                 .getRegisterNames()
                 .then((names: string[]) => {
                     for (let i = 0; i < names.length; ++i) {
@@ -320,7 +359,7 @@ export class MipsSession extends events.EventEmitter{
                     }
                 });
         let registerValues: Promise<void> =
-            this.mipsProgram.debug
+            this._debugger
                 .getRegisterValues(RegisterValueFormatSpec.Binary)
                 .then((values: Map<number, string>) => {
                     values.forEach((registerValue:string, registerNumber:number) => {
@@ -360,7 +399,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public addBreakpoint(location: ISourceLocation, cb: (err, breakpoint?) => any) {
-        this.mipsProgram.debug.addBreakpoint(location.locationString)
+        this._debugger.addBreakpoint(location.locationString)
             .then((breakpoint: dbgmits.IBreakpointInfo) => {
                 cb(null, {
                     location: location,
@@ -374,7 +413,7 @@ export class MipsSession extends events.EventEmitter{
     }
 
     removeBreakpoint(breakpointId:number, cb:(err)=> any) {
-        this.mipsProgram.debug.removeBreakpoint(breakpointId)
+        this._debugger.removeBreakpoint(breakpointId)
             .then(() => {
                 cb(null);
             })
