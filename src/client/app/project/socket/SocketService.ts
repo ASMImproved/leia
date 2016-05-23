@@ -33,7 +33,7 @@ export class SocketService {
             command: name,
             payload: payload
         }, (answer: any) => {
-            console.log('received answer', answer);
+            console.log('received answer', name, payload, answer);
             if(answer.err) {
                 return answerCallback(answer.err);
             }

@@ -34,8 +34,9 @@ export class RunCommand extends AbstractCommand<RunPayload> {
             if(err) {
                 return callback(err);
             }
-            mips.mipsProgram.debuggerStartedPromise.then(() => {
-                executionContext.socketSession.mipsSession.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {
+            mips.debuggerStartedPromise.then(() => {
+                console.log('bug started promise resolved');
+                mips.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {
                     if(err) {
                         return callback(err);
                     }
@@ -43,6 +44,9 @@ export class RunCommand extends AbstractCommand<RunPayload> {
                         ok: true
                     }, [new AnswerContext("memoryUpdate", blocks)]);
                 });
+            }, (err) => {
+                console.error('bug started promise rejected', err);
+                return callback(err);
             });
         });
         mips.on('stdout', (chunk) => {

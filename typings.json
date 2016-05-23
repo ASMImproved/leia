@@ -2,6 +2,7 @@
   "dependencies": {
     "express-socket.io-session": "file:src/typings/express-socket.io-session.d.ts",
     "randomstring": "file:src/typings/randomstring.d.ts",
+    "request": "registry:npm/request#2.69.0+20160428223725",
     "serve-static": "file:src/typings/serve-static.d.ts"
   },
   "devDependencies": {},
@@ -14,6 +15,7 @@
     "express-session": "registry:dt/express-session#0.0.0+20160331200931",
     "jasmine": "registry:dt/jasmine#2.2.0+20160505161446",
     "node": "registry:dt/node#6.0.0+20160514165920",
-    "socket.io": "registry:dt/socket.io#1.4.4+20160317120654"
+    "socket.io": "registry:dt/socket.io#1.4.4+20160317120654",
+    "tar": "registry:dt/tar#0.0.0+20160316155526"
   }
 }
