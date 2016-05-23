@@ -9,7 +9,6 @@ export class RegisterPipe implements PipeTransform {
         }
         let binary:string = registerContent.toString(16);
         for (let i = binary.length; i < 8;++i) {
-            console.log(binary);
             binary = '0' + binary;
         }
         return '0x' + binary;
