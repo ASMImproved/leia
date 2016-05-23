@@ -6,7 +6,6 @@ let fstream = require('fstream');
 var temp = require('temp');
 import fs = require('fs');
 import util = require('util');
-import {MipsRunner} from "./MipsRunner";
 import {DockerClient} from "../../docker/DockerClient"
 import path = require('path');
 import events = require('events');
