@@ -128,7 +128,15 @@ export class MipsSession extends events.EventEmitter{
             "Labels": {
                 "com.github.asmimproved.leia": "true"
             },
-            "NetworkDisabled": true
+            "NetworkDisabled": true,
+            "HostConfig": {
+                "Capdrop": [],
+                "PidsLimit": 1000,
+                "BlkioWeight": 10,
+                "Memory": 100000000,
+                "MemorySwap": 100000000,
+                "CpuShares": 200
+            }
         }, (err, containerId) => {
             if(err) {
                 return cb(err);
