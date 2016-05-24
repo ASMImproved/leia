@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from 'angular2/core';
+import {Component, Input, OnInit, EventEmitter, Output} from 'angular2/core';
 import {File} from '../../../common/File'
 import {Project} from '../../../common/Project'
 import {NewFileFormComponent} from './new-file/NewFileFormComponent'
@@ -40,6 +40,7 @@ export class ProjectComponent implements OnInit{
 	 * required in the HTML code
 	 */
 	private socketService: SocketService;
+	@Output() exitRequest: EventEmitter<any> = new EventEmitter<any>();
 
 	constructor(
 		socketService: SocketService,
@@ -81,6 +82,10 @@ export class ProjectComponent implements OnInit{
 		this.persistenceService.persist(this._project, function(err) {
 			console.log(err);
 		});
+	}
+
+	exit() {
+		this.exitRequest.emit(null);
 	}
 
 	@Input()
