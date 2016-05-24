@@ -1,6 +1,6 @@
 import {Component, EventEmitter, ElementRef, Output} from 'angular2/core';
 import {PersistenceService} from "../project/persistence/PersistenceService";
-import {Project} from "gulp-typescript/release/project";
+import {Project} from "../../../common/Project";
 
 @Component({
     selector: 'lea-splash',
