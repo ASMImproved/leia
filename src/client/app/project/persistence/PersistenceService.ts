@@ -1,20 +1,16 @@
-/// <reference path="../../../../../typings/browser/ambient/async/index.d.ts" />
-import {Injectable, OnInit} from "angular2/core";
+/// <reference path="../../../../../typings/globals/async/index.d.ts" />
+import {Injectable} from "angular2/core";
 import {Project} from "../../../../common/Project";
 
 declare var zip: any;
 declare function saveAs(blob, name);
 
 @Injectable()
-export class PersistenceService implements OnInit {
+export class PersistenceService  {
 
     constructor() {
-
-    }
-
-    ngOnInit():any {
         zip.workerScriptsPath = 'vendor/zipjs/';
-        zip.useWebWorkers = false;
+        zip.useWebWorkers = true;
     }
 
     persist(project: Project, cb): any {
@@ -26,7 +22,7 @@ export class PersistenceService implements OnInit {
                 });
             });
         }, function(err) {
-            cb('zip failure', err);
+            cb(err);
         });
     }
 }
