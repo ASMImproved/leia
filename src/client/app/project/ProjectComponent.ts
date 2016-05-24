@@ -31,7 +31,6 @@ import {NotificationService} from "./notification/NotificationService";
 		BreakpointService,
 		MemoryService,
 		SymbolService,
-		PersistenceService,
 		NotificationService
 	]
 })
