@@ -49,7 +49,6 @@ export class ProjectComponent implements OnInit{
 		private editSessionService: EditSessionService,
 		private projectService: ProjectService,
 	    private memoryService: MemoryService,
-		private persistenceService: PersistenceService,
 		private notificationService: NotificationService
 	) {
 		this.socketService = socketService;
@@ -79,12 +78,28 @@ export class ProjectComponent implements OnInit{
 	}
 
 	persist() {
-		this.persistenceService.persist(this._project, function(err) {
+		this.projectService.persist((err) => {
 			console.log(err);
 		});
 	}
 
 	exit() {
+		let doExit = () => {
+			this.exitRequest.emit(null);
+		}
+		let checkPersistency = () => {
+			if(!this.projectService.persisted()) {
+				this.notificationService.confirm("You haven't downloaded the latest version to disk. Any changes will be lost. Do you want to continue? ", (err, answer) => {
+					if(err){
+						console.error(err);
+						return;
+					}
+					doExit();
+				});
+			} else {
+				doExit();
+			}
+		}
 		if(this.editSessionService.projectDirty) {
 			this.notificationService.confirm("You have unsaved changes that will be lost. Do you want to continue? ", (err, answer) => {
 				if(err) {
@@ -92,11 +107,11 @@ export class ProjectComponent implements OnInit{
 					return;
 				}
 				if(answer) {
-					this.exitRequest.emit(null);
+					checkPersistency();
 				}
 			});
 		} else {
-			this.exitRequest.emit(null);
+			checkPersistency();
 		}
 	}
 

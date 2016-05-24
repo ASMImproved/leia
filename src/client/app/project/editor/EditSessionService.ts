@@ -11,6 +11,8 @@ import {ProjectService} from "../ProjectService";
 import {RunService} from "../RunService";
 import {ISourceLocation} from "../../../../common/Debugger";
 import {SymbolService} from "../SymbolService";
+import {Subject} from "rxjs/Subject";
+import {Subscription} from "rxjs/Subscription";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -91,6 +93,12 @@ export class EditSessionService {
 
     private createSession(file:File): Session {
         let session: Session = new Session(file, this.symbolService);
+        let saveSubscription: Subscription;
+        saveSubscription = session.saved$.subscribe(() => {
+            this.projectService.fileChanged();
+        }, null, () => {
+            saveSubscription.unsubscribe();
+        });
         this.set.push({
             key: file,
             value: session
@@ -110,6 +118,7 @@ export class EditSessionService {
                 this.setChanged.emit(this.set);
             }
         }
+        session.dispose();
     }
 
     public selectFile(file: File) {
