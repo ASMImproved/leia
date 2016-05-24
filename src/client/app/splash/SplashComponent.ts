@@ -1,4 +1,4 @@
-import {Component, EventEmitter, ElementRef, Output} from 'angular2/core';
+import {Component, EventEmitter, Output} from 'angular2/core';
 import {PersistenceService} from "../project/persistence/PersistenceService";
 import {Project} from "../../../common/Project";
 
