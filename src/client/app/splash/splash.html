@@ -1,2 +1,3 @@
 <button (click)="newProject()">New Project</button>
-<button>Open Project</button>
+<h3>Open Project</h3>
+<input type="file" (change)="openProject($event.srcElement.files[0])" />

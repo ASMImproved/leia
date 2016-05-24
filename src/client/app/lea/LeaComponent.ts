@@ -14,8 +14,11 @@ export class LeaComponent {
     public activeProject: Project;
 
     public newProject() {
-        console.log('received in lea');
         this.activeProject = new Project("Test Project");
+    }
+
+    public openProject(project: Project) {
+        this.activeProject = project;
     }
 
     public exitProject() {
