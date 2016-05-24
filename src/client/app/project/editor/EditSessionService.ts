@@ -122,4 +122,18 @@ export class EditSessionService {
         this.activeSession.ace.selection.moveCursorToPosition({row: line-1, column: 0});
     }
 
+    public get projectDirty() {
+        let dirty = false;
+        this.set.forEach((session: {key; value}) => {
+            if(session.value.dirty)
+                dirty = true;
+        });
+        return dirty;
+    }
+
+    public saveAll() {
+        this.set.forEach((session: {key; value}) => {
+            session.value.save();
+        });
+    }
 }

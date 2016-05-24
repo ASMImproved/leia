@@ -16,6 +16,7 @@ import {MemoryComponent} from "./memory/MemoryComponent";
 import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
+import {NotificationService} from "./notification/NotificationService";
 
 @Component({
     selector: 'lea-project',
@@ -30,7 +31,8 @@ import {PersistenceService} from "./persistence/PersistenceService";
 		BreakpointService,
 		MemoryService,
 		SymbolService,
-		PersistenceService
+		PersistenceService,
+		NotificationService
 	]
 })
 export class ProjectComponent implements OnInit{
@@ -48,7 +50,8 @@ export class ProjectComponent implements OnInit{
 		private editSessionService: EditSessionService,
 		private projectService: ProjectService,
 	    private memoryService: MemoryService,
-		private persistenceService: PersistenceService
+		private persistenceService: PersistenceService,
+		private notificationService: NotificationService
 	) {
 		this.socketService = socketService;
 	}
@@ -72,9 +75,7 @@ export class ProjectComponent implements OnInit{
 	}
 
 	runProject() {
-		this.sessionSet.forEach((session: {key: File; value: Session; }) => {
-			session.value.save();
-		});
+		this.editSessionService.saveAll();
 		this.runService.run(this._project);
 	}
 
@@ -85,7 +86,19 @@ export class ProjectComponent implements OnInit{
 	}
 
 	exit() {
-		this.exitRequest.emit(null);
+		if(this.editSessionService.projectDirty) {
+			this.notificationService.confirm("You have unsaved changes that will be lost. Do you want to continue? ", (err, answer) => {
+				if(err) {
+					console.error(err);
+					return;
+				}
+				if(answer) {
+					this.exitRequest.emit(null);
+				}
+			});
+		} else {
+			this.exitRequest.emit(null);
+		}
 	}
 
 	@Input()
