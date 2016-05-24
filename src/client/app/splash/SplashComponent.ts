@@ -7,8 +7,8 @@ import {Project} from "../../../common/Project";
     templateUrl: 'client/app/splash/splash.html'
 })
 export class SplashComponent {
-    @Output public newProjectEvent: EventEmitter<any>;
-    @Output public openProjectEvent: EventEmitter<Project>;
+    @Output() public newProjectEvent: EventEmitter<any>;
+    @Output() public openProjectEvent: EventEmitter<Project>;
 
     constructor(private persistenceService: PersistenceService) {
         this.newProjectEvent = new EventEmitter();
