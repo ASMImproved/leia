@@ -71,6 +71,13 @@ export class EditSessionService {
                 this.breakpointMarker = null;
             }
         });
+
+        this.projectService.fileDeleted$.subscribe((file: File) => {
+            let session = this.findInSet(file);
+            if(session) {
+                this.closeSession(session);
+            }
+        });
     }
 
     public getOrCreateSession(file: File): Session {

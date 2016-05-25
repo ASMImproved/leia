@@ -65,7 +65,7 @@ export class ProjectComponent implements OnInit{
 	}
 
 	deleteFile(file: File) {
-		this._project.files.splice(this._project.files.indexOf(file), 1);
+		this.projectService.deleteFile(file);
 	}
 
 	closeSession(session: Session) {

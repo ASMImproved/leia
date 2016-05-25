@@ -4,6 +4,7 @@ import {BehaviorSubject} from 'rxjs/Rx'
 import {PersistenceService} from "./persistence/PersistenceService";
 import {Injectable} from "angular2/core";
 import {EditSessionService} from "./editor/EditSessionService";
+import {Subject} from "rxjs/Subject";
 
 @Injectable()
 export class ProjectService {
@@ -11,6 +12,8 @@ export class ProjectService {
     public projectChanged$ = this._projectSource.asObservable();
     private _persistenceState = new BehaviorSubject<Boolean>(true);
     public persistenceStateChanged$ = this._persistenceState.asObservable();
+    private _fileDeleted = new Subject<File>();
+    public fileDeleted$ = this._fileDeleted.asObservable();
 
     constructor(
         private persistenceService: PersistenceService
@@ -32,6 +35,11 @@ export class ProjectService {
             throw new Error("File already exists");
         }
         this._projectSource.getValue().files.push(newFile);
+    }
+    
+    public deleteFile(file: File) {
+        this._projectSource.getValue().files.splice(this._projectSource.getValue().files.indexOf(file), 1);
+        this._fileDeleted.next(file);
     }
 
     public fileExists(name: string) : boolean {
