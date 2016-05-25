@@ -8,6 +8,7 @@ import {basename} from "path";
 import {SourceLocation, Registers} from "../../common/Debugger";
 import * as dbgmits from "asmimproved-dbgmits";
 import {Project} from "../../common/Project";
+import {File} from "../../common/File"
 
 interface RunPayload {
     project:Project
@@ -28,6 +29,19 @@ export class RunCommand extends AbstractCommand<RunPayload> {
                 executionContext.socketSession.mipsSession.dispose();
                 delete executionContext.socketSession.mipsSession;
             }
+        }
+        let files = payload.project.files.filter((file: File) => {
+            var chunks: Array<string>  = file.name.split('.');
+            let fileNameEnding;
+            if(chunks.length === 1) {
+                return false;
+            } else {
+                fileNameEnding = chunks[chunks.length - 1];
+            }
+            return fileNameEnding === "s" || fileNameEnding === "h" || fileNameEnding === "c";
+        });
+        if(files.length == 0) {
+            return callback(new Error("Project contains no files which can be consumed by gcc"));
         }
         let mips = executionContext.socketSession.mipsSession = new MipsSession(payload.project);
         mips.run((err) => {
