@@ -92,13 +92,7 @@ export class EditSessionService {
     }
 
     private createSession(file:File): Session {
-        let session: Session = new Session(file, this.symbolService);
-        let saveSubscription: Subscription;
-        saveSubscription = session.saved$.subscribe(() => {
-            this.projectService.fileChanged();
-        }, null, () => {
-            saveSubscription.unsubscribe();
-        });
+        let session: Session = new Session(file, this.symbolService, this.projectService);
         this.set.push({
             key: file,
             value: session

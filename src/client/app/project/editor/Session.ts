@@ -4,6 +4,7 @@ import {FileNameEndingService} from "../FileNameEndingService";
 import {File} from "../../../../common/File";
 import {SymbolService, Symbol} from "../SymbolService";
 import {Subject} from "rxjs/Subject";
+import {ProjectService} from "../ProjectService";
 
 interface TokenInfo extends AceAjax.TokenInfo {
     // AceAjax.TokenInfo is incomplete
@@ -14,10 +15,8 @@ export class Session {
     public ace: IEditSession;
     private fileNameEndingService: FileNameEndingService;
     public dirty: boolean = false;
-    private _saved: Subject<any> = new Subject<any>();
-    public saved$ = this._saved.asObservable();
 
-    constructor(public file: File, private symbolService: SymbolService) {
+    constructor(public file: File, private symbolService: SymbolService, private projectService: ProjectService) {
         this.fileNameEndingService = new FileNameEndingService();
         switch (this.fileNameEndingService.getFileNameEnding(file.name)) {
             case 's':
@@ -37,9 +36,8 @@ export class Session {
     }
 
     public save() {
-        this.file.content = this.ace.getValue();
+        this.projectService.updateFileContent(this.file, this.ace.getValue());
         this.dirty = false;
-        this._saved.next(null);
     }
 
     private updateSymbols() {
@@ -47,6 +45,6 @@ export class Session {
     }
 
     public dispose() {
-        this._saved.complete();
+
     }
 }

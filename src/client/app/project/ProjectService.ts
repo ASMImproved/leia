@@ -70,7 +70,8 @@ export class ProjectService {
         return this._persistenceState.getValue();
     }
 
-    public fileChanged() {
+    public updateFileContent(file: File, newContent: string) {
         this._persistenceState.next(false);
+        file.content = newContent;
     }
 }
