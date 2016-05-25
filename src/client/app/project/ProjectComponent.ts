@@ -17,6 +17,7 @@ import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
 import {NotificationService} from "./notification/NotificationService";
+import {RegisterService} from "./registers/RegisterService";
 
 @Component({
     selector: 'lea-project',
@@ -31,7 +32,8 @@ import {NotificationService} from "./notification/NotificationService";
 		BreakpointService,
 		MemoryService,
 		SymbolService,
-		NotificationService
+		NotificationService,
+		RegisterService
 	]
 })
 export class ProjectComponent implements OnInit{
