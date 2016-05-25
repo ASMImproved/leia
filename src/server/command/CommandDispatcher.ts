@@ -7,12 +7,24 @@ import {RunCommand} from "../commands/RunCommand";
 import {ContinueCommand} from "../commands/ContinueCommand";
 import {AddBreakpointCommand} from "../commands/AddBreakpointCommand";
 import {RemoveBreakpointCommand} from "../commands/RemoveBreakpointCommand";
+import {WatchCellCommand} from "../commands/WatchCellCommand";
+import {RemoveCellWatchCommand} from "../commands/RemoveCellWatchCommand";
 import {StepCommand} from "../commands/StepCommand";
 import {StopCommand} from "../commands/StopCommand";
 
 export class CommandDispatcher {
     /** only required to ensure loading of all commands */
-    private commands = [RunCommand, ContinueCommand, ChangeMemoryFrameCommand, AddBreakpointCommand, RemoveBreakpointCommand, StepCommand, StopCommand];
+    private commands = [
+        RunCommand,
+        ContinueCommand,
+        ChangeMemoryFrameCommand,
+        AddBreakpointCommand,
+        RemoveBreakpointCommand,
+        WatchCellCommand,
+        RemoveCellWatchCommand,
+        StepCommand,
+        StopCommand
+    ];
 
     constructor() {
     }

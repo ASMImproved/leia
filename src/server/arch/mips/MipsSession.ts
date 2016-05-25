@@ -442,8 +442,28 @@ export class MipsSession extends events.EventEmitter{
             });
     }
 
-    removeBreakpoint(breakpointId:number, cb:(err)=> any) {
+    public removeBreakpoint(breakpointId:number, cb:(err)=> any) {
         this._debugger.removeBreakpoint(breakpointId)
+            .then(() => {
+                cb(null);
+            })
+            .catch((err) => {
+                cb(err);
+            })
+    }
+
+    public addWatch(expression: string, cb: (err, id?: string) => any) {
+        this._debugger.addWatch(expression)
+            .then((watch: {id: string}) => {
+                cb(null, watch.id);
+            })
+            .catch((err) => {
+                cb(err);
+            })
+    }
+
+    public removeWatch(watchId: string, cb:(err) => any) {
+        this._debugger.removeWatch(watchId)
             .then(() => {
                 cb(null);
             })
