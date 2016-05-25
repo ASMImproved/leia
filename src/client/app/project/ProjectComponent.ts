@@ -94,7 +94,9 @@ export class ProjectComponent implements OnInit{
 						console.error(err);
 						return;
 					}
-					doExit();
+					if(answer) {
+						doExit();
+					}
 				});
 			} else {
 				doExit();
