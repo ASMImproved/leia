@@ -41,7 +41,10 @@ RUN mkdir -p dist/public/vendor/ && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/ace.js -o dist/public/vendor/ace.js && \
     curl -sL https://github.com/gildas-lormeau/zip.js/tarball/1bead0a -o /zip.js.tar.gz && \
     tar xvzf /zip.js.tar.gz -C / && \
-    cp -R /gildas-lormeau-zip.js-1bead0a/WebContent/ dist/public/vendor/zipjs
+    cp -R /gildas-lormeau-zip.js-1bead0a/WebContent/ dist/public/vendor/zipjs && \
+    curl -sL https://github.com/eligrey/FileSaver.js/tarball/683f689 -o /filesave.js.tar.gz && \
+    tar xvzf /filesave.js.tar.gz -C / && \
+    cp -R /eligrey-FileSaver.js-683f689/ dist/public/vendor/filesaverjs
 
 
 ADD entrypoint.sh /

@@ -2,13 +2,15 @@
 import {ProjectService} from './ProjectService'
 import {File} from "../../../common/File";
 import {Project} from "../../../common/Project";
+import {PersistenceService} from "./persistence/PersistenceService";
 
 describe('ProjectService', function() {
 
     let projectService: ProjectService;
 
     beforeEach(function() {
-        projectService = new ProjectService();
+        let persistenceService: any = {};
+        projectService = new ProjectService(persistenceService);
         projectService.project = new Project("Test");
     });
 

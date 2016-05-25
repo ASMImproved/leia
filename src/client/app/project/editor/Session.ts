@@ -3,6 +3,8 @@ import EditorChangeEvent = AceAjax.EditorChangeEvent;
 import {FileNameEndingService} from "../FileNameEndingService";
 import {File} from "../../../../common/File";
 import {SymbolService, Symbol} from "../SymbolService";
+import {Subject} from "rxjs/Subject";
+import {ProjectService} from "../ProjectService";
 
 interface TokenInfo extends AceAjax.TokenInfo {
     // AceAjax.TokenInfo is incomplete
@@ -14,7 +16,7 @@ export class Session {
     private fileNameEndingService: FileNameEndingService;
     public dirty: boolean = false;
 
-    constructor(public file: File, private symbolService: SymbolService) {
+    constructor(public file: File, private symbolService: SymbolService, private projectService: ProjectService) {
         this.fileNameEndingService = new FileNameEndingService();
         switch (this.fileNameEndingService.getFileNameEnding(file.name)) {
             case 's':
@@ -34,11 +36,15 @@ export class Session {
     }
 
     public save() {
-        this.file.content = this.ace.getValue();
+        this.projectService.updateFileContent(this.file, this.ace.getValue());
         this.dirty = false;
     }
 
     private updateSymbols() {
         this.symbolService.parse(this.file, this.ace.getValue());
+    }
+
+    public dispose() {
+
     }
 }

@@ -143,7 +143,8 @@ gulp.task('vendor', function() {
 			'node_modules/systemjs/**/**',
 			'node_modules/angular2/**/**',
 			'node_modules/systemjs/**/**',
-			'node_modules/rxjs/**/**'
+			'node_modules/rxjs/**/**',
+			'node_modules/async/**/**'
 		], {base: 'node_modules'})
 		.pipe(gulp.dest('dist/public/vendor/'))
 		.pipe(browserSync.stream())
