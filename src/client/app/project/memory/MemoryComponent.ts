@@ -1,15 +1,19 @@
 import {Component, OnInit} from "angular2/core";
 import {MemoryService} from "./MemoryService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
+import {RegisterService} from "../registers/RegisterService";
+import {Register} from "../../../../common/Debugger";
 
 @Component({
     selector: 'lea-memory',
     templateUrl: 'client/app/project/memory/memory.html'
 })
 export class MemoryComponent implements  OnInit{
-    private matrix: Array<Array<string>> = [];
+    private matrix: Array<Array<Array<{value: string, address: number, registers: Array<Register>}>>> = [];
+    private registers: Register[];
+    private blocks;
     
-    public constructor(private memoryService: MemoryService) {
+    public constructor(private memoryService: MemoryService, private registerService: RegisterService) {
         for(let i: number = 0; i < this.memoryService.ROWS; i++) {
             this.matrix[i] = [];
         }
@@ -17,7 +21,18 @@ export class MemoryComponent implements  OnInit{
 
     ngOnInit():any {
         this.memoryService.memoryBlocksChanged$.subscribe((blocks) => {
-            blocks.forEach((block) => {
+            this.blocks = blocks;
+            this.computeMatrix();
+        });
+        this.registerService.registersChanged$.subscribe((registers: Register[]) => {
+            this.registers = registers;
+            this.computeMatrix();
+        });
+    }
+
+    private computeMatrix() {
+        if(this.blocks) {
+            this.blocks.forEach((block) => {
                 let offset = parseInt(block.offset.substring(2), 16);
                 for(let i: number = 0; i < block.contents.length; i += 2) {
                     let positionOffset = offset + (i/2);
@@ -28,15 +43,28 @@ export class MemoryComponent implements  OnInit{
                     if(rowOffset < 0 || rowOffset >= this.memoryService.ROWS || colOffset < 0 || colOffset >= this.memoryService.ROWS)
                         continue;
                     if(!this.matrix[rowOffset][colOffset]) {
-                        this.matrix[rowOffset][colOffset] = '0xjjjjjjjj';
+                        this.matrix[rowOffset][colOffset] = [];
                     }
-                    this.matrix[rowOffset][colOffset] =
-                        this.matrix[rowOffset][colOffset].substring(0, 2 + (localOffset * 2))
-                        + block.contents.substring(i, i + 2);
-                        + this.matrix[rowOffset][colOffset].substring(4 + (localOffset * 2))
+                    this.matrix[rowOffset][colOffset][localOffset] = {
+                        value: block.contents.substring(i, i + 2),
+                        address: this.memoryService.MemoryFrame.start + positionOffset,
+                        registers: this.addressInRegister(this.memoryService.MemoryFrame.start + positionOffset)
+                    }
                 }
             });
-        });
+        }
+    }
+
+    private addressInRegister(address: number) : Array<Register> {
+        let matchRegisters: Array<Register> = [];
+        if(this.registers) {
+            this.registers.forEach((currentRegister: Register) => {
+                if(address == currentRegister.value) {
+                    matchRegisters.push(currentRegister);
+                }
+            });
+        }
+        return matchRegisters;
     }
     
     private moveUp() {
