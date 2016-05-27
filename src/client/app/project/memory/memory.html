@@ -1,6 +1,6 @@
 <button (click)="moveDown()">&#60;-</button>
 <button (click)="moveUp()">-&#62;</button>
-<span>Start at : 0x{{memoryService.MemoryFrame.start.toString(16)}}</span>
+<span>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</span>
 <table>
     <tr *ngFor="#row of matrix">
         <td *ngFor="#cell of row">0x<span *ngFor="#byte of cell"><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span>{{byte.value}}</span></td>
