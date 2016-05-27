@@ -46,24 +46,28 @@ export class MipsSession extends events.EventEmitter{
     }
 
     public run(cb) {
+        let cbWithError = (err) => {
+            this._state = MipsSessionState.Error;
+            cb(err);
+        }
         this._state = MipsSessionState.Compiling;
         this.createContainer((err, containerId) => {
             if(err) {
-                return cb(err);
+                return cbWithError(err);
             }
             this.containerId = containerId;
             this.copyProjectIntoContainer(containerId, (err, files) => {
                 if(err) {
-                    return cb(err);
+                    return cbWithError(err);
                 }
                 this.compile(containerId, files, (err) => {
                     if(err) {
-                        return cb(err);
+                        return cbWithError(err);
                     }
                     this._state = MipsSessionState.Starting;
                     this.startQemu(containerId, (err, qemu: DockerExecInstance, execId) => {
                         if(err) {
-                            return cb(err);
+                            return cbWithError(err);
                         }
                         qemu.on('close', () => {
                             this._state = MipsSessionState.Terminated;
@@ -83,7 +87,7 @@ export class MipsSession extends events.EventEmitter{
                         });
                         this.connectDebugger((err, debuggerStartedPromise) => {
                             if(err) {
-                                return cb(err);
+                                return cbWithError(err);
                             }
                             this.debuggerStartedPromise = debuggerStartedPromise;
                             debuggerStartedPromise.then(() => {
@@ -93,11 +97,14 @@ export class MipsSession extends events.EventEmitter{
                                     this._state = MipsSessionState.Broken;
                                     this.emit("hitBreakpoint", stoppedEvent);
                                 });
+                                this._debugger.on(dbgmits.EVENT_TARGET_RUNNING, (threadId: string) => {
+                                    this.emit("programContinued");
+                                });
                                 cb();
                             }, (error) => {
                                 this._state = MipsSessionState.Error;
                                 console.error('debugger failed', error);
-                                cb(error);
+                                cbWithError(error);
                             });
                         });
                     });

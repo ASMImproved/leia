@@ -23,7 +23,7 @@ export class RunCommand extends AbstractCommand<RunPayload> {
     execute(payload:RunPayload, executionContext: ExecutionContext, callback: CommandCallback) {
         this.executionContext = executionContext;
         if(executionContext.socketSession.mipsSession) {
-            if(executionContext.socketSession.mipsSession.state != MipsSessionState.Terminated) {
+            if(executionContext.socketSession.mipsSession.state != MipsSessionState.Terminated && executionContext.socketSession.mipsSession.state != MipsSessionState.Error) {
                 return callback(new Error("Session is already running"));
             } else {
                 executionContext.socketSession.mipsSession.dispose();
@@ -69,6 +69,9 @@ export class RunCommand extends AbstractCommand<RunPayload> {
         });
         mips.on('hitBreakpoint', (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
             this.sendProgramStoppedEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
+        });
+        mips.on('programContinued', () => {
+            this.executionContext.socketSession.emit("programContinued", {}, []);
         });
         mips.on('exit', (code: number, signal: string) => {
             this.sendExitEvent(code, signal);
