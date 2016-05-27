@@ -5,10 +5,12 @@ import {ISourceLocation} from "../../common/Debugger";
 @Command({
     name: 'watchCell'
 })
-export class WatchCellCommand extends AbstractCommand<string> {
+export class WatchCellCommand extends AbstractCommand<number> {
 
-    execute(expression:string, executionContext:ExecutionContext, callback:CommandCallback) {
-        executionContext.socketSession.mipsSession.addWatch(`*${expression}`, (err, watchId: string) => {
+    execute(address:number, executionContext:ExecutionContext, callback:CommandCallback) {
+        const watchExpression = `*${address}`;
+        console.log('watching', watchExpression);
+        executionContext.socketSession.mipsSession.addWatch(watchExpression, (err, watchId: string) => {
             if (err) {
                 return callback(err);
             }
@@ -16,7 +18,7 @@ export class WatchCellCommand extends AbstractCommand<string> {
         })
     }
 
-    public canUse(payload:any):payload is string {
-        return typeof payload == 'string';
+    public canUse(payload:any):payload is number {
+        return typeof payload == 'number';
     }
 }
