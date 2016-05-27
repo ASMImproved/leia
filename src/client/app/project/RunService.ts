@@ -2,6 +2,7 @@ import {Injectable, EventEmitter} from "angular2/core";
 import {SocketService} from "./socket/SocketService";
 import {Project} from "../../../common/Project";
 import {ProgramStoppedEvent, ISourceLocation} from "../../../common/Debugger";
+import {NotificationService, NotificationLevel} from "./notification/NotificationService";
 
 @Injectable()
 export class RunService {
@@ -12,7 +13,7 @@ export class RunService {
     public stopped: EventEmitter<ISourceLocation> = new EventEmitter();
     public continued: EventEmitter<void> = new EventEmitter<void>();
 
-    constructor(private socketService: SocketService) {
+    constructor(private socketService: SocketService, private notificationService: NotificationService) {
         socketService.subscribeToServerEvent('stdout', (event) => {
             this._stdout += event.payload;
         });
@@ -55,7 +56,7 @@ export class RunService {
             project: project
         }, (error: string) => {
             if (error) {
-                return console.error(error);
+                return this.notificationService.notify(error, NotificationLevel.Error);
             }
             console.log('set running');
             this.setRunningState(true);
