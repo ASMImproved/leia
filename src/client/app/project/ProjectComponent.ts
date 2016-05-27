@@ -67,7 +67,14 @@ export class ProjectComponent implements OnInit{
 	}
 
 	deleteFile(file: File) {
-		this.projectService.deleteFile(file);
+		this.notificationService.confirm(`Really delete file ${file.name}`, (err, answer) => {
+			if(err) {
+				return console.error(err);
+			}
+			if(answer) {
+				this.projectService.deleteFile(file);
+			}
+		});
 	}
 
 	closeSession(session: Session) {
