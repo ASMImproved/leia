@@ -65,10 +65,11 @@ export class EditSessionService {
             this.selectFile(file);
         });
         this.runService.continued.subscribe(() => {
-            console.log('continued');
-            if (this.breakpointMarker) {
-                this.breakpointMarker.session.ace.removeMarker(this.breakpointMarker.marker);
-                this.breakpointMarker = null;
+            this.removeBreakpointMarker();
+        });
+        this.runService.runStatusChanged.subscribe((running) => {
+            if(!running) {
+                this.removeBreakpointMarker();
             }
         });
 
@@ -78,6 +79,13 @@ export class EditSessionService {
                 this.closeSession(session);
             }
         });
+    }
+
+    public removeBreakpointMarker() {
+        if (this.breakpointMarker) {
+            this.breakpointMarker.session.ace.removeMarker(this.breakpointMarker.marker);
+            this.breakpointMarker = null;
+        }
     }
 
     public getOrCreateSession(file: File): Session {
