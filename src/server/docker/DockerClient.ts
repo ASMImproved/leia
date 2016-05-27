@@ -15,7 +15,8 @@ export class DockerClient{
         request.post({
             url: `http://unix:${this.unixSocketPath}:/containers/create`,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Host': 'localhost'
             },
             body: body,
             json: true
@@ -36,7 +37,10 @@ export class DockerClient{
 
     public startContainer(containerId, cb) {
         request.post({
-            url: `http://unix:${this.unixSocketPath}:/containers/${containerId}/start`
+            url: `http://unix:${this.unixSocketPath}:/containers/${containerId}/start`,
+            headers: {
+                'Host': 'localhost'
+            }
         }, (err, response, body) => {
             if(err) {
                 return cb(err);
@@ -52,7 +56,8 @@ export class DockerClient{
         let dockerRequestStream = request.put({
             url: `http://unix:${this.unixSocketPath}:/containers/${containerId}/archive?path=${absoluteDestinationPath}`,
             headers: {
-                'Content-Type': 'application/x-tar'
+                'Content-Type': 'application/x-tar',
+                'Host': 'localhost'
             }
         }, (err, response, body) => {
             if (err) {
@@ -70,7 +75,8 @@ export class DockerClient{
         request.post({
             url: `http://unix:${this.unixSocketPath}:/containers/${containerId}/exec`,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Host': 'localhost'
             },
             body: body,
             json: true
@@ -89,7 +95,8 @@ export class DockerClient{
                 url: `http://unix:${this.unixSocketPath}:/exec/${execId}/start`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Content-Length': execRequestBody.length
+                    'Content-Length': execRequestBody.length,
+                    'Host': 'localhost'
                 },
                 body: execRequestBody
             }, (err, response, body) => {
@@ -102,7 +109,10 @@ export class DockerClient{
                 let stdout = body, stderr = '';
                 request.get({
                     url: `http://unix:${this.unixSocketPath}:/exec/${execId}/json`,
-                    json: true
+                    json: true,
+                    headers: {
+                        'Host': 'localhost'
+                    }
                 }, (err, response, body) => {
                     if(err) {
                         return cb(err);
@@ -123,7 +133,8 @@ export class DockerClient{
         request.post({
             url: `http://unix:${this.unixSocketPath}:/containers/${containerId}/exec`,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Host': 'localhost'
             },
             body: body,
             json: true
@@ -147,7 +158,8 @@ export class DockerClient{
                     'Content-Length': execReqBody.length,
                     'Connection': 'Upgrade',
                     'Content-Type': 'application/json',
-                    'Upgrade': 'tcp'
+                    'Upgrade': 'tcp',
+                    'Host': 'localhost'
                 }
             });
             execReq.write(execReqBody);
@@ -165,7 +177,10 @@ export class DockerClient{
     public inspectExec(execId: string, cb) {
         request.get({
             url: `http://unix:${this.unixSocketPath}:/exec/${execId}/json`,
-            json: true
+            json: true,
+            headers: {
+                'Host': 'localhost'
+            }
         }, (err, response, body) => {
             if(err) {
                 return cb(err);
@@ -181,7 +196,10 @@ export class DockerClient{
         request({
             method: "DELETE",
             url: `http://unix:${this.unixSocketPath}:/containers/${containerId}?v=1&force=1`,
-            json: true
+            json: true,
+            headers: {
+                'host': 'localhost'
+            }
         }, (err, response, body) => {
             if(err) {
                 return cb(err);

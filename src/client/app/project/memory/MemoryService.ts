@@ -26,7 +26,7 @@ export class MemoryService {
         this.updateMemoryFrame(new MemoryFrame(this.HELLO_WORLD_ADDRESS, this.MEMORY_FRAME_SIZE));
     }
     
-    public get MemoryFrame() : MemoryFrame {
+    public get memoryFrame() : MemoryFrame {
         return this._frame;
     }
 

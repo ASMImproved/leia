@@ -47,8 +47,8 @@ export class MemoryComponent implements  OnInit{
                     }
                     this.matrix[rowOffset][colOffset][localOffset] = {
                         value: block.contents.substring(i, i + 2),
-                        address: this.memoryService.MemoryFrame.start + positionOffset,
-                        registers: this.addressInRegister(this.memoryService.MemoryFrame.start + positionOffset)
+                        address: this.memoryService.memoryFrame.start + positionOffset,
+                        registers: this.addressInRegister(this.memoryService.memoryFrame.start + positionOffset)
                     }
                 }
             });
@@ -68,7 +68,7 @@ export class MemoryComponent implements  OnInit{
     }
     
     private moveUp() {
-        let jumpAddress = this.memoryService.MemoryFrame.start + this.memoryService.MEMORY_FRAME_SIZE;
+        let jumpAddress = this.memoryService.memoryFrame.start + this.memoryService.MEMORY_FRAME_SIZE;
         if(jumpAddress < 0) {
             jumpAddress = 0;
         }
@@ -76,7 +76,7 @@ export class MemoryComponent implements  OnInit{
     } 
     
     private moveDown() {
-        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.MemoryFrame.start - this.memoryService.MEMORY_FRAME_SIZE, this.memoryService.MEMORY_FRAME_SIZE));
+        this.memoryService.updateMemoryFrame(new MemoryFrame(this.memoryService.memoryFrame.start - this.memoryService.MEMORY_FRAME_SIZE, this.memoryService.MEMORY_FRAME_SIZE));
     }
 
 
