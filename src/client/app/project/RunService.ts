@@ -7,7 +7,6 @@ import {NotificationService, NotificationLevel} from "./notification/Notificatio
 @Injectable()
 export class RunService {
     private _stdout: string = "";
-    private _gccErr: string = "";
     private _running: boolean = false;
     public runStatusChanged: EventEmitter<boolean> = new EventEmitter();
     public stopped: EventEmitter<ISourceLocation> = new EventEmitter();
@@ -21,17 +20,11 @@ export class RunService {
             this.setRunningState(false);
             console.log('exit');
         });
-        socketService.socket.on('gcc-error', (err) => {
-            this._gccErr = err.toString();
-            console.log(this._gccErr);
-        });
-        socketService.socket.on('programStopped', (programStoppedEvent: ProgramStoppedEvent) => {
-            console.log("programStopped");
-            console.log(programStoppedEvent);
+        socketService.subscribeToServerEvent('programStopped', (event) => {
+            let programStoppedEvent: ProgramStoppedEvent = event.payload;
             this.stopped.emit(programStoppedEvent.location);
         });
-        socketService.socket.on('programContinued', () => {
-            console.log("continue");
+        socketService.subscribeToServerEvent('programContinued', () => {
             this.continued.emit(null);
         });
     }
@@ -40,17 +33,12 @@ export class RunService {
         return this._stdout;
     }
 
-    get gccErr() {
-        return this._gccErr;
-    }
-
     get running() {
         return this._running;
     }
 
     run(project: Project) {
         this._stdout = "";
-        this._gccErr = "";
         console.log("run %s", project);
         this.socketService.sendCommand('run', {
             project: project
