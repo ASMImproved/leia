@@ -126,6 +126,9 @@ lea-console {
 		color: white;
 		padding: 5px;
     }
+	lea-console-output {
+		white-space: pre-wrap;
+	}
 }
 
 lea-memory {
