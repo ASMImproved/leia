@@ -68,29 +68,56 @@ export class RunCommand extends AbstractCommand<RunPayload> {
             executionContext.socketSession.emit('stdout', chunk, []);
         });
         mips.on('hitBreakpoint', (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
-            this.sendProgramStoppedEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
+            this.sendHitBreakpointEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
         });
         mips.on('programContinued', () => {
             this.executionContext.socketSession.emit("programContinued", {}, []);
+        });
+        mips.on('receivedSignal', (signal: dbgmits.ISignalReceivedEvent) => {
+            this.sendReceivedSignalEvent(signal);
         });
         mips.on('exit', (code: number, signal: string) => {
             this.sendExitEvent(code, signal);
         });
     }
 
-    sendProgramStoppedEvent(location: SourceLocation, breakpointId?: any) {
+    sendHitBreakpointEvent(location: SourceLocation, breakpointId?: any) {
         this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?: dbgmits.IMemoryBlock[], registers?: Registers) => {
             if(err) {
                 console.error(err);
-                return this.executionContext.socketSession.emit('programStopped', {
+                return this.executionContext.socketSession.emit('hitBreakpoint', {
                     location: location,
                     breakpointId: breakpointId
                 }, []);
             }
-            this.executionContext.socketSession.emit('programStopped', {
+            this.executionContext.socketSession.emit('hitBreakpoint', {
                 location: location,
                 breakpointId: breakpointId
             }, [new AnswerContext("memoryUpdate", memoryBlocks), new AnswerContext("registerUpdate", registers)]);
+        });
+    }
+    
+    private sendReceivedSignalEvent(signal: dbgmits.ISignalReceivedEvent) {
+        let context = [];
+        this.executionContext.socketSession.mipsSession.getStackFrame((err, stackFrame: dbgmits.IStackFrameInfo)=> {
+            if(err) {
+                console.error(err);
+            }
+            console.log(stackFrame);
+            this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?: dbgmits.IMemoryBlock[], registers?: Registers) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    context.push(new AnswerContext("memoryUpdate", memoryBlocks));
+                    context.push(new AnswerContext("registerUpdate", registers));
+                }
+
+                this.executionContext.socketSession.emit('receivedSignal', {
+                    signalName: signal.signalName,
+                    signalMeaning: signal.signalMeaning,
+                    location: stackFrame ?  (stackFrame.filename && stackFrame.line ? new SourceLocation(basename(stackFrame.filename), stackFrame.line) : undefined) : undefined
+                }, context);
+            });
         });
     }
 

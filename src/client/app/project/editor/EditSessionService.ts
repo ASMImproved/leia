@@ -13,6 +13,7 @@ import {ISourceLocation} from "../../../../common/Debugger";
 import {SymbolService} from "../SymbolService";
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
+import {NotificationService, NotificationLevel} from "../notification/NotificationService";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
@@ -27,7 +28,14 @@ export class EditSessionService {
     private activeSession: Session;
     private breakpointMarker: {marker: number, session: Session};
 
-    constructor(private fileNameEndingService: FileNameEndingService, private breakpointService: BreakpointService, private projectService: ProjectService, private runService: RunService, private symbolService: SymbolService) {
+    constructor(
+        private fileNameEndingService: FileNameEndingService,
+        private breakpointService: BreakpointService,
+        private projectService: ProjectService,
+        private runService: RunService,
+        private symbolService: SymbolService,
+        private notificationService: NotificationService
+    ) {
         this.setChanged = new EventEmitter();
         this.activeSessionChanged = new EventEmitter();
 
@@ -53,8 +61,15 @@ export class EditSessionService {
         });
 
         this.runService.stopped.subscribe((location: ISourceLocation) => {
-            console.log(location);
+            if(!location) {
+                this.notificationService.notify("Debugger stopped but no location information is available. Check for missing jr or faulty jumps.", NotificationLevel.Warn);
+                return;
+            }
             let file: File = this.projectService.getFileByName(location.filename);
+            if(!file) {
+                this.notificationService.notify("Debugger stopped in ${location.filename} with no source file available", NotificationLevel.Warn);
+                return;
+            }
             let session = this.getOrCreateSession(file);
             const row = location.line - 1;
             let breakpointLineMarker: number = session.ace.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);

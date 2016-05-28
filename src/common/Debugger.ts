@@ -1,4 +1,4 @@
-export interface ProgramStoppedEvent {
+export interface HitBreakpointEvent {
     location: SourceLocation;
     breakpointId?: number;
 }
