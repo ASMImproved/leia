@@ -70,6 +70,9 @@ export class RunCommand extends AbstractCommand<RunPayload> {
         mips.on('hitBreakpoint', (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
             this.sendHitBreakpointEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
         });
+        mips.on('hitWatchpoint', (watchpointEvent: dbgmits.IWatchpointTriggeredEvent) => {
+            this.sendWatchpointTriggeredEvent(new SourceLocation(basename(watchpointEvent.frame.filename), watchpointEvent.frame.line), watchpointEvent.watchpointId);
+        });
         mips.on('programContinued', () => {
             this.executionContext.socketSession.emit("programContinued", {}, []);
         });
@@ -78,6 +81,13 @@ export class RunCommand extends AbstractCommand<RunPayload> {
         });
         mips.on('exit', (code: number, signal: string) => {
             this.sendExitEvent(code, signal);
+        });
+    }
+
+    private sendWatchpointTriggeredEvent(location: SourceLocation, watchpointId:number) {
+        this.emitEventWithMachineState('hitWatchpoint', {
+            watchpointId,
+            location
         });
     }
 

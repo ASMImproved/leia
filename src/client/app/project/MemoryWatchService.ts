@@ -1,16 +1,35 @@
-import {Output, EventEmitter, Injectable} from 'angular2/core';
+import {Injectable} from 'angular2/core';
 import {SocketService} from "./socket/SocketService";
+import {RunService} from "./RunService";
+import {HitWatchpointEvent, HitBreakpointEvent} from "../../../common/Debugger";
+
+type WatchpointId = number;
 
 @Injectable()
 export class MemoryWatchService {
-    private _watchedCells: {[index:number]: number} = {};
+    /** maps address -> watchpointId */
+    private _watchedCells: {[index:number]: WatchpointId} = {};
+    private _brokenAddress: number = null;
 
-    public constructor(private socketService: SocketService) {
-
+    public constructor(
+        private socketService: SocketService,
+        private runService:RunService) {
+        runService.runStatusChanged.subscribe((running:boolean) => {
+            if (!running) {
+                this._watchedCells = {};
+                this._brokenAddress = null;
+            }
+        });
+        socketService.subscribeToServerEvent('hitWatchpoint', (event: {payload: HitWatchpointEvent}) => {
+            this._brokenAddress = this.addressForWatchId(event.payload.watchpointId);
+        });
+        runService.continued.subscribe(() => {
+            this._brokenAddress = null;
+        })
     }
 
     public watchCell(address: number) {
-        this.socketService.sendCommand('watchCell', address, (err, breakId: number, answerContexts) => {
+        this.socketService.sendCommand('watchCell', address, (err, breakId: number) => {
             if (err) {
                 return console.error(err);
             }
@@ -20,7 +39,7 @@ export class MemoryWatchService {
     }
 
     public unwatchCell(removedWatchId:number) {
-        this.socketService.sendCommand('removeCellWatch', removedWatchId, (err, answerContexts) => {
+        this.socketService.sendCommand('removeCellWatch', removedWatchId, (err) => {
             if (err) {
                 return console.error(err);
             }
@@ -33,11 +52,24 @@ export class MemoryWatchService {
         })
     }
 
-    public watchIdFor(number:number): number {
+    public watchId(number:number): number {
         if (this._watchedCells.hasOwnProperty(String(number))) {
             return this._watchedCells[number];
         } else {
             return null;
         }
+    }
+
+    public brokenBecauseOf(address: number) {
+        return address == this._brokenAddress;
+    }
+
+    private addressForWatchId(breakpointId:number): number {
+        for (let address in this._watchedCells) {
+            if (this._watchedCells[address] == breakpointId) {
+                return parseInt(address, 10);
+            }
+        }
+        return null;
     }
 }

@@ -52,8 +52,7 @@ export class MemoryComponent implements OnInit {
                     this.matrix[rowOffset][colOffset][localOffset] = {
                         value: block.contents.substring(i, i + 2),
                         address: address,
-                        registers: this.addressInRegister(address),
-                        watchId: this.memoryWatchService.watchIdFor(address)
+                        registers: this.addressInRegister(address)
                     }
                 }
             });
