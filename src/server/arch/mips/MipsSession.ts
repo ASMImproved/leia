@@ -394,7 +394,6 @@ export class MipsSession extends events.EventEmitter{
                     });
                 });
         Promise.all([registerValues, registerNames]).then(() => {
-            console.log(registers);
             cb(null, registers);
         }, (err) => {
             cb(err);
