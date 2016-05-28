@@ -61,7 +61,10 @@ export class EditSessionService {
         });
 
         this.runService.stopped.subscribe((location: ISourceLocation) => {
-            console.log(location);
+            if(!location) {
+                this.notificationService.notify("Debugger stopped but no location information is available. Check for missing jr or faulty jumps.", NotificationLevel.Warn);
+                return;
+            }
             let file: File = this.projectService.getFileByName(location.filename);
             if(!file) {
                 this.notificationService.notify("Debugger stopped in ${location.filename} with no source file available", NotificationLevel.Warn);
