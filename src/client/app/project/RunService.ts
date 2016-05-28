@@ -1,7 +1,7 @@
 import {Injectable, EventEmitter} from "angular2/core";
 import {SocketService} from "./socket/SocketService";
 import {Project} from "../../../common/Project";
-import {ProgramStoppedEvent, ISourceLocation} from "../../../common/Debugger";
+import {HitBreakpointEvent, ISourceLocation} from "../../../common/Debugger";
 import {NotificationService, NotificationLevel} from "./notification/NotificationService";
 
 @Injectable()
@@ -20,12 +20,17 @@ export class RunService {
             this.setRunningState(false);
             console.log('exit');
         });
-        socketService.subscribeToServerEvent('programStopped', (event) => {
-            let programStoppedEvent: ProgramStoppedEvent = event.payload;
+        socketService.subscribeToServerEvent('hitBreakpoint', (event) => {
+            let programStoppedEvent: HitBreakpointEvent = event.payload;
             this.stopped.emit(programStoppedEvent.location);
         });
         socketService.subscribeToServerEvent('programContinued', () => {
             this.continued.emit(null);
+        });
+        socketService.subscribeToServerEvent('receivedSignal', (event) => {
+            this.notificationService.notify(`Program received siganl ${event.payload.signalName} (${event.payload.signalMeaning})`, NotificationLevel.Error);
+            console.log('received signal', event.payload);
+            this.stopped.emit(event.payload.location);
         });
     }
 
@@ -65,7 +70,7 @@ export class RunService {
 
     step() {
         console.log("step");
-        this.socketService.sendCommand('step', {}, (err, answerPayload: ProgramStoppedEvent) => {
+        this.socketService.sendCommand('step', {}, (err, answerPayload: HitBreakpointEvent) => {
             this.stopped.emit(answerPayload.location);
         });
     }

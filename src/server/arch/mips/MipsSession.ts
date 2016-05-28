@@ -100,6 +100,11 @@ export class MipsSession extends events.EventEmitter{
                                 this._debugger.on(dbgmits.EVENT_TARGET_RUNNING, (threadId: string) => {
                                     this.emit("programContinued");
                                 });
+                                this._debugger.on(dbgmits.EVENT_SIGNAL_RECEIVED, (signal: dbgmits.ISignalReceivedEvent) => {
+                                    this._state = MipsSessionState.Broken;
+                                    console.log('received signal', signal);
+                                    this.emit("receivedSignal", signal);
+                                });
                                 cb();
                             }, (error) => {
                                 this._state = MipsSessionState.Error;
@@ -424,6 +429,16 @@ export class MipsSession extends events.EventEmitter{
                 });
             })
             .catch((err: any) => {
+                cb(err);
+            });
+    }
+
+    public getStackFrame(cb) {
+        this._debugger.getStackFrame()
+            .then((stackFrame: dbgmits.IStackFrameInfo)=> {
+                cb(null, stackFrame);
+            })
+            .catch((err) => {
                 cb(err);
             });
     }
