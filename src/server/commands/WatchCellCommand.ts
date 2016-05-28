@@ -10,7 +10,7 @@ export class WatchCellCommand extends AbstractCommand<number> {
     execute(address:number, executionContext:ExecutionContext, callback:CommandCallback) {
         const watchExpression = `*${address}`;
         console.log('watching', watchExpression);
-        executionContext.socketSession.mipsSession.addWatch(watchExpression, (err, watchId: string) => {
+        executionContext.socketSession.mipsSession.addWatchExpression(watchExpression, (err, watchId: number) => {
             if (err) {
                 return callback(err);
             }

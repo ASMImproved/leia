@@ -3,14 +3,14 @@ import {SocketService} from "./socket/SocketService";
 
 @Injectable()
 export class MemoryWatchService {
-    private _watchedCells: {[index:number]: string} = {};
+    private _watchedCells: {[index:number]: number} = {};
 
     public constructor(private socketService: SocketService) {
 
     }
 
     public watchCell(address: number) {
-        this.socketService.sendCommand('watchCell', address, (err, breakId: string, answerContexts) => {
+        this.socketService.sendCommand('watchCell', address, (err, breakId: number, answerContexts) => {
             if (err) {
                 return console.error(err);
             }
@@ -19,7 +19,7 @@ export class MemoryWatchService {
         })
     }
 
-    public unwatchCell(removedWatchId:string) {
+    public unwatchCell(removedWatchId:number) {
         this.socketService.sendCommand('removeCellWatch', removedWatchId, (err, answerContexts) => {
             if (err) {
                 return console.error(err);
@@ -33,7 +33,7 @@ export class MemoryWatchService {
         })
     }
 
-    public watchIdFor(number:number): string {
+    public watchIdFor(number:number): number {
         if (this._watchedCells.hasOwnProperty(String(number))) {
             return this._watchedCells[number];
         } else {

@@ -5,15 +5,15 @@ import {ISourceLocation} from "../../common/Debugger";
 @Command({
     name: 'removeCellWatch'
 })
-export class RemoveCellWatchCommand extends AbstractCommand<string> {
+export class RemoveCellWatchCommand extends AbstractCommand<number> {
 
-    execute(breakpointId:string, executionContext:ExecutionContext, callback:CommandCallback) {
-        executionContext.socketSession.mipsSession.removeWatch(breakpointId, (err) => {
+    execute(breakpointId:number, executionContext:ExecutionContext, callback:CommandCallback) {
+        executionContext.socketSession.mipsSession.removeWatchExpression(breakpointId, (err) => {
             callback(err);
         })
     }
 
-    public canUse(payload:any):payload is string {
-        return typeof payload == 'string';
+    public canUse(payload:any):payload is number {
+        return typeof payload == 'number';
     }
 }

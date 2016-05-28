@@ -10,7 +10,7 @@ import {MemoryWatchService} from "../MemoryWatchService";
     templateUrl: 'client/app/project/memory/memory.html'
 })
 export class MemoryComponent implements OnInit {
-    private matrix:Array<Array<Array<{value:string, address:number, registers:Array<Register>, watchId?: string}>>> = [];
+    private matrix:Array<Array<Array<{value:string, address:number, registers:Array<Register>, watchId?: number}>>> = [];
     private registers:Register[];
     private blocks;
 
@@ -88,7 +88,7 @@ export class MemoryComponent implements OnInit {
         this.memoryWatchService.watchCell(address);
     }
 
-    private unwatch(watchId:string) {
+    private unwatch(watchId:number) {
         this.memoryWatchService.unwatchCell(watchId);
     }
 
