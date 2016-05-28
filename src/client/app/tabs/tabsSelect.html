@@ -1,0 +1,6 @@
+<select (change)="selectTab($event.target.value)">
+    <option *ngFor="#tab of tabs" [value]="tab.tabTitle">
+        {{tab.tabTitle}}
+    </option>
+</select>
+<ng-content></ng-content>

@@ -1,35 +1,59 @@
 <header>
-	<button (click)="exit()">Exit</button>
 	<h2>{{_project.name}}</h2>
-	<button (click)="persist()">Download</button>
+
 	<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
-	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.continue()">Continue</button>
-	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.step()">Step</button>
-
-	<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runProject()">Run</button>
-	<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()">Stop</button>
+	<lea-header-group>
+		<button [disabled]="!runService.running || !socketService.connected" (click)="runService.continue()"><i class="fa fa-play"></i> Continue</button>
+		<button [disabled]="!runService.running || !socketService.connected" (click)="runService.step()"><i class="fa fa-step-forward"></i> Step</button>
+		<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runProject()"><i class="fa fa-play"></i> Run</button>
+		<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()"><i class="fa fa-stop"></i> Stop</button>
+	</lea-header-group>
+	<lea-header-group>
+		<button (click)="persist()"><i class="fa fa-download"></i> Download</button>
+		<button (click)="exit()"><i class="fa fa-sign-out" ></i> Exit</button>
+	</lea-header-group>
 </header>
-<div class="projectview">
-	<div class="file-structure">
-		<h4>Open Files</h4>
-		<ul>
-			<li *ngFor="#item of sessionSet"><span (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span><span class="close" (click)="closeSession(item.value)">[X]</span></li>
-		</ul>
-		<h4>Files</h4>
-		<ul>
-			<li *ngFor="#file of _project.files"><span (click)="selectFile(file)">{{file.name}}</span><span class="delete" (click)="deleteFile(file)">[Delete]</span></li>
-		</ul>
-		<new-file-form (newFile)="newFile($event)"></new-file-form>
-	</div>
-	<lea-editor>
-	</lea-editor>
-	<lea-registers></lea-registers>
-	<lea-symboltable></lea-symboltable>
-</div>
-<lea-console>
-	<h4>Console {{runService.running ? "- Running" : ""}}</h4>
-	<lea-console-output>{{runService.stdout}}</lea-console-output>
-</lea-console>
-<lea-memory>
-
-</lea-memory>
+<lea-project-view>
+	<lea-left-panel>
+		<lea-file-structure>
+			<h4>Open Files</h4>
+			<ul>
+				<li *ngFor="#item of sessionSet">
+					<span (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
+					<span class="close" (click)="closeSession(item.value)"><i class="fa fa-times-circle-o"></i></span>
+				</li>
+			</ul>
+			<h4>Files</h4>
+			<ul>
+				<li *ngFor="#file of _project.files">
+					<span (click)="selectFile(file)">{{file.name}}</span>
+					<span class="delete" (click)="deleteFile(file)"><i class="fa fa-trash-o"></i></span>
+				</li>
+			</ul>
+			<new-file-form (newFile)="newFile($event)"></new-file-form>
+		</lea-file-structure>
+	</lea-left-panel>
+	<lea-middle-panel>
+		<lea-editor>
+		</lea-editor>
+	</lea-middle-panel>
+	<lea-right-panel>
+		<lea-tabs-select>
+			<lea-tab-select tabTitle="Registers"><lea-registers></lea-registers></lea-tab-select>
+			<lea-tab-select tabTitle="Symbols"><lea-symboltable></lea-symboltable></lea-tab-select>
+		</lea-tabs-select>
+	</lea-right-panel>
+</lea-project-view>
+<lea-bottom-panel>
+	<lea-tabs-list>
+		<lea-tab-list tabTitle="Console">
+			<lea-console>
+				<lea-console-output>{{runService.stdout}}</lea-console-output>
+			</lea-console>
+		</lea-tab-list>
+		<lea-tab-list tabTitle="Memory">
+			<lea-memory>
+			</lea-memory>
+		</lea-tab-list>
+	</lea-tabs-list>
+</lea-bottom-panel>

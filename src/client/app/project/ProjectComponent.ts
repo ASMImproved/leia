@@ -18,11 +18,15 @@ import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
 import {NotificationService} from "./notification/NotificationService";
 import {RegisterService} from "./registers/RegisterService";
+import {TabsSelect} from "../tabs/TabsSelect";
+import {TabSelect} from "../tabs/TabSelect";
+import {TabsList} from "../tabs/TabsList";
+import {TabList} from "../tabs/TabList";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
-    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent],
+    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent, TabsSelect, TabSelect, TabsList, TabList],
 	providers: [
 		SocketService,
 		RunService,

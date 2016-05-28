@@ -1,17 +1,62 @@
+$primary-color: #79C3E6;
+
 body {
 	background-color: white;
 	margin: 0px;
 	font-family: arial;
 }
 
-.projectview {
+lea-project-view {
 	display: flex;
 	flex-flow: row wrap;
+	lea-tabs-select {
+		select {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+			width: 100%;
+			border: none;
+			background-color: $primary-color;
+			color: white;
+			padding: 5px;
+		}
+	}
+	lea-middle-panel {
+		order: 2;
+		flex-grow: 8;
+	}
+	lea-right-panel {
+		order: 3;
+		flex-grow: 1;
+	}
+	lea-left-panel {
+		order: 1;
+		flex-grow: 1;
+	}
+}
+
+lea-bottom-panel {
+	.lea-tabs {
+		list-style: none;
+		display: flex;
+		flex-flow: row wrap;
+		background: $primary-color;
+		color: white;
+		margin: 0px;
+		padding: 0px;
+		li {
+			padding: 5px;
+			&:hover {
+				text-decoration: underline;
+			}
+			&.active {
+				font-weight: bold;
+			}
+		}
+	}
 }
 
 lea-editor {
-	order: 2;
-	flex-grow: 8;
     h4 {
     	margin: 0;
 		background-color: #79C3E6;
@@ -36,9 +81,7 @@ ace-editor {
 	background: lightpink;
 }
 
-.file-structure {
-	order: 1;
-	flex-grow: 1;
+lea-file-structure {
 	h4{
 		background-color: #79C3E6;
 		color: white;
@@ -67,32 +110,18 @@ ace-editor {
 }
 
 lea-registers {
-	order: 3;
-	flex-grow: 1;
-
-	h4 {
-		background-color: #79C3E6;
-		color: white;
-		margin: 0;
-		padding: 10px;
-	}
-
   	table {
+		width: 100%;
 		font-family: monospace;
+		tr {
+			td:first-child {
+				padding-left: 5px;
+			}
+		}
 	}
 }
 
 lea-symboltable {
-  order: 4;
-  flex-grow: 1;
-
-  h4 {
-	background-color: #79C3E6;
-	color: white;
-	margin: 0;
-	padding: 10px;
-  }
-
   table {
 	font-family: monospace;
   }
@@ -117,8 +146,6 @@ new-file-form {
 
 lea-console {
 	display: block;
-    padding: 5px 10px;
-    font-family: courier new;
     background-color: #E8E8E8;
     h4 {
     	margin: 0;
@@ -127,7 +154,9 @@ lea-console {
 		padding: 5px;
     }
 	lea-console-output {
+		font-family: courier new;
 		white-space: pre-wrap;
+		padding: 5px 10px;
 	}
 }
 
