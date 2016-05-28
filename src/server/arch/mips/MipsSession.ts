@@ -302,6 +302,9 @@ export class MipsSession extends events.EventEmitter{
                 .setExecutableFile(MipsSession.ELF_FILE_LOCATION)
                 .then(() => {
                     return this._debugger.connectToRemoteTarget("127.0.0.1", MipsSession.GDB_PORT);
+                })
+                .then(() => {
+                    return this._debugger.gdbSet("can-use-hw-watchpoints", String(0));
                 });
             return cb(null, debuggerStartedPromise);
         });
