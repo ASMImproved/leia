@@ -33,7 +33,6 @@ export class SymbolService {
         socketService.subscribeToContext('symbolUpdate', (symbolContext: AnswerContext) => {
             let symbolTable: SymbolTable = symbolContext.payload;
             let newSymbols: Symbol[] = [];
-            console.log(`received raw: ${JSON.stringify(symbolTable)}`);
             for (let rawSymbol of symbolTable) {
                 newSymbols.push(<Symbol>{
                     name: rawSymbol.name,
@@ -43,7 +42,6 @@ export class SymbolService {
                     file: projectService.getFileByName(rawSymbol.filename)
                 });
             }
-            console.log(`received symbols: ${JSON.stringify(newSymbols)}`);
             this._symbolsSource.next(newSymbols);
         });
     }
