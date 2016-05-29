@@ -49,6 +49,10 @@ export class ProjectComponent implements OnInit{
 	private socketService: SocketService;
 	@Output() exitRequest: EventEmitter<any> = new EventEmitter<any>();
 
+	private rightPanelSize: number = 1;
+	private leftPanelSize: number = 1;
+	private bottomPanelSize: number = 1;
+
 	constructor(
 		socketService: SocketService,
 		private runService: RunService,
@@ -58,6 +62,34 @@ export class ProjectComponent implements OnInit{
 		private notificationService: NotificationService
 	) {
 		this.socketService = socketService;
+	}
+
+	growLeftPanel() {
+		this.leftPanelSize++;
+	}
+
+	shrinkLeftPanel() {
+		if(this.leftPanelSize > 1)
+			this.leftPanelSize--;
+	}
+
+	growRightPanel() {
+		this.rightPanelSize++;
+	}
+
+	shrinkRightPanel() {
+		if(this.rightPanelSize > 1)
+			this.rightPanelSize--;
+	}
+
+	growBottomPanel() {
+		this.bottomPanelSize++;
+	}
+
+	shrinkBottomPanel() {
+		if(this.bottomPanelSize > 1) {
+			this.bottomPanelSize--;
+		}
 	}
 
 	ngOnInit() {

@@ -1,4 +1,4 @@
-<header>
+<lea-header>
 	<h2>{{_project.name}}</h2>
 
 	<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
@@ -12,9 +12,9 @@
 		<button (click)="persist()"><i class="fa fa-download"></i> Download</button>
 		<button (click)="exit()"><i class="fa fa-sign-out" ></i> Exit</button>
 	</lea-header-group>
-</header>
+</lea-header>
 <lea-project-view>
-	<lea-left-panel>
+	<lea-left-panel [ngStyle]="{'flex-grow': leftPanelSize}">
 		<lea-file-structure>
 			<h4>Open Files</h4>
 			<ul>
@@ -32,19 +32,27 @@
 			</ul>
 			<new-file-form (newFile)="newFile($event)"></new-file-form>
 		</lea-file-structure>
+		<lea-resize-panel>
+			<button (click)="shrinkLeftPanel()"><i class="fa fa-long-arrow-left"></i></button>
+			<button (click)="growLeftPanel()"><i class="fa fa-long-arrow-right"></i></button>
+		</lea-resize-panel>
 	</lea-left-panel>
 	<lea-middle-panel>
 		<lea-editor>
 		</lea-editor>
 	</lea-middle-panel>
-	<lea-right-panel>
+	<lea-right-panel [ngStyle]="{'flex-grow': rightPanelSize}">
 		<lea-tabs-select>
 			<lea-tab-select tabTitle="Registers"><lea-registers></lea-registers></lea-tab-select>
 			<lea-tab-select tabTitle="Symbols"><lea-symboltable></lea-symboltable></lea-tab-select>
 		</lea-tabs-select>
+		<lea-resize-panel>
+			<button (click)="growRightPanel()"><i class="fa fa-long-arrow-left"></i></button>
+			<button (click)="shrinkRightPanel()"><i class="fa fa-long-arrow-right"></i></button>
+		</lea-resize-panel>
 	</lea-right-panel>
 </lea-project-view>
-<lea-bottom-panel>
+<lea-bottom-panel [ngStyle]="{'flex-grow': bottomPanelSize}">
 	<lea-tabs-list>
 		<lea-tab-list tabTitle="Console">
 			<lea-console>
@@ -56,4 +64,8 @@
 			</lea-memory>
 		</lea-tab-list>
 	</lea-tabs-list>
+	<lea-resize-panel>
+		<button (click)="growBottomPanel()"><i class="fa fa-long-arrow-up"></i></button>
+		<button (click)="shrinkBottomPanel()"><i class="fa fa-long-arrow-down"></i></button>
+	</lea-resize-panel>
 </lea-bottom-panel>
