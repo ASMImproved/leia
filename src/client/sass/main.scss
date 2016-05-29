@@ -7,113 +7,131 @@ body {
 }
 
 lea-project {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-
-	display: flex;
-	flex-direction: column;
-
-	lea-header {
-		order: 1;
-		flex-grow: 0;
-		justify-content: space-between;
-		display: flex;
-		flex-wrap: nowrap;
-		padding: 10px 20px;
-		background-color: #3E3E3E;
-		color: white;
-		h2 {
-			margin: 0px;
-		}
-	}
-
-	lea-project-view {
-		order: 2;
-		flex-grow: 8;
+	lea-project-panel {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
 
 		display: flex;
-		flex-flow: row wrap;
-		lea-tabs-select {
-			select {
-				-webkit-appearance: none;
-				-moz-appearance: none;
-				appearance: none;
-				width: 100%;
-				border: none;
-				background-color: $primary-color;
-				color: white;
-				padding: 5px;
+		flex-direction: column;
+
+		lea-header {
+			order: 1;
+			flex-grow: 0;
+			justify-content: space-between;
+			display: flex;
+			flex-wrap: nowrap;
+			padding: 10px 20px;
+			background-color: #3E3E3E;
+			color: white;
+			h2 {
+				margin: 0px;
 			}
 		}
-		lea-left-panel {
-			order: 1;
 
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-		}
-		lea-middle-panel {
+		lea-project-view {
 			order: 2;
 			flex-grow: 8;
-		}
-		lea-right-panel {
-			order: 3;
 
 			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-		}
-		lea-resize-panel {
-			display: flex;
-			justify-content: space-between;
-			button {
-				flex-grow: 1;
-			}
-		}
-	}
-
-	lea-bottom-panel {
-		order: 3;
-
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-
-		lea-tabs-list {
-			order: 1;
-			flex-grow: 1;
-
-			.lea-tabs {
-				list-style: none;
-				display: flex;
-				flex-flow: row wrap;
-				background: $primary-color;
-				color: white;
-				margin: 0px;
-				padding: 0px;
-				li {
+			flex-flow: row wrap;
+			lea-tabs-select {
+				select {
+					-webkit-appearance: none;
+					-moz-appearance: none;
+					appearance: none;
+					width: 100%;
+					border: none;
+					background-color: $primary-color;
+					color: white;
 					padding: 5px;
-					&:hover {
-						text-decoration: underline;
-					}
-					&.active {
-						font-weight: bold;
-					}
+				}
+			}
+			lea-left-panel {
+				order: 1;
+
+				display: flex;
+				left {
+					flex-grow: 1;
+
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+				}
+			}
+			lea-middle-panel {
+				order: 2;
+				flex-grow: 8;
+			}
+			lea-right-panel {
+				order: 3;
+
+				display: flex;
+				right {
+					flex-grow: 1;
+
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+				}
+			}
+			lea-resize-panel {
+				display: flex;
+				justify-content: space-between;
+				button {
+					flex-grow: 1;
 				}
 			}
 		}
 
-		lea-resize-panel {
-			order: 2;
+		lea-bottom-panel {
+			order: 3;
 
 			display: flex;
-			justify-content: space-between;
-			flex-direction: column;
-			button {
+			flex-direction: row;
+			bottom {
 				flex-grow: 1;
+				
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				lea-tabs-list {
+					order: 1;
+					flex-grow: 1;
+
+					.lea-tabs {
+						list-style: none;
+						display: flex;
+						flex-flow: row wrap;
+						background: $primary-color;
+						color: white;
+						margin: 0px;
+						padding: 0px;
+						li {
+							padding: 5px;
+							&:hover {
+								text-decoration: underline;
+							}
+							&.active {
+								font-weight: bold;
+							}
+						}
+					}
+				}
+			}
+
+			lea-resize-panel {
+				order: 2;
+
+				display: flex;
+				justify-content: space-between;
+				flex-direction: column;
+				button {
+					flex-grow: 1;
+				}
 			}
 		}
 	}
