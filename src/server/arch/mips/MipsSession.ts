@@ -486,14 +486,10 @@ export class MipsSession extends events.EventEmitter{
         });
     }
 
-    public addBreakpoint(location: ISourceLocation, cb: (err, breakpoint?) => any) {
-        this._debugger.addBreakpoint(location.locationString)
+    public addBreakpoint(expression: string, cb: (err, breakpoint?) => any) {
+        this._debugger.addBreakpoint(expression)
             .then((breakpoint: dbgmits.IBreakpointInfo) => {
-                cb(null, {
-                    location: location,
-                    pending: breakpoint.pending !== undefined,
-                    id: breakpoint.id
-                });
+                cb(null, breakpoint);
             })
             .catch((err: any) => {
                 cb(err);

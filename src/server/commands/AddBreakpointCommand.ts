@@ -8,12 +8,17 @@ import {ISourceLocation} from "../../common/Debugger";
 })
 export class AddBreakpointCommand extends AbstractCommand<ISourceLocation> {
 
-    execute(payload:any, executionContext:ExecutionContext, callback:CommandCallback) {
-        executionContext.socketSession.mipsSession.addBreakpoint(payload, (err, breakpoint) => {
+    execute(location:ISourceLocation, executionContext:ExecutionContext, callback:CommandCallback) {
+
+        executionContext.socketSession.mipsSession.addBreakpoint(location.locationString, (err, breakpoint) => {
             if(err) {
                 return callback(err);
             }
-            callback(null, breakpoint);
+            callback(null, {
+                location: location.locationString,
+                pending: breakpoint.pending !== undefined,
+                id: breakpoint.id
+            });
         });
     }
 
