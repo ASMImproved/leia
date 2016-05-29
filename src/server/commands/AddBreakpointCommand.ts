@@ -9,15 +9,20 @@ import {ISourceLocation} from "../../common/Debugger";
 export class AddBreakpointCommand extends AbstractCommand<ISourceLocation> {
 
     execute(location:ISourceLocation, executionContext:ExecutionContext, callback:CommandCallback) {
-
-        executionContext.socketSession.mipsSession.addBreakpoint(location.locationString, (err, breakpoint) => {
-            if(err) {
+        executionContext.socketSession.mipsSession.getAddressForLocation(location, (err, address?: number) => {
+            console.log(`address for ${location.locationString} is ${address}`);
+            if (err) {
                 return callback(err);
             }
-            callback(null, {
-                location: location.locationString,
-                pending: breakpoint.pending !== undefined,
-                id: breakpoint.id
+            executionContext.socketSession.mipsSession.addBreakpoint(`*${address}`, (err, breakpoint) => {
+                if(err) {
+                    return callback(err);
+                }
+                callback(null, {
+                    location: location.locationString,
+                    pending: breakpoint.pending !== undefined,
+                    id: breakpoint.id
+                });
             });
         });
     }

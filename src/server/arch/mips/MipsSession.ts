@@ -15,6 +15,7 @@ import {Registers, ISourceLocation} from "../../../common/Debugger";
 import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
 import async = require('async');
 import {DockerExecInstance} from "../../docker/DockerExecInstance";
+import {ISourceAddress} from "asmimproved-dbgmits/lib/index";
 import {SymbolTable, RawSymbol} from "../../../common/SymbolTable";
 import {basename} from "path";
 
@@ -491,9 +492,7 @@ export class MipsSession extends events.EventEmitter{
             .then((breakpoint: dbgmits.IBreakpointInfo) => {
                 cb(null, breakpoint);
             })
-            .catch((err: any) => {
-                cb(err);
-            });
+            .catch(cb);
     }
 
     public getStackFrame(cb) {
@@ -501,9 +500,7 @@ export class MipsSession extends events.EventEmitter{
             .then((stackFrame: dbgmits.IStackFrameInfo)=> {
                 cb(null, stackFrame);
             })
-            .catch((err) => {
-                cb(err);
-            });
+            .catch(cb);
     }
 
     public removeBreakpoint(breakpointId:number, cb:(err)=> any) {
@@ -511,9 +508,25 @@ export class MipsSession extends events.EventEmitter{
             .then(() => {
                 cb(null);
             })
-            .catch((err) => {
-                cb(err);
+            .catch(cb)
+    }
+
+    getAddressForLocation(location:ISourceLocation, cb:(err, address?:number)=>void) {
+        this._debugger.getSourceAddresses(location.filename)
+            .then((addresses: ISourceAddress[]) => {
+                let address: number = null;
+                addresses.forEach((sourceAddress: ISourceAddress) => {
+                    if (sourceAddress.line == location.line) {
+                        address = sourceAddress.pc;
+                    }
+                });
+                if (address) {
+                    cb(null, address);
+                } else {
+                    cb(new Error(`Could not find address for ${location.locationString}`));
+                }
             })
+            .catch(cb)
     }
 
     public addWatchExpression(expression: string, cb: (err, id?: number) => any) {
