@@ -3,12 +3,16 @@ import {Injectable} from "angular2/core";
 import {BehaviorSubject} from 'rxjs/Rx'
 import {Project} from "../../../common/Project";
 import {ProjectService} from "./ProjectService";
+import {SocketService} from "./socket/SocketService";
+import {AnswerContext} from "../../../common/AnswerContext";
+import {SymbolTable, RawSymbol} from "../../../common/SymbolTable";
 
 export interface Symbol {
     global?: boolean;
     name: string;
     file: File;
     line: number;
+    address?: number;
 }
 
 //TODO regex are too easy and will find elements within strings, too
@@ -20,10 +24,28 @@ export class SymbolService {
     private _symbolsSource = new BehaviorSubject<Symbol[]>([]);
     public symbolsChanged$ = this._symbolsSource.asObservable();
 
-    constructor(private projectService: ProjectService) {
+    constructor(
+        private projectService: ProjectService,
+        private socketService: SocketService) {
         projectService.projectChanged$.subscribe((project: Project) => {
             this.parseProject(project);
-        })
+        });
+        socketService.subscribeToContext('symbolUpdate', (symbolContext: AnswerContext) => {
+            let symbolTable: SymbolTable = symbolContext.payload;
+            let newSymbols: Symbol[] = [];
+            console.log(`received raw: ${JSON.stringify(symbolTable)}`);
+            for (let rawSymbol of symbolTable) {
+                newSymbols.push(<Symbol>{
+                    name: rawSymbol.name,
+                    global: rawSymbol.global,
+                    line: rawSymbol.line,
+                    address: rawSymbol.address,
+                    file: projectService.getFileByName(rawSymbol.filename)
+                });
+            }
+            console.log(`received symbols: ${JSON.stringify(newSymbols)}`);
+            this._symbolsSource.next(newSymbols);
+        });
     }
 
     public get symbols(): Symbol[] {

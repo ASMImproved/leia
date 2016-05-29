@@ -49,14 +49,19 @@ export class RunCommand extends AbstractCommand<RunPayload> {
                 return callback(err);
             }
             mips.debuggerStartedPromise.then(() => {
-                console.log('bug started promise resolved');
-                mips.readMemory(executionContext.socketSession.memoryFrame, (err, blocks) => {
-                    if(err) {
+                console.log('debugger started promise resolved');
+                mips.readMemory(executionContext.socketSession.memoryFrame, (err, memoryUpdate) => {
+                    if (err) {
                         return callback(err);
                     }
-                    callback(null, {
-                        ok: true
-                    }, [new AnswerContext("memoryUpdate", blocks)]);
+                    const memoryContext = new AnswerContext("memoryUpdate", memoryUpdate);
+                    mips.readSymbols((err, symbolUpdate) => {
+                        if (err) {
+                            return callback(err);
+                        }
+                        const symbolContext = new AnswerContext("symbolUpdate", symbolUpdate);
+                        callback(null, {ok: true}, [memoryContext, symbolContext]);
+                    });
                 });
             }, (err) => {
                 console.error('bug started promise rejected', err);

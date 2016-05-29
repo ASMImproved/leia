@@ -17,6 +17,7 @@ for objectFile in `echo *.o`; do
 	nmOutput="$(nm -f b -l --defined-only $objectFile)"
 
 	while read line; do
+		    type="`echo $line | awk -F " " '{print $2}'`"
 		    name="`echo $line | awk -F " " '{print $3}'`"
 		location="`echo $line | awk -F " " '{print $4}'`"
 
@@ -24,7 +25,7 @@ for objectFile in `echo *.o`; do
 			location="${file}.s"
 		fi
 
-		symbols="${symbols}${name} ${location}
+		symbols="${symbols}${name} ${location} ${type}
 "
 	done <<< "$nmOutput"
 done
@@ -38,11 +39,16 @@ printf '[\n'
 while read line; do
 	    name="`echo $line | awk -F " " '{print $1}'`"
 	location="`echo $line | awk -F " " '{print $2}'`"
+	    type="`echo $line | awk -F " " '{print $3}'`"
 
 	linkedLine="`echo "$linkedNmOutput" | grep -E "\\s$name\\s"`"
 
-	address="`echo $linkedLine | awk -F " " '{print $1}'`"
-	   type="`echo $linkedLine | awk -F " " '{print $2}'`"
+		    address="`echo $linkedLine | awk -F " " '{print $1}'`"
+	    linked_type="`echo $linkedLine | awk -F " " '{print $2}'`"
+
+	   	if [ "$linked_type" != "" ]; then
+	   		type="$linked_type"
+		fi
 
  	cat <<EOF
 {"address":"${address}","name":"${name}","location":"${location}","type":"${type}"}
