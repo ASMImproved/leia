@@ -10,7 +10,7 @@ import {MemoryWatchService} from "../MemoryWatchService";
     templateUrl: 'client/app/project/memory/memory.html'
 })
 export class MemoryComponent implements OnInit {
-    private matrix:Array<Array<Array<{value:string, address:number, registers:Array<Register>, watchId?: number}>>> = [];
+    private matrix:Array<Array<Array<{value:string, address:number, registers:Array<Register>}>>> = [];
     private registers:Register[];
     private blocks;
 
