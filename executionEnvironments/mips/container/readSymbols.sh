@@ -41,7 +41,7 @@ while read line; do
 	location="`echo $line | awk -F " " '{print $2}'`"
 	    type="`echo $line | awk -F " " '{print $3}'`"
 
-	linkedLine="`echo "$linkedNmOutput" | grep -E "\\s$name\\s"`"
+	linkedLine="`echo "$linkedNmOutput" | grep -E "\\s$name(\\s|$)"`"
 
 		    address="`echo $linkedLine | awk -F " " '{print $1}'`"
 	    linked_type="`echo $linkedLine | awk -F " " '{print $2}'`"
