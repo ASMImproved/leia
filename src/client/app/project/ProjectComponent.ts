@@ -18,11 +18,12 @@ import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
 import {NotificationService} from "./notification/NotificationService";
 import {RegisterService} from "./registers/RegisterService";
+import {EditableComponent} from "./editable/EditableComponent";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
-    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent],
+    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent, EditableComponent],
 	providers: [
 		SocketService,
 		RunService,
@@ -37,7 +38,8 @@ import {RegisterService} from "./registers/RegisterService";
 	]
 })
 export class ProjectComponent implements OnInit{
-	private _project: Project;
+	// default value is required by Angular's change detection
+	private _project: Project = new Project('Skeleton Project');
 	private sessionSet: Array<{key; value}> = [];
 	/**
 	 * required in the HTML code
