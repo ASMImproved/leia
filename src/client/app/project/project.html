@@ -1,6 +1,6 @@
 <header>
 	<button (click)="exit()">Exit</button>
-	<h2>{{_project.name}}</h2>
+	<h2><editable [(text)]="_project.name"></editable></h2>
 	<button (click)="persist()">Download</button>
 	<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
 	<button [disabled]="!runService.running || !socketService.connected" (click)="runService.continue()">Continue</button>
