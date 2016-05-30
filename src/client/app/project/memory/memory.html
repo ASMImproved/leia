@@ -1,8 +1,13 @@
-<button (click)="moveDown()">&#60;-</button>
-<button (click)="moveUp()">-&#62;</button>
-<span>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</span>
-<table>
-    <tr *ngFor="#row of matrix">
-        <td *ngFor="#cell of row">0x<span *ngFor="#byte of cell"><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span>{{byte.value}}</span></td>
-    </tr>
-</table>
+<lea-memory-header>
+    <button (click)="moveDown()"><i class="fa fa-long-arrow-left"></i></button>
+    <h3>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</h3>
+    <button (click)="moveUp()"><i class="fa fa-long-arrow-right"></i></button>
+</lea-memory-header>
+
+<lea-memory-content>
+    <table>
+        <tr *ngFor="#row of matrix">
+            <td *ngFor="#cell of row">0x<span *ngFor="#byte of cell"><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span>{{byte.value}}</span></td>
+        </tr>
+    </table>
+</lea-memory-content>

@@ -17,16 +17,19 @@
 	<left>
 		<lea-file-structure>
 			<h4>Open Files</h4>
+			<lea-file-structure-no-open-file *ngIf="sessionSet.length == 0">
+				<span>No open files</span>
+			</lea-file-structure-no-open-file>
 			<ul>
 				<li *ngFor="#item of sessionSet">
-					<span (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
+					<span class="name" (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
 					<span class="close" (click)="closeSession(item.value)"><i class="fa fa-times-circle-o"></i></span>
 				</li>
 			</ul>
 			<h4>Files</h4>
 			<ul>
 				<li *ngFor="#file of _project.files">
-					<span (click)="selectFile(file)">{{file.name}}</span>
+					<span class="name" (click)="selectFile(file)">{{file.name}}</span>
 					<span class="delete" (click)="deleteFile(file)"><i class="fa fa-trash-o"></i></span>
 				</li>
 			</ul>

@@ -3,11 +3,10 @@ import {TabsSelect} from "./TabsSelect";
 
 @Component({
     selector: 'lea-tab-select',
-    template: `
-    <container [hidden]="!active">
-      <ng-content></ng-content>
-    </container>
-  `
+    host: {
+        '[style]': 'styleAsString()'
+    },
+    template: `<ng-content></ng-content>`
 })
 export class TabSelect {
 
@@ -16,5 +15,13 @@ export class TabSelect {
 
     constructor(tabs: TabsSelect) {
         tabs.addTab(this);
+    }
+
+    styleAsString() {
+        let style = {
+            display: this.active ? 'inherit' : 'none'
+        };
+
+        return JSON.stringify(style).replace('{', '').replace('}', '').replace(/"/g, '');
     }
 }
