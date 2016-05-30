@@ -10,9 +10,12 @@ describe("SymbolService", () => {
              subscribe: (observer: Function) => {}
         }
     };
+    var socketService: any = {
+        subscribeToContext: (name: string, cb: any) => {}
+    };
 
     beforeEach(() => {
-        symbolService = new SymbolService(projectService);
+        symbolService = new SymbolService(projectService, socketService);
     });
 
     it("recognizes a local label", () => {

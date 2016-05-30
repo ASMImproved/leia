@@ -2,10 +2,10 @@
 <table>
 	<tr><th>Globals</th></tr>
 	<tr *ngFor="#symbol of globalSymbols">
-		<td><a (click)="goto(symbol)">{{symbol.name}}</a></td>
+		<td><a (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</a> <a (click)="gotoMemory(symbol)">[Go]</a></td>
 	</tr>
 	<tr><th>Locals</th></tr>
 	<tr *ngFor="#symbol of localSymbols">
-		<td><a (click)="goto(symbol)">{{symbol.name}}</a></td>
+		<td><a (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</a> <a *ngIf="symbol.address" (click)="gotoMemory(symbol)">[Go]</a></td>
 	</tr>
 </table>

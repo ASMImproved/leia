@@ -3,21 +3,25 @@ import {MemoryService} from "./MemoryService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
 import {RegisterService} from "../registers/RegisterService";
 import {Register} from "../../../../common/Debugger";
+import {SymbolService, Symbol} from "../SymbolService";
 import {MemoryWatchService} from "../MemoryWatchService";
 
 @Component({
     selector: 'lea-memory',
     templateUrl: 'client/app/project/memory/memory.html'
 })
-export class MemoryComponent implements OnInit {
-    private matrix:Array<Array<Array<{value:string, address:number, registers:Array<Register>}>>> = [];
-    private registers:Register[];
+export class MemoryComponent implements  OnInit{
+    private matrix: Array<Array<Array<{value: string, address: number, registers: Array<Register>, symbols: Array<Symbol>}>>> = [];
+    private registers: Register[];
+    private symbols: Symbol[];
     private blocks;
 
-    public constructor(private memoryService:MemoryService,
-                       private registerService:RegisterService,
-                       private memoryWatchService:MemoryWatchService) {
-        for (let i:number = 0; i < this.memoryService.ROWS; i++) {
+    public constructor(
+        private memoryService: MemoryService,
+        private registerService: RegisterService,
+        private symbolService: SymbolService,
+        private memoryWatchService:MemoryWatchService) {
+        for (let i: number = 0; i < this.memoryService.ROWS; i++) {
             this.matrix[i] = [];
         }
     }
@@ -29,6 +33,10 @@ export class MemoryComponent implements OnInit {
         });
         this.registerService.registersChanged$.subscribe((registers:Register[]) => {
             this.registers = registers;
+            this.computeMatrix();
+        });
+        this.symbolService.symbolsChanged$.subscribe((symbols: Symbol[]) => {
+            this.symbols = symbols;
             this.computeMatrix();
         });
     }
@@ -52,7 +60,8 @@ export class MemoryComponent implements OnInit {
                     this.matrix[rowOffset][colOffset][localOffset] = {
                         value: block.contents.substring(i, i + 2),
                         address: address,
-                        registers: this.addressInRegister(address)
+                        registers: this.addressInRegister(address),
+                        symbols: this.symbolsForAddress(address)
                     }
                 }
             });
@@ -71,6 +80,18 @@ export class MemoryComponent implements OnInit {
         return matchRegisters;
     }
 
+    private symbolsForAddress(address: number) : Array<Symbol> {
+        let matchSymbols: Array<Symbol> = [];
+        if(this.symbols) {
+            this.symbols.forEach((symbol: Symbol) => {
+                if(address == symbol.address) {
+                    matchSymbols.push(symbol);
+                }
+            });
+        }
+        return matchSymbols;
+    }
+    
     private moveUp() {
         let jumpAddress = this.memoryService.memoryFrame.start + this.memoryService.MEMORY_FRAME_SIZE;
         if (jumpAddress < 0) {
