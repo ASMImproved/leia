@@ -3,6 +3,11 @@ export interface HitBreakpointEvent {
     breakpointId?: number;
 }
 
+export interface HitWatchpointEvent {
+    location: SourceLocation;
+    watchpointId?: number;
+}
+
 export interface Breakpoint {
     location: ISourceLocation;
     pending?: boolean;

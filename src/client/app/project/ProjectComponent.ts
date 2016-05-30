@@ -13,6 +13,7 @@ import {ProjectService} from "./ProjectService";
 import {BreakpointService} from "./BreakpointService";
 import {MemoryService} from "./memory/MemoryService";
 import {MemoryComponent} from "./memory/MemoryComponent";
+import {MemoryWatchService} from "./MemoryWatchService";
 import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
@@ -32,6 +33,7 @@ import {EditableComponent} from "./editable/EditableComponent";
 		ProjectService,
 		BreakpointService,
 		MemoryService,
+		MemoryWatchService,
 		SymbolService,
 		NotificationService,
 		RegisterService

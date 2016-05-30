@@ -97,6 +97,10 @@ export class MipsSession extends events.EventEmitter{
                                     this._state = MipsSessionState.Broken;
                                     this.emit("hitBreakpoint", stoppedEvent);
                                 });
+                                this._debugger.on(dbgmits.EVENT_WATCHPOINT_TRIGGERED, (watchpointEvent: dbgmits.IWatchpointTriggeredEvent) => {
+                                    this._state = MipsSessionState.Broken;
+                                    this.emit("hitWatchpoint", watchpointEvent);
+                                });
                                 this._debugger.on(dbgmits.EVENT_TARGET_RUNNING, (threadId: string) => {
                                     this.emit("programContinued");
                                 });
@@ -302,6 +306,9 @@ export class MipsSession extends events.EventEmitter{
                 .setExecutableFile(MipsSession.ELF_FILE_LOCATION)
                 .then(() => {
                     return this._debugger.connectToRemoteTarget("127.0.0.1", MipsSession.GDB_PORT);
+                })
+                .then(() => {
+                    return this._debugger.gdbSet("can-use-hw-watchpoints", String(0));
                 });
             return cb(null, debuggerStartedPromise);
         });
@@ -442,7 +449,7 @@ export class MipsSession extends events.EventEmitter{
             });
     }
 
-    removeBreakpoint(breakpointId:number, cb:(err)=> any) {
+    public removeBreakpoint(breakpointId:number, cb:(err)=> any) {
         this._debugger.removeBreakpoint(breakpointId)
             .then(() => {
                 cb(null);
@@ -450,5 +457,19 @@ export class MipsSession extends events.EventEmitter{
             .catch((err) => {
                 cb(err);
             })
+    }
+
+    public addWatchExpression(expression: string, cb: (err, id?: number) => any) {
+        this._debugger.breakExpression(expression)
+            .then((watch: {id: number}) => {
+                cb(null, watch.id);
+            })
+            .catch((err) => {
+                cb(err);
+            })
+    }
+
+    public removeWatchExpression(watchId: number, cb:(err) => any) {
+        this.removeBreakpoint(watchId, cb);
     }
 }

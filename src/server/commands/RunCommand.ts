@@ -70,6 +70,9 @@ export class RunCommand extends AbstractCommand<RunPayload> {
         mips.on('hitBreakpoint', (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
             this.sendHitBreakpointEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
         });
+        mips.on('hitWatchpoint', (watchpointEvent: dbgmits.IWatchpointTriggeredEvent) => {
+            this.sendWatchpointTriggeredEvent(new SourceLocation(basename(watchpointEvent.frame.filename), watchpointEvent.frame.line), watchpointEvent.watchpointId);
+        });
         mips.on('programContinued', () => {
             this.executionContext.socketSession.emit("programContinued", {}, []);
         });
@@ -81,43 +84,45 @@ export class RunCommand extends AbstractCommand<RunPayload> {
         });
     }
 
-    sendHitBreakpointEvent(location: SourceLocation, breakpointId?: any) {
-        this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?: dbgmits.IMemoryBlock[], registers?: Registers) => {
-            if(err) {
-                console.error(err);
-                return this.executionContext.socketSession.emit('hitBreakpoint', {
-                    location: location,
-                    breakpointId: breakpointId
-                }, []);
-            }
-            this.executionContext.socketSession.emit('hitBreakpoint', {
-                location: location,
-                breakpointId: breakpointId
-            }, [new AnswerContext("memoryUpdate", memoryBlocks), new AnswerContext("registerUpdate", registers)]);
+    private sendWatchpointTriggeredEvent(location: SourceLocation, watchpointId:number) {
+        this.emitEventWithMachineState('hitWatchpoint', {
+            watchpointId,
+            location
+        });
+    }
+
+    private sendHitBreakpointEvent(location: SourceLocation, breakpointId?: any) {
+        this.emitEventWithMachineState('hitBreakpoint', {
+            location: location,
+            breakpointId: breakpointId
         });
     }
     
     private sendReceivedSignalEvent(signal: dbgmits.ISignalReceivedEvent) {
-        let context = [];
         this.executionContext.socketSession.mipsSession.getStackFrame((err, stackFrame: dbgmits.IStackFrameInfo)=> {
             if(err) {
                 console.error(err);
             }
             console.log(stackFrame);
-            this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?: dbgmits.IMemoryBlock[], registers?: Registers) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    context.push(new AnswerContext("memoryUpdate", memoryBlocks));
-                    context.push(new AnswerContext("registerUpdate", registers));
-                }
-
-                this.executionContext.socketSession.emit('receivedSignal', {
-                    signalName: signal.signalName,
-                    signalMeaning: signal.signalMeaning,
-                    location: stackFrame ?  (stackFrame.filename && stackFrame.line ? new SourceLocation(basename(stackFrame.filename), stackFrame.line) : undefined) : undefined
-                }, context);
+            this.emitEventWithMachineState('receivedSignal', {
+                signalName: signal.signalName,
+                signalMeaning: signal.signalMeaning,
+                location: stackFrame ?  (stackFrame.filename && stackFrame.line ? new SourceLocation(basename(stackFrame.filename), stackFrame.line) : undefined) : undefined
             });
+        });
+    }
+
+    private emitEventWithMachineState(signalName:string, payload:any) {
+        this.executionContext.socketSession.mipsSession.getMachineState(this.executionContext.socketSession.memoryFrame, (err, memoryBlocks?:dbgmits.IMemoryBlock[], registers?:Registers) => {
+            let context = [];
+            if (err) {
+                console.error(err);
+            } else {
+                context.push(new AnswerContext("memoryUpdate", memoryBlocks));
+                context.push(new AnswerContext("registerUpdate", registers));
+            }
+
+            this.executionContext.socketSession.emit(signalName, payload, context);
         });
     }
 
