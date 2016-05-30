@@ -40,6 +40,7 @@ RUN npm install -g typings@1.0.3
 
 RUN mkdir -p dist/public/vendor/ && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/ace.js -o dist/public/vendor/ace.js && \
+    curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/mode-c_cpp.js -o dist/public/vendor/mode-c_cpp.js && \
     curl -sL https://github.com/gildas-lormeau/zip.js/tarball/1bead0a -o /zip.js.tar.gz && \
     tar xvzf /zip.js.tar.gz -C / && \
     cp -R /gildas-lormeau-zip.js-1bead0a/WebContent/ dist/public/vendor/zipjs && \
