@@ -3,6 +3,10 @@
 <span>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</span>
 <table>
     <tr *ngFor="#row of matrix">
-        <td *ngFor="#cell of row">0x<span *ngFor="#byte of cell"><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span>{{byte.value}}</span></td>
+        <td *ngFor="#cell of row" [ngClass]="{cell_changed: memoryWatchService.brokenBecauseOf(cell[0].address)}">
+            0x<span *ngFor="#byte of cell"><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span>{{byte.value}}</span>
+            <button *ngIf="!memoryWatchService.watchId(cell[0].address)" (click)="watch(cell[0].address)">Watch</button>
+            <button *ngIf="memoryWatchService.watchId(cell[0].address)" (click)="unwatch(memoryWatchService.watchId(cell[0].address))">Unwatch</button>
+        </td>
     </tr>
 </table>
