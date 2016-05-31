@@ -8,6 +8,7 @@ body {
 
 lea-project {
 	lea-project-panel {
+		overflow: hidden;
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -285,6 +286,7 @@ lea-project {
 							background-color: #E8E8E8;
 
 							display: flex;
+							overflow-y: scroll;
 
 							lea-console-output {
 								font-family: courier new;
