@@ -49,11 +49,7 @@ RUN mkdir -p dist/public/vendor/ && \
     cp -R /eligrey-FileSaver.js-683f689/ dist/public/vendor/filesaverjs && \
     curl -sL http://fontawesome.io/assets/font-awesome-4.6.3.zip -o /tmp/font-awesome.zip && \
     unzip /tmp/font-awesome.zip -d /tmp/ && \
-    cp -R /tmp/font-awesome-4.6.3/ dist/public/vendor/font-awesome && \
-    curl -sL https://github.com/shagstrom/split-pane/archive/0.9.2.zip -o /tmp/split-pane.zip && \
-    unzip /tmp/split-pane.zip -d /tmp/ && \
-    cp -R /tmp/split-pane-0.9.2/ dist/public/vendor/split-pane && \
-    curl -sL http://code.jquery.com/jquery-1.9.1.js -o dist/public/vendor/jquery.js
+    cp -R /tmp/font-awesome-4.6.3/ dist/public/vendor/font-awesome
 
 
 ADD entrypoint.sh /
