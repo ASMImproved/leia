@@ -1,6 +1,6 @@
 <lea-project-panel>
 	<lea-header>
-		<h2>{{_project.name}}</h2>
+		<h2><editable [(text)]="_project.name"></editable></h2>
 
 		<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
 		<lea-header-group>

@@ -13,6 +13,7 @@ import {ProjectService} from "./ProjectService";
 import {BreakpointService} from "./BreakpointService";
 import {MemoryService} from "./memory/MemoryService";
 import {MemoryComponent} from "./memory/MemoryComponent";
+import {MemoryWatchService} from "./MemoryWatchService";
 import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
@@ -26,6 +27,7 @@ import {ProjectPanel} from "./panels/ProjectPanel";
 import {LeftPanel} from "./panels/LeftPanel";
 import {RightPanel} from "./panels/RightPanel";
 import {BottomPanel} from "./panels/BottomPanel";
+import {EditableComponent} from "./editable/EditableComponent";
 
 @Component({
     selector: 'lea-project',
@@ -43,7 +45,8 @@ import {BottomPanel} from "./panels/BottomPanel";
 		ProjectPanel,
 		LeftPanel,
 		RightPanel,
-		BottomPanel
+		BottomPanel,
+		EditableComponent
 	],
 	providers: [
 		SocketService,
@@ -53,13 +56,15 @@ import {BottomPanel} from "./panels/BottomPanel";
 		ProjectService,
 		BreakpointService,
 		MemoryService,
+		MemoryWatchService,
 		SymbolService,
 		NotificationService,
 		RegisterService
 	]
 })
 export class ProjectComponent implements OnInit{
-	private _project: Project;
+	// default value is required by Angular's change detection
+	private _project: Project = new Project('Skeleton Project');
 	private sessionSet: Array<{key; value}> = [];
 	/**
 	 * required in the HTML code

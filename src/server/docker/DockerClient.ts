@@ -99,14 +99,59 @@ export class DockerClient{
                     'Host': 'localhost'
                 },
                 body: execRequestBody
-            }, (err, response, body) => {
+            }, (err, response, body:string) => {
                 if(err) {
                     return cb(err);
                 }
                 if(response.statusCode !== 200) {
                     return cb(new Error(`Docker start exec return an error status code ${response.statusCode} ${body}`));
                 }
-                let stdout = body, stderr = '';
+                let stdout = '', stderr = '';
+
+                if (body.length >= 8) {
+                    console.log(`body ${body}`);
+                    let contentLength = null;
+                    let header = null;
+                    let dataLeft = true;
+                    let content;
+                    while (dataLeft) {
+                        console.log(`stdout ${stdout}`)
+                        console.log(`stderr ${stderr}`)
+                        if (contentLength === null) {
+                            header = body.substr(0, 8);
+                            body = body.substr(8);
+                            if (header !== "") {
+                                header = new Buffer(header);
+                                contentLength = header.readUInt32BE(4);
+                            } else {
+                                dataLeft = false;
+                            }
+                        }
+                        if (contentLength !== null) {
+                            content = body.substr(0, contentLength);
+                            body = body.substr(contentLength);
+                            if (content !== "") {
+                                switch (header[0]) {
+                                    case 0:
+                                        console.error("received on stdin");
+                                        break;
+                                    case 1:
+                                        stdout += content;
+                                        break;
+                                    case 2:
+                                        stderr += content;
+                                        break;
+                                    default:
+                                        console.error(`received data on unknown STREAM_TYPE ${header[0]}`);
+                                }
+                                contentLength = null;
+                            } else {
+                                dataLeft = false;
+                            }
+                        }
+                    }
+                }
+
                 request.get({
                     url: `http://unix:${this.unixSocketPath}:/exec/${execId}/json`,
                     json: true,

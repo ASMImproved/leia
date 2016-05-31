@@ -14,8 +14,21 @@ import * as dbgmits from "asmimproved-dbgmits";
 import {Registers, ISourceLocation} from "../../../common/Debugger";
 import {RegisterValueFormatSpec} from "asmimproved-dbgmits/lib/index";
 import async = require('async');
-import {Subject} from "rxjs/Rx";
 import {DockerExecInstance} from "../../docker/DockerExecInstance";
+import {ISourceAddress} from "asmimproved-dbgmits/lib/index";
+import {SymbolTable, RawSymbol} from "../../../common/SymbolTable";
+import {basename} from "path";
+
+interface NmOutputLine {
+    address: string,
+    name: string,
+    type: string,
+    location: string
+}
+
+interface NmOutput extends Array<NmOutputLine> {
+    [index: number]: NmOutputLine;
+}
 
 export enum MipsSessionState {
     Init,
@@ -96,6 +109,10 @@ export class MipsSession extends events.EventEmitter{
                                 this._debugger.on(dbgmits.EVENT_BREAKPOINT_HIT, (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
                                     this._state = MipsSessionState.Broken;
                                     this.emit("hitBreakpoint", stoppedEvent);
+                                });
+                                this._debugger.on(dbgmits.EVENT_WATCHPOINT_TRIGGERED, (watchpointEvent: dbgmits.IWatchpointTriggeredEvent) => {
+                                    this._state = MipsSessionState.Broken;
+                                    this.emit("hitWatchpoint", watchpointEvent);
                                 });
                                 this._debugger.on(dbgmits.EVENT_TARGET_RUNNING, (threadId: string) => {
                                     this.emit("programContinued");
@@ -302,9 +319,61 @@ export class MipsSession extends events.EventEmitter{
                 .setExecutableFile(MipsSession.ELF_FILE_LOCATION)
                 .then(() => {
                     return this._debugger.connectToRemoteTarget("127.0.0.1", MipsSession.GDB_PORT);
+                })
+                .then(() => {
+                    return this._debugger.gdbSet("can-use-hw-watchpoints", String(0));
                 });
             return cb(null, debuggerStartedPromise);
         });
+    }
+
+    public readSymbols(cb: (err,result?: SymbolTable)=>void) {
+        this.docker.execAsync(this.containerId, {
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "Cmd": [
+                "/readSymbols.sh",
+            ]
+        }, (err, inspect, stdout, stderr) => {
+            if (err) {
+                return cb(err);
+            }
+            if(inspect.ExitCode != 0) {
+                return cb(new Error(`Could not read symbols ${inspect.ExitCode} ${stderr}`));
+            }
+            console.log(`readSymbols output: ${stdout}`);
+            this.parseNmOutput(stdout, cb);
+        });
+    }
+
+    private parseNmOutput(nmOutputString:any, cb:(err, result?)=>void) {
+        try {
+            let nmOutput:NmOutput = JSON.parse(nmOutputString);
+            if (!nmOutput || !(nmOutput instanceof Array)) {
+                return cb(new Error(`nmOutput (${nmOutputString} is not an array`))
+            }
+            let symbolTable: SymbolTable = [];
+            nmOutput.forEach((nmOutputLine:NmOutputLine) => {
+                const locationSplit = nmOutputLine.location.split(':');
+                let file = locationSplit[0];
+                let line = 0;
+                if (locationSplit.length > 1) {
+                    line = parseInt(locationSplit[1], 10);
+                }
+                symbolTable.push(<RawSymbol>{
+                    address: parseInt(nmOutputLine.address, 16),
+                    name: nmOutputLine.name,
+                    filename: basename(file),
+                    line: line,
+                    global: nmOutputLine.type == nmOutputLine.type.toUpperCase()
+                });
+            });
+            cb(null, symbolTable);
+        } catch (err) {
+            return cb(err);
+        }
     }
 
     public continue(cb) {
@@ -418,18 +487,12 @@ export class MipsSession extends events.EventEmitter{
         });
     }
 
-    public addBreakpoint(location: ISourceLocation, cb: (err, breakpoint?) => any) {
-        this._debugger.addBreakpoint(location.locationString)
+    public addBreakpoint(expression: string, cb: (err, breakpoint?) => any) {
+        this._debugger.addBreakpoint(expression)
             .then((breakpoint: dbgmits.IBreakpointInfo) => {
-                cb(null, {
-                    location: location,
-                    pending: breakpoint.pending !== undefined,
-                    id: breakpoint.id
-                });
+                cb(null, breakpoint);
             })
-            .catch((err: any) => {
-                cb(err);
-            });
+            .catch(cb);
     }
 
     public getStackFrame(cb) {
@@ -437,18 +500,46 @@ export class MipsSession extends events.EventEmitter{
             .then((stackFrame: dbgmits.IStackFrameInfo)=> {
                 cb(null, stackFrame);
             })
-            .catch((err) => {
-                cb(err);
-            });
+            .catch(cb);
     }
 
-    removeBreakpoint(breakpointId:number, cb:(err)=> any) {
+    public removeBreakpoint(breakpointId:number, cb:(err)=> any) {
         this._debugger.removeBreakpoint(breakpointId)
             .then(() => {
                 cb(null);
             })
+            .catch(cb)
+    }
+
+    getAddressForLocation(location:ISourceLocation, cb:(err, address?:number)=>void) {
+        this._debugger.getSourceAddresses(location.filename)
+            .then((addresses: ISourceAddress[]) => {
+                let address: number = null;
+                addresses.forEach((sourceAddress: ISourceAddress) => {
+                    if (sourceAddress.line == location.line) {
+                        address = sourceAddress.pc;
+                    }
+                });
+                if (address) {
+                    cb(null, address);
+                } else {
+                    cb(new Error(`Could not find address for ${location.locationString}`));
+                }
+            })
+            .catch(cb)
+    }
+
+    public addWatchExpression(expression: string, cb: (err, id?: number) => any) {
+        this._debugger.breakExpression(expression)
+            .then((watch: {id: number}) => {
+                cb(null, watch.id);
+            })
             .catch((err) => {
                 cb(err);
             })
+    }
+
+    public removeWatchExpression(watchId: number, cb:(err) => any) {
+        this.removeBreakpoint(watchId, cb);
     }
 }
