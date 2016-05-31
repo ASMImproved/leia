@@ -147,6 +147,15 @@ lea-project {
 								padding: 5px;
 								font-weight: normal;
 								font-size: 18px;
+								button {
+									background: none;
+									border: none;
+									color: white;
+									margin-left: 20px;
+									&:hover {
+										text-decoration: underline;
+									}
+								}
 							}
 
 							ace-editor {
