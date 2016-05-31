@@ -4,52 +4,68 @@ import {Component} from "angular2/core";
     selector: 'lea-project-panel',
     template: `
         <ng-content select="lea-header"></ng-content>
-        <lea-project-view>
-            <lea-left-panel [ngStyle]="{'flex-grow': leftPanelSize}">
+        <lea-project-view [ngStyle]="{'flex-basis': horizontalMainPanel + '%'}">
+            <lea-left-panel [ngStyle]="{'flex-basis': leftPanelSize + '%'}">
                 <ng-content select="left"></ng-content>
             </lea-left-panel>
-            <lea-middle-panel>
-                <ng-content select="central" id="lee-middle-panel"></ng-content>
+            <lea-middle-panel [ngStyle]="{'flex-basis': centralPanelSize + '%'}">
+                <ng-content select="central" id="lee-central-panel"></ng-content>
             </lea-middle-panel>
-            <lea-right-panel [ngStyle]="{'flex-grow': rightPanelSize}">
+            <lea-right-panel [ngStyle]="{'flex-basis': rightPanelSize + '%'}">
                 <ng-content select="right" id="lee-right-panel"></ng-content>
             </lea-right-panel>
         </lea-project-view>
-        <lea-bottom-panel [ngStyle]="{'flex-grow': bottomPanelSize}">
+        <lea-bottom-panel [ngStyle]="{'flex-basis': bottomPanelSize + '%'}">
             <ng-content select="bottom" id="lee-bottom-panel"></ng-content>
         </lea-bottom-panel>
   `
 })
 export class ProjectPanel {
-    private rightPanelSize: number = 1;
-    private leftPanelSize: number = 1;
-    private bottomPanelSize: number = 3;
+    private rightPanelSize: number = 20;
+    private centralPanelSize: number = 60;
+    private leftPanelSize: number = 20;
+    private horizontalMainPanel: number = 70;
+    private bottomPanelSize: number = 30;
 
     growLeftPanel() {
-        this.leftPanelSize++;
+        if(this.centralPanelSize > 10) {
+            this.leftPanelSize+= 10;
+            this.centralPanelSize-= 10;
+        }
     }
 
     shrinkLeftPanel() {
-        if(this.leftPanelSize > 1)
-            this.leftPanelSize--;
+        if(this.leftPanelSize > 10) {
+            this.leftPanelSize-= 10;
+            this.centralPanelSize+= 10;
+        }
     }
 
     growRightPanel() {
-        this.rightPanelSize++;
+        if(this.centralPanelSize > 10) {
+            this.rightPanelSize+= 10;
+            this.centralPanelSize-= 10;
+        }
     }
 
     shrinkRightPanel() {
-        if(this.rightPanelSize > 1)
-            this.rightPanelSize--;
+        if(this.rightPanelSize > 10) {
+            this.rightPanelSize -= 10;
+            this.centralPanelSize += 10;
+        }
     }
 
     growBottomPanel() {
-        this.bottomPanelSize++;
+        if(this.horizontalMainPanel > 10) {
+            this.bottomPanelSize+= 10;
+            this.horizontalMainPanel-= 10;
+        }
     }
 
     shrinkBottomPanel() {
-        if(this.bottomPanelSize > 1) {
-            this.bottomPanelSize--;
+        if(this.bottomPanelSize > 10) {
+            this.bottomPanelSize-= 10;
+            this.horizontalMainPanel+= 10;
         }
     }
 }
