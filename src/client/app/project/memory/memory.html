@@ -1,13 +1,15 @@
-<lea-memory-header>
-    <button (click)="moveDown()"><i class="fa fa-long-arrow-left"></i></button>
-    <h3>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</h3>
-    <button (click)="moveUp()"><i class="fa fa-long-arrow-right"></i></button>
-</lea-memory-header>
-
 <lea-memory-content>
     <table>
         <tr *ngFor="#row of matrix">
-            <td *ngFor="#cell of row" [ngClass]="{cell_changed: memoryWatchService.brokenBecauseOf(cell[0].address)}">0x<span *ngFor="#byte of cell"><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span><span *ngFor="#symbol of byte.symbols">{{" (" + symbol.name + ") -> "}}</span>{{byte.value}}</span><button *ngIf="!memoryWatchService.watchId(cell[0].address)" (click)="watch(cell[0].address)">Watch</button><button *ngIf="memoryWatchService.watchId(cell[0].address)" (click)="unwatch(memoryWatchService.watchId(cell[0].address))">Unwatch</button></td>
+            <td *ngFor="#cell of row" [ngClass]="{cell_changed: memoryWatchService.brokenBecauseOf(cell[0].address)}">
+                0x<span *ngFor="#byte of cell" ><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span><span *ngFor="#symbol of byte.symbols">{{" (" + symbol.name + ") -> "}}</span>{{byte.value}}</span>
+                <button *ngIf="!memoryWatchService.watchId(cell[0].address)" (click)="watch(cell[0].address)"><i class="fa fa-search" aria-hidden="true"></i></button>
+                <button *ngIf="memoryWatchService.watchId(cell[0].address)" (click)="unwatch(memoryWatchService.watchId(cell[0].address))"><i class="fa fa-search-minus" aria-hidden="true"></i></button></td>
         </tr>
     </table>
 </lea-memory-content>
+<lea-memory-header>
+    <button (click)="moveDown()"><i class="fa fa-long-arrow-left"></i></button>
+    <span>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</span>
+    <button (click)="moveUp()"><i class="fa fa-long-arrow-right"></i></button>
+</lea-memory-header>

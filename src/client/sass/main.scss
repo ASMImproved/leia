@@ -316,28 +316,39 @@ lea-project {
 							display: flex;
 							flex-direction: column;
 							lea-memory-header {
-								flex-shrink: 0;
+								flex-shrink: 1;
+								flex-grow: 0;
 
 								display: flex;
 								justify-content: center;
 								padding: 5px 10px;
+								background-color: #79C3E6;
+								color: white;
+								font-size: 16px;
 
 								button {
 									border: none;
-									background-color: #79C3E6;
+									background: none;
 									color: white;
 								}
 
-								h3 {
+								span {
 									margin: 0px 10px;
 									font-weight: normal;
 								}
 							}
 							lea-memory-content {
 								flex-shrink: 0;
+								flex-grow: 1;
 								font-family: monospace;
 								display: flex;
 								justify-content: center;
+
+								button {
+									border: none;
+									padding: 0px;
+									background: none;
+								}
 							}
 						}
 					}
