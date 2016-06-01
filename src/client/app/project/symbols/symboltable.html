@@ -1,10 +1,14 @@
-<table>
-	<tr><th>Globals</th></tr>
-	<tr *ngFor="#symbol of globalSymbols">
-		<td><a (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</a> <a (click)="gotoMemory(symbol)">[Go]</a></td>
-	</tr>
-	<tr><th>Locals</th></tr>
-	<tr *ngFor="#symbol of localSymbols">
-		<td><a (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</a> <a *ngIf="symbol.address" (click)="gotoMemory(symbol)">[Go]</a></td>
-	</tr>
-</table>
+<panel-sub-header>Global</panel-sub-header>
+<panel-list>
+	<li *ngFor="#symbol of globalSymbols">
+		<span  class="clickable grow" (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</span>
+		<span class="clickable" (click)="gotoMemory(symbol)"><i class="fa fa-map-o"></i></span>
+	</li>
+</panel-list>
+<panel-sub-header>Local</panel-sub-header>
+<panel-list>
+	<li *ngFor="#symbol of localSymbols">
+		<span  class="clickable grow" (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</span>
+		<span class="clickable" (click)="gotoMemory(symbol)"><i class="fa fa-map-o"></i></span>
+	</li>
+</panel-list>

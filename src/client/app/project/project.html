@@ -1,6 +1,6 @@
 <lea-project-panel>
 	<lea-header>
-		<h2><editable [(text)]="_project.name"></editable></h2>
+		<editable [(text)]="_project.name"></editable>
 
 		<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
 		<lea-header-group>
@@ -16,23 +16,23 @@
 	</lea-header>
 	<left>
 		<lea-file-structure>
-			<h4>Open Files</h4>
+			<panel-sub-header>Open Files</panel-sub-header>
 			<lea-file-structure-no-open-file *ngIf="sessionSet.length == 0">
 				<span>No open files</span>
 			</lea-file-structure-no-open-file>
-			<ul>
+			<panel-list>
 				<li *ngFor="#item of sessionSet">
-					<span class="name" (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
-					<span class="close" (click)="closeSession(item.value)"><i class="fa fa-times-circle-o"></i></span>
+					<span class="clickable grow" (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
+					<span class="clickable" (click)="closeSession(item.value)"><i class="fa fa-times-circle-o"></i></span>
 				</li>
-			</ul>
-			<h4>Files</h4>
-			<ul>
+			</panel-list>
+			<panel-sub-header>Files</panel-sub-header>
+			<panel-list>
 				<li *ngFor="#file of _project.files">
-					<span class="name" (click)="selectFile(file)">{{file.name}}</span>
-					<span class="delete" (click)="deleteFile(file)"><i class="fa fa-trash-o"></i></span>
+					<span class="clickable grow" (click)="selectFile(file)">{{file.name}}</span>
+					<span class="clickable" (click)="deleteFile(file)"><i class="fa fa-trash-o"></i></span>
 				</li>
-			</ul>
+			</panel-list>
 			<new-file-form (newFile)="newFile($event)"></new-file-form>
 		</lea-file-structure>
 	</left>

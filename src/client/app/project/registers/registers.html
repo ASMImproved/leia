@@ -1,7 +1,7 @@
-<table>
-    <tr *ngFor="#register of integerRegisters">
-        <td class="name">{{register.name}}</td>
-        <td class="value">{{register.value | register }}</td>
-        <td><i class="fa fa-arrow-right" (click)="gotoInMemory(register)"></i></td>
-    </tr>
-</table>
+<panel-list>
+    <li *ngFor="#register of integerRegisters">
+        <span class="name">{{register.name}}</span>
+        <span class="value grow">{{register.value | register }}</span>
+        <span class="clickable" (click)="gotoInMemory(register)"><i class="fa fa-map-o" ></i></span>
+    </li>
+</panel-list>
