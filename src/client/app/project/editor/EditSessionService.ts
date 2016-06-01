@@ -42,21 +42,21 @@ export class EditSessionService {
         this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
             if(session) {
-                session.ace.setBreakpoint(breakpoint.location.line - 1, (breakpoint.pending) ? "breakpoint_pending" : "breakpoint_set");
+                session.setBreakpoint(breakpoint);
             }
         });
 
         this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
             if(session) {
-                session.ace.setBreakpoint(breakpoint.location.line - 1, (breakpoint.pending) ? "breakpoint_pending" : "breakpoint_set");
+                session.setBreakpoint(breakpoint);
             }
         });
 
         this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
             if(session) {
-                session.ace.clearBreakpoint(breakpoint.location.line-1);
+                session.clearBreakpoint(breakpoint);
             }
         });
 
@@ -127,6 +127,7 @@ export class EditSessionService {
             key: file,
             value: session
         });
+        session.setBreakpoints(this.breakpointService.breakpointsOf(file.name));
         this.setChanged.emit(this.set);
         return session;
     }

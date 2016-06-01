@@ -5,6 +5,7 @@ import {File} from "../../../../common/File";
 import {SymbolService, Symbol} from "../SymbolService";
 import {Subject} from "rxjs/Subject";
 import {ProjectService} from "../ProjectService";
+import {Breakpoint} from "../../../../common/Debugger";
 
 interface TokenInfo extends AceAjax.TokenInfo {
     // AceAjax.TokenInfo is incomplete
@@ -38,6 +39,21 @@ export class Session {
     public save() {
         this.projectService.updateFileContent(this.file, this.ace.getValue());
         this.dirty = false;
+    }
+
+    public setBreakpoint(breakpoint: Breakpoint) {
+        this.ace.setBreakpoint(breakpoint.location.line - 1, "breakpoint_pending" );
+    }
+
+    public setBreakpoints(breakpoints: Breakpoint[]) {
+        console.log('breakpoints', breakpoints);
+        for (let breakpoint of breakpoints) {
+            this.setBreakpoint(breakpoint);
+        }
+    }
+
+    public clearBreakpoint(breakpoint: Breakpoint) {
+        this.ace.clearBreakpoint(breakpoint.location.line-1);
     }
 
     private updateSymbols() {
