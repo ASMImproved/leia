@@ -1,28 +1,379 @@
+$primary-color: #47A9D8;
+
 body {
 	background-color: white;
 	margin: 0px;
 	font-family: arial;
 }
 
-.projectview {
-	display: flex;
-	flex-flow: row wrap;
+lea-project {
+	lea-project-panel {
+		overflow: hidden;
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+
+		display: flex;
+		flex-direction: column;
+
+		lea-header {
+			order: 1;
+			flex-grow: 0;
+			justify-content: space-between;
+			display: flex;
+			flex-wrap: nowrap;
+			flex-shrink: 0;
+			background-color: #3E3E3E;
+			color: white;
+			h2 {
+				margin: 5px;
+			}
+			lea-header-group {
+				display: flex;
+				button {
+					background: none;
+					border-left: 1px solid white !important;
+					border-right: 1px solid white !important;
+					color: white;
+					border: none;
+					&:hover {
+						background-color: $primary-color;
+					}
+				}
+			}
+			editable {
+				padding: 5px 10px;
+				align-self: center;
+				span {
+					font-size: larger;
+					margin-right: 10px;
+					font-weight: bold;
+				}
+			}
+		}
+
+		lea-project-view {
+			order: 2;
+			flex-grow: 8;
+
+			display: flex;
+			flex-flow: row;
+
+			panel {
+				border: 1px $primary-color solid;
+			}
+
+			lea-tabs-select {
+				select {
+					border: none;
+					background-color: $primary-color;
+					color: white;
+					padding: 5px;
+					font-size: 16px;
+				}
+			}
+			lea-left-panel {
+				@extend panel;
+				order: 1;
+
+				display: flex;
+				left {
+					flex-grow: 1;
+
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+				}
+				lea-resize-panel {
+					display: flex;
+					justify-content: flex-start;
+				}
+
+				lea-file-structure {
+					overflow-y: auto;
+					lea-file-structure-no-open-file {
+						padding: 20px;
+						display: block;
+						font-style: italic;
+					}
+				}
+			}
+			lea-middle-panel {
+				@extend panel;
+				order: 2;
+				flex-grow: 8;
+
+				display: flex;
+
+				central {
+					flex-grow: 1;
+
+					display: flex;
+
+					lea-editor {
+						flex-grow: 1;
+
+						display: flex;
+
+						lea-editor-active-session {
+							flex-grow: 1;
+
+							display: flex;
+							flex-direction: column;
+
+							h4 {
+								flex-shrink: 0;
+								margin: 0;
+								background-color: $primary-color;
+								color: white;
+								padding: 5px;
+								font-weight: normal;
+								font-size: 16px;
+								button {
+									background: none;
+									border: none;
+									color: white;
+									margin-left: 20px;
+									&:hover {
+										text-decoration: underline;
+									}
+								}
+							}
+
+							ace-editor {
+								flex-grow: 1;
+								display: block;
+							}
+						}
+					}
+
+					lea-editor-no-session {
+						flex-grow: 1;
+						display: flex;
+						justify-content: center;
+						flex-direction: column;
+						background-color: #e8e8e8;
+						h3 {
+							text-align: center;
+							font-style: italic;
+							font-weight: normal;
+							color: gray;
+						}
+					}
+				}
+			}
+			lea-right-panel {
+				@extend panel;
+				order: 3;
+
+				display: flex;
+				right {
+					flex-grow: 1;
+
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+
+					lea-tabs-select {
+						flex-grow: 1;
+
+						display: flex;
+						flex-direction: column;
+
+						select {
+							flex-shrink: 0;
+						}
+
+						lea-tab-select {
+							flex-grow: 1;
+							flex-shrink: 1;
+
+							display: flex;
+
+							lea-registers {
+								flex-shrink: 1;
+								flex-grow: 1;
+								overflow-y: scroll;
+								.value {
+									font-family: monospace;
+								}
+							}
+
+							lea-symboltable {
+								width: 100%;
+								table {
+									font-family: monospace;
+									width: 100%;
+									margin: 5px;
+								}
+							}
+						}
+					}
+				}
+				lea-resize-panel {
+					display: flex;
+					justify-content: flex-end;
+				}
+			}
+			panel-sub-header {
+				margin: 0;
+				padding: 10px;
+				border-left: 8px $primary-color solid;
+				display: block;
+				font-weight: bold;
+			}
+			panel-list {
+				display: block;
+				padding: 0px;
+				margin: 0px;
+				margin-bottom: 20px;
+				cursor: default;
+				li {
+					display: flex;
+					justify-content: space-between;
+					list-style: none;
+					margin-left: 20px;
+					> * {
+						padding: 5px 10px;
+					}
+					.clickable {
+						&:hover {
+							background-color: #e8e8e8;
+						}
+					}
+					.grow {
+						flex-grow: 1;
+					}
+				}
+			}
+		}
+
+		lea-bottom-panel {
+			order: 3;
+
+			display: flex;
+			flex-direction: row;
+			bottom {
+				flex-grow: 1;
+
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				lea-tabs-list {
+					order: 1;
+					flex-grow: 1;
+
+					display: flex;
+					flex-direction: column;
+
+					.lea-tabs {
+						flex-shrink: 0;
+
+						list-style: none;
+						display: flex;
+						flex-flow: row wrap;
+						background: $primary-color;
+						color: white;
+						margin: 0px;
+						padding: 0px;
+						li {
+							font-size: 16px;
+							padding: 5px;
+							&:hover {
+								text-decoration: underline;
+							}
+							&.active {
+								font-weight: bold;
+							}
+						}
+					}
+
+					lea-tab-list {
+						flex-grow: 1;
+
+						display: flex;
+
+						lea-console {
+							flex-grow: 1;
+							background-color: #E8E8E8;
+
+							display: flex;
+							overflow-y: scroll;
+
+							lea-console-output {
+								font-family: courier new;
+								white-space: pre-wrap;
+								padding: 13px;
+							}
+						}
+
+						lea-memory {
+							flex-grow: 1;
+
+							display: flex;
+							flex-direction: column;
+							lea-memory-header {
+								flex-shrink: 1;
+								flex-grow: 0;
+
+								display: flex;
+								justify-content: center;
+								padding: 5px 10px;
+								background-color: $primary-color;
+								color: white;
+								font-size: 16px;
+
+								button {
+									border: none;
+									background: none;
+									color: white;
+								}
+
+								span {
+									margin: 0px 10px;
+									font-weight: normal;
+								}
+							}
+							lea-memory-content {
+								flex-shrink: 0;
+								flex-grow: 1;
+								font-family: monospace;
+								display: flex;
+								justify-content: center;
+
+								button {
+									border: none;
+									padding: 0px;
+									background: none;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			lea-resize-panel {
+				order: 2;
+
+				display: flex;
+				justify-content: flex-end;
+				flex-direction: column;
+			}
+		}
+	}
 }
 
-lea-editor {
-	order: 2;
-	flex-grow: 8;
-    h4 {
-    	margin: 0;
-		background-color: #79C3E6;
-		color: white;
-		padding: 5px;
-    }
-}
-
-ace-editor {
-	display: block;
-	height: 400px;
+lea-resize-panel {
+	flex-shrink: 0;
+	background-color: #e8e8e8;
+	button {
+		flex-grow: 0;
+		background-color: #e8e8e8;
+		border: none;
+	}
 }
 
 .breakpoint_pending {
@@ -36,101 +387,7 @@ ace-editor {
 	background: lightpink;
 }
 
-.file-structure {
-	order: 1;
-	flex-grow: 1;
-	h4{
-		background-color: #79C3E6;
-		color: white;
-		margin: 0;
-		padding: 10px;
-	}
-	ul {
-		padding: 0px;
-		margin: 0px;
-		cursor: default;
-		li {
-			display: block;
-    		list-style: none;
-			padding: 5px 10px;
-    		.delete, .close {
-    			float: right;
-				&:hover {
-					text-decoration: underline;
-				}
-    		}
-			&:hover {
-				background-color: #ADADAD;
-			}
-		}
-	}
-}
-
-lea-registers {
-	order: 3;
-	flex-grow: 1;
-
-	h4 {
-		background-color: #79C3E6;
-		color: white;
-		margin: 0;
-		padding: 10px;
-	}
-
-  	table {
-		font-family: monospace;
-	}
-}
-
-lea-symboltable {
-  order: 4;
-  flex-grow: 1;
-
-  h4 {
-	background-color: #79C3E6;
-	color: white;
-	margin: 0;
-	padding: 10px;
-  }
-
-  table {
-	font-family: monospace;
-  }
-}
-
-header {
-	justify-content: space-between;
-	display: flex;
-	flex-wrap: nowrap;
-	padding: 10px 20px;
-	background-color: #3E3E3E;
-    color: white;
-	h2 {
-		margin: 0px;
-	}
-}
-
 new-file-form {
 	display: block;
     padding: 10px 20px;
-}
-
-lea-console {
-	display: block;
-    padding: 5px 10px;
-    font-family: courier new;
-    background-color: #E8E8E8;
-    h4 {
-    	margin: 0;
-		background-color: #79C3E6;
-		color: white;
-		padding: 5px;
-    }
-	lea-console-output {
-		white-space: pre-wrap;
-	}
-}
-
-lea-memory {
-	font-family: monospace;
 }

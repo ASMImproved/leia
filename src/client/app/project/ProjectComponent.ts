@@ -19,12 +19,35 @@ import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
 import {NotificationService} from "./notification/NotificationService";
 import {RegisterService} from "./registers/RegisterService";
+import {TabsSelect} from "../tabs/TabsSelect";
+import {TabSelect} from "../tabs/TabSelect";
+import {TabsList} from "../tabs/TabsList";
+import {TabList} from "../tabs/TabList";
+import {ProjectPanel} from "./panels/ProjectPanel";
+import {LeftPanel} from "./panels/LeftPanel";
+import {RightPanel} from "./panels/RightPanel";
+import {BottomPanel} from "./panels/BottomPanel";
 import {EditableComponent} from "./editable/EditableComponent";
 
 @Component({
     selector: 'lea-project',
     templateUrl: 'client/app/project/project.html',
-    directives: [NewFileFormComponent, EditorComponent, RegistersComponent, MemoryComponent, SymboleTableComponent, EditableComponent],
+    directives: [
+		NewFileFormComponent,
+		EditorComponent,
+		RegistersComponent,
+		MemoryComponent,
+		SymboleTableComponent,
+		TabsSelect,
+		TabSelect,
+		TabsList,
+		TabList,
+		ProjectPanel,
+		LeftPanel,
+		RightPanel,
+		BottomPanel,
+		EditableComponent
+	],
 	providers: [
 		SocketService,
 		RunService,

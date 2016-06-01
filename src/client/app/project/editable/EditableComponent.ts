@@ -6,7 +6,7 @@ import {BehaviorSubject} from 'rxjs/Rx';
     template: `
     <input *ngIf="editing" type="text" [(ngModel)]="text" (blur)="editing=false"/>
     <span *ngIf="!editing">{{text}}</span>
-    <button (click)="editing=true" *ngIf="!editing">Edit</button>
+    <i class="fa fa-pencil" (click)="editing=true" *ngIf="!editing"></i>
 `,
 })
 export class EditableComponent{

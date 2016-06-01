@@ -3,11 +3,13 @@ import {ProjectComponent} from '../project/ProjectComponent'
 import {SplashComponent} from '../splash/SplashComponent'
 import {Project} from '../../../common/Project'
 import {PersistenceService} from "../project/persistence/PersistenceService";
+import {TabsSelect} from "../tabs/TabsSelect";
+import {TabSelect} from "../tabs/TabSelect";
 
 @Component({
     selector: 'lea',
     templateUrl: 'client/app/lea/lea.html',
-    directives: [ProjectComponent, SplashComponent],
+    directives: [ProjectComponent, SplashComponent, TabsSelect, TabSelect],
     providers: [PersistenceService]
 })
 export class LeaComponent {
