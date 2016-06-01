@@ -1,4 +1,4 @@
-$primary-color: #79C3E6;
+$primary-color: #47A9D8;
 
 body {
 	background-color: white;
@@ -62,13 +62,13 @@ lea-project {
 			flex-flow: row;
 
 			panel {
-				border: 1px #79C3E6 solid;
+				border: 1px $primary-color solid;
 			}
 
 			lea-tabs-select {
 				select {
 					border: none;
-					background-color: #79C3E6;
+					background-color: $primary-color;
 					color: white;
 					padding: 5px;
 					font-size: 16px;
@@ -126,7 +126,7 @@ lea-project {
 							h4 {
 								flex-shrink: 0;
 								margin: 0;
-								background-color: #79C3E6;
+								background-color: $primary-color;
 								color: white;
 								padding: 5px;
 								font-weight: normal;
@@ -220,7 +220,7 @@ lea-project {
 			panel-sub-header {
 				margin: 0;
 				padding: 10px;
-				border-left: 8px #79C3E6 solid;
+				border-left: 8px $primary-color solid;
 				display: block;
 				font-weight: bold;
 			}
@@ -322,7 +322,7 @@ lea-project {
 								display: flex;
 								justify-content: center;
 								padding: 5px 10px;
-								background-color: #79C3E6;
+								background-color: $primary-color;
 								color: white;
 								font-size: 16px;
 
