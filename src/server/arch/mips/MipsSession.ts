@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
 
 import {Project} from "../../../common/Project";
 let tar = require('tar');

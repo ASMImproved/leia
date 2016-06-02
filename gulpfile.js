@@ -86,7 +86,7 @@ function failOnSingleBuild() {
 }
 
 gulp.task('typescript-client', function () {
-	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts', 'typings/core-js/index.d.ts'], {base: 'src/'})
+	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
 		.pipe(ts(tsProject))
 		//.on('error', failOnSingleBuild)

@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/index.d.ts" />
+
 
 import util = require('util');
 import cp = require('child_process');
