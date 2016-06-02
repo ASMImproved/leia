@@ -5,8 +5,11 @@ import {File} from "../../../../common/File";
 import {SymbolService, Symbol} from "../SymbolService";
 import {Subject} from "rxjs/Subject";
 import {ProjectService} from "../ProjectService";
-import {Breakpoint} from "../../../../common/Debugger";
+import {Breakpoint, ISourceLocation} from "../../../../common/Debugger";
 
+// declare the ace library
+declare var ace: AceAjax.Ace;
+var Range = ace.require('ace/range').Range;
 interface TokenInfo extends AceAjax.TokenInfo {
     // AceAjax.TokenInfo is incomplete
     type: string;
@@ -54,6 +57,14 @@ export class Session {
 
     public clearBreakpoint(breakpoint: Breakpoint) {
         this.ace.clearBreakpoint(breakpoint.location.line-1);
+    }
+
+    public setBreakLocation(location:ISourceLocation): number {
+        if (location.filename != this.file.name) {
+            return;
+        }
+        const row = location.line - 1;
+        return this.ace.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
     }
 
     private updateSymbols() {
