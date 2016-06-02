@@ -16,7 +16,7 @@ export class ChangeMemoryFrameCommand extends AbstractCommand<MemoryFrame> {
                     return callback(null, {
                         memoryReadFailed: true,
                         err: err.toString()
-                    }, []);
+                    }, [new AnswerContext("memoryUpdateFailed", null)]);
                 }
                 callback(null, {}, [new AnswerContext("memoryUpdate", blocks)]);
             });

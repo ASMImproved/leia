@@ -2,7 +2,7 @@
 import {Injectable, EventEmitter} from "@angular/core";
 import {SocketService} from "../socket/SocketService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
-import {BehaviorSubject} from "rxjs/Rx";
+import {BehaviorSubject, Subject} from "rxjs/Rx";
 import {MemoryBlock} from "../../../../common/MemoryBlock";
 import {AnswerContext} from "../../../../common/AnswerContext";
 
@@ -14,14 +14,21 @@ export class MemoryService {
     private _frame: MemoryFrame;
     private _frameSubject: BehaviorSubject<MemoryFrame>;
     public memoryFrameChanged$;
+    private _memoryReadFailed: Subject<void>;
+    public memoryReadFailed$;
 
     public constructor(private socketService: SocketService) {
         this._blocks = new BehaviorSubject<Array<MemoryBlock>>([]);
         this.memoryBlocksChanged$ = this._blocks.asObservable();
         this._frameSubject = new BehaviorSubject<MemoryFrame>(null);
         this.memoryFrameChanged$ = this._frameSubject.asObservable();
+        this._memoryReadFailed = new Subject<void>();
+        this.memoryReadFailed$ = this._memoryReadFailed.asObservable();
         this.socketService.subscribeToContext('memoryUpdate', (context: AnswerContext) => {
             this._blocks.next(context.payload);
+        });
+        this.socketService.subscribeToContext('memoryUpdateFailed', () => {
+            this._memoryReadFailed.next(null);
         });
         this.updateMemoryFrame(new MemoryFrame(this.HELLO_WORLD_ADDRESS, this.MEMORY_FRAME_SIZE));
     }
