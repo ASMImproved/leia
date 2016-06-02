@@ -8,8 +8,8 @@ import {NotificationService, NotificationLevel} from "./notification/Notificatio
 export class RunService {
     private _stdout: string = "";
     private _running: boolean = false;
-    public runStatusChanged: EventEmitter<boolean> = new EventEmitter();
-    public stopped: EventEmitter<ISourceLocation> = new EventEmitter();
+    public runStatusChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public stopped: EventEmitter<ISourceLocation> = new EventEmitter<ISourceLocation>();
     public continued: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private socketService: SocketService, private notificationService: NotificationService) {

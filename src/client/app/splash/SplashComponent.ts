@@ -12,7 +12,7 @@ export class SplashComponent {
 
     constructor(private persistenceService: PersistenceService) {
         this.newProjectEvent = new EventEmitter();
-        this.openProjectEvent = new EventEmitter();
+        this.openProjectEvent = new EventEmitter<Project>();
     }
 
     public newProject() {

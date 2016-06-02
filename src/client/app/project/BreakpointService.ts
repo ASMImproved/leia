@@ -5,9 +5,9 @@ import {Breakpoint, SourceLocation} from "../../../common/Debugger"
 
 @Injectable()
 export class BreakpointService {
-    breakpointAdded: EventEmitter<Breakpoint> = new EventEmitter();
-    breakpointChanged: EventEmitter<Breakpoint> = new EventEmitter();
-    breakpointRemoved: EventEmitter<Breakpoint> = new EventEmitter();
+    breakpointAdded: EventEmitter<Breakpoint> = new EventEmitter<Breakpoint>();
+    breakpointChanged: EventEmitter<Breakpoint> = new EventEmitter<Breakpoint>();
+    breakpointRemoved: EventEmitter<Breakpoint> = new EventEmitter<Breakpoint>();
     private breakpoints: {[index: string]: Breakpoint} = {};
 
     constructor(private socketService: SocketService, private runService: RunService) {

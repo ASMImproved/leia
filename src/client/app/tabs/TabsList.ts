@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 import {TabSelect} from "./TabSelect";
+import {TabList} from "./TabList";
 
 @Component({
     selector: 'lea-tabs-list',
@@ -13,16 +14,16 @@ import {TabSelect} from "./TabSelect";
   `,
 })
 export class TabsList {
-    tabs: TabSelect[] = [];
+    tabs: TabList[] = [];
 
-    selectTab(tab: TabSelect) {
+    selectTab(tab: TabList) {
         this.tabs.forEach((tab) => {
             tab.active = false;
         });
         tab.active = true;
     }
 
-    addTab(tab: TabSelect) {
+    addTab(tab: TabList) {
         if (this.tabs.length === 0) {
             tab.active = true;
         }

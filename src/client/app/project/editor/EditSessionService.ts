@@ -36,8 +36,8 @@ export class EditSessionService {
         private symbolService: SymbolService,
         private notificationService: NotificationService
     ) {
-        this.setChanged = new EventEmitter();
-        this.activeSessionChanged = new EventEmitter();
+        this.setChanged = new EventEmitter<Array<{key: File; value: Session}>>();
+        this.activeSessionChanged = new EventEmitter<Session>();
 
         this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));

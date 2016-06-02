@@ -4,14 +4,13 @@
 <head>
   <title>Lea</title>
   <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css" />
-  <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css" />
+  <!--<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css" />-->
   <link rel="stylesheet" type="text/css" href="/css/main.css" />
 
   <!-- 1. Load libraries -->
   <!-- IE required polyfills, in this exact order -->
   <script src="vendor/core-js/client/shim.min.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng2-bootstrap/1.0.17/ng2-bootstrap.min.js"></script>
   <script src="vendor/ace.js"></script>
   <script src="vendor/mode-c_cpp.js"></script>
   <script src="vendor/zipjs/zip.js"></script>
@@ -22,6 +21,8 @@
   <script src="vendor/zone.js/dist/zone.js"></script>
   <script src="vendor/reflect-metadata/Reflect.js"></script>
   <script src="vendor/systemjs/dist/system.src.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng2-bootstrap/1.0.17/ng2-bootstrap.min.js"></script>
 
   <!-- 2. Configure SystemJS -->
   <script>
@@ -36,11 +37,9 @@
         'app':                        { main: 'main.js',  defaultExtension: 'js' },
         'rxjs':                       { defaultExtension: 'js' },
         client: {
-          format: 'register',
           defaultExtension: 'js'
         },
         common: {
-          format: 'register',
           defaultExtension: 'js'
         }
       };

@@ -13,8 +13,7 @@ __karma__.loaded = function() {};
     var packages = {
             'base/dist': {
                 defaultExtension: 'js',
-                    format: 'register',
-                    map: Object.keys(window.__karma__.files).filter(onlyAppFiles).reduce(createPathRecords, {})
+                map: Object.keys(window.__karma__.files).filter(onlyAppFiles).reduce(createPathRecords, {})
             },
             'rxjs': { defaultExtension: 'js', map: 'node_modules/rxjs' }
 

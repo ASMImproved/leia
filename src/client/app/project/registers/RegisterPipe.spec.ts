@@ -10,11 +10,9 @@ describe("RegisterPipe", () => {
     });
 
     it("converts numbers to hexadecimal representation with leading zeros", () => {
-        let rawData = [
-            [0, "0x00000000"],
-            [16, "0x00000010"]
-        ];
-        const data = new Map<number, string>(rawData);
+        const data = new Map<number, string>();
+        data.set(0, "0x00000000");
+        data.set(16, "0x00000010");
         data.forEach((representation: string, value:number) => {
             expect(pipe.transform(value)).toBe(representation);
         });
