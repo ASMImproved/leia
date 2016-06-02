@@ -5,10 +5,12 @@ import {RegisterService} from "../registers/RegisterService";
 import {Register} from "../../../../common/Debugger";
 import {SymbolService, Symbol} from "../SymbolService";
 import {MemoryWatchService} from "../MemoryWatchService";
+import {MemoryByteComponent} from "./MemoryByteComponent";
 
 @Component({
     selector: 'lea-memory',
-    templateUrl: 'client/app/project/memory/memory.html'
+    templateUrl: 'client/app/project/memory/memory.html',
+    directives: [MemoryByteComponent]
 })
 export class MemoryComponent implements  OnInit{
     private matrix: Array<Array<Array<{value: string, address: number, registers: Array<Register>, symbols: Array<Symbol>}>>> = [];

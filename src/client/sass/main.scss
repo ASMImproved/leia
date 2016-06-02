@@ -320,7 +320,7 @@ lea-project {
 							display: flex;
 							flex-direction: column;
 							lea-memory-header {
-								flex-shrink: 1;
+								flex-shrink: 0;
 								flex-grow: 0;
 
 								display: flex;
@@ -342,7 +342,7 @@ lea-project {
 								}
 							}
 							lea-memory-content {
-								flex-shrink: 0;
+								flex-shrink: 1;
 								flex-grow: 1;
 								font-family: monospace;
 								display: flex;
@@ -352,6 +352,27 @@ lea-project {
 									border: none;
 									padding: 0px;
 									background: none;
+								}
+								table {
+									width: 100%;
+
+									td {
+										text-align: center;
+										lea-memory-byte {
+											display: inline-flex;
+											span {
+												border-bottom-style: solid;
+												border-bottom-width: 4px;
+												border-bottom-color: gainsboro;
+												&.memoryByteRegister {
+													border-bottom-color: $primary-color;
+												}
+												&.memoryByteSymbol {
+													border-bottom-color: #D8AB47;
+												}
+											}
+										}
+									}
 								}
 							}
 						}
