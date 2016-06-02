@@ -86,10 +86,10 @@ function failOnSingleBuild() {
 }
 
 gulp.task('typescript-client', function () {
-	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
+	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts', 'typings/core-js/index.d.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
 		.pipe(ts(tsProject))
-		.on('error', failOnSingleBuild)
+		//.on('error', failOnSingleBuild)
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist/public/'))
 		.pipe(browserSync.stream());
@@ -108,7 +108,7 @@ gulp.task('typescript-server', function() {
 			experimentalDecorators: true,
 			emitDecoratorMetadata: true
 		}))
-		.on('error', failOnSingleBuild)
+		//.on('error', failOnSingleBuild)
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist'));
 });
@@ -139,11 +139,12 @@ gulp.task('index-watch', function() {
 
 gulp.task('vendor', function() {
 	return gulp.src([
-			'node_modules/es6-shim/**/**',
+			'node_modules/core-js/**/**',
 			'node_modules/systemjs/**/**',
-			'node_modules/angular2/**/**',
-			'node_modules/systemjs/**/**',
+			'node_modules/@angular/**/**',
+			'node_modules/reflect-metadata/**/**',
 			'node_modules/rxjs/**/**',
+			'node_modules/zone.js/**/**',
 			'node_modules/async/**/**'
 		], {base: 'node_modules'})
 		.pipe(gulp.dest('dist/public/vendor/'))
@@ -151,11 +152,13 @@ gulp.task('vendor', function() {
 });
 gulp.task('vendor-watch', function() {
 	return gulp.watch([
-		'node_modules/es6-shim/**/**',
+		'node_modules/core-js/**/**',
 		'node_modules/systemjs/**/**',
-		'node_modules/angular2/**/**',
-		'node_modules/systemjs/**/**',
-		'node_modules/rxjs/**/**'
+		'node_modules/@angular/**/**',
+		'node_modules/reflect-metadata/**/**',
+		'node_modules/rxjs/**/**',
+		'node_modules/zone.js/**/**',
+		'node_modules/async/**/**'
 	], ['vendor', nodeServer.restart]);
 });
 

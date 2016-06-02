@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";
 import {HitWatchpointEvent, HitBreakpointEvent} from "../../../common/Debugger";

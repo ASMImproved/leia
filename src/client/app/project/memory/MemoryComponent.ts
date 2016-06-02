@@ -1,4 +1,4 @@
-import {Component, OnInit} from "angular2/core";
+import {Component, OnInit} from "@angular/core";
 import {MemoryService} from "./MemoryService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
 import {RegisterService} from "../registers/RegisterService";

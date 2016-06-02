@@ -1,8 +1,8 @@
 <lea-memory-content>
     <table>
-        <tr *ngFor="#row of matrix">
-            <td *ngFor="#cell of row" [ngClass]="{cell_changed: memoryWatchService.brokenBecauseOf(cell[0].address)}">
-                0x<span *ngFor="#byte of cell" ><span *ngFor="#register of byte.registers">{{" (" + register.name + ") -> "}}</span><span *ngFor="#symbol of byte.symbols">{{" (" + symbol.name + ") -> "}}</span>{{byte.value}}</span>
+        <tr *ngFor="let row of matrix">
+            <td *ngFor="let cell of row" [ngClass]="{cell_changed: memoryWatchService.brokenBecauseOf(cell[0].address)}">
+                0x<span *ngFor="let byte of cell" ><span *ngFor="let register of byte.registers">{{" (" + register.name + ") -> "}}</span><span *ngFor="let symbol of byte.symbols">{{" (" + symbol.name + ") -> "}}</span>{{byte.value}}</span>
                 <button *ngIf="!memoryWatchService.watchId(cell[0].address)" (click)="watch(cell[0].address)"><i class="fa fa-search" aria-hidden="true"></i></button>
                 <button *ngIf="memoryWatchService.watchId(cell[0].address)" (click)="unwatch(memoryWatchService.watchId(cell[0].address))"><i class="fa fa-search-minus" aria-hidden="true"></i></button></td>
         </tr>

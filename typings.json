@@ -7,6 +7,7 @@
   },
   "devDependencies": {},
   "globalDependencies": {
+    "core-js": "registry:dt/core-js#0.0.0+20160317120654",
     "ace": "registry:dt/ace#0.0.0+20160317120654",
     "async": "registry:dt/async#1.4.2+20160501155344",
     "bunyan": "registry:dt/bunyan#0.0.0+20160412155112",

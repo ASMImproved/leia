@@ -1,5 +1,5 @@
 /// <reference path="../../../../../typings/globals/ace/index.d.ts" />
-import {Component, Input, OnInit} from 'angular2/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AceDirective} from './AceDirective'
 import {File} from '../../../../common/File'
 import Document = AceAjax.Document;

@@ -1,5 +1,5 @@
 
-import {Injectable, EventEmitter} from "angular2/core";
+import {Injectable, EventEmitter} from "@angular/core";
 import {SocketService} from "../socket/SocketService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
 import {BehaviorSubject} from "rxjs/Rx";

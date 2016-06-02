@@ -1,11 +1,11 @@
-import {Component} from "angular2/core";
+import {Component} from "@angular/core";
 import {TabSelect} from "./TabSelect";
 
 @Component({
     selector: 'lea-tabs-list',
     template: `
     <ul class="lea-tabs">
-      <li *ngFor="#tab of tabs" [ngClass]="{active: tab.active}" (click)="selectTab(tab)">
+      <li *ngFor="let tab of tabs" [ngClass]="{active: tab.active}" (click)="selectTab(tab)">
         {{tab.tabTitle}}
       </li>
     </ul>

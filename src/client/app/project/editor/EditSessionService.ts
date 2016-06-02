@@ -1,6 +1,6 @@
 /// <reference path="../../../../../typings/globals/ace/index.d.ts" />
 
-import {Injectable, EventEmitter} from 'angular2/core';
+import {Injectable, EventEmitter} from '@angular/core';
 import IEditSession = AceAjax.IEditSession;
 import {File} from '../../../../common/File'
 import {FileNameEndingService} from "./../FileNameEndingService";

@@ -1,4 +1,4 @@
-import {Injectable, EventEmitter} from "angular2/core";
+import {Injectable, EventEmitter} from "@angular/core";
 import {SocketService} from "./socket/SocketService";
 import {Project} from "../../../common/Project";
 import {HitBreakpointEvent, ISourceLocation, HitWatchpointEvent} from "../../../common/Debugger";

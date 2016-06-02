@@ -8,15 +8,36 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 // // we will call `__karma__.start()` later, once all the specs are loaded.
 __karma__.loaded = function() {};
 
-System.config({
-    packages: {
-        'base/dist': {
-            defaultExtension: 'js',
-            format: 'register',
-            map: Object.keys(window.__karma__.files).filter(onlyAppFiles).reduce(createPathRecords, {})
-        }
-    }
-});
+(function(global) {
+
+    var packages = {
+            'base/dist': {
+                defaultExtension: 'js',
+                    format: 'register',
+                    map: Object.keys(window.__karma__.files).filter(onlyAppFiles).reduce(createPathRecords, {})
+            },
+            'rxjs': { defaultExtension: 'js', map: 'node_modules/rxjs' }
+
+        };
+
+    var ngPackageNames = [
+        'common',
+        'compiler',
+        'core',
+        'platform-browser',
+        'platform-browser-dynamic'
+    ];
+
+    // Add package entries for angular packages
+    ngPackageNames.forEach(function(pkgName) {
+        packages['@angular/'+pkgName] = { main: pkgName + '.umd.js', defaultExtension: 'js', map: 'node_modules/@angular' };
+    });
+
+    System.config({
+        packages: packages
+    });
+
+})(this);
 
 System.import('angular2/src/platform/browser/browser_adapter')
     .then(function(browser_adapter) { browser_adapter.BrowserDomAdapter.makeCurrent(); })

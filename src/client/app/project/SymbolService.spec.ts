@@ -1,5 +1,5 @@
 /// <reference path="../../../../typings/globals/jasmine/index.d.ts" />
-import {describe, it, expect} from 'angular2/testing';
+import {describe, it, expect} from '@angular/core/testing';
 import {SymbolService} from "./SymbolService";
 import objectContaining = jasmine.objectContaining;
 

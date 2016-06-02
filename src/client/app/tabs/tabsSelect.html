@@ -1,5 +1,5 @@
 <select (change)="selectTab($event.target.value)">
-    <option *ngFor="#tab of tabs" [value]="tab.tabTitle">
+    <option *ngFor="let tab of tabs" [value]="tab.tabTitle">
         {{tab.tabTitle}}
     </option>
 </select>

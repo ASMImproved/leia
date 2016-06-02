@@ -1,5 +1,5 @@
 /// <reference path="../../../../../typings/globals/jasmine/index.d.ts" />
-import {it, describe, expect, beforeEach} from 'angular2/testing'
+import {it, describe, expect, beforeEach} from '@angular/core/testing'
 import {RegisterPipe} from "./RegisterPipe";
 
 describe("RegisterPipe", () => {

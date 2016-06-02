@@ -1,5 +1,5 @@
 import {File} from '../../../common/File'
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {BehaviorSubject} from 'rxjs/Rx'
 import {Project} from "../../../common/Project";
 import {ProjectService} from "./ProjectService";

@@ -1,13 +1,13 @@
 <panel-sub-header>Global</panel-sub-header>
 <panel-list>
-	<li *ngFor="#symbol of globalSymbols">
+	<li *ngFor="let symbol of globalSymbols">
 		<span  class="clickable grow" (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</span>
 		<span class="clickable" (click)="gotoMemory(symbol)"><i class="fa fa-map-o"></i></span>
 	</li>
 </panel-list>
 <panel-sub-header>Local</panel-sub-header>
 <panel-list>
-	<li *ngFor="#symbol of localSymbols">
+	<li *ngFor="let symbol of localSymbols">
 		<span  class="clickable grow" (click)="gotoSourceLineOfCode(symbol)">{{symbol.name}}</span>
 		<span class="clickable" (click)="gotoMemory(symbol)"><i class="fa fa-map-o"></i></span>
 	</li>

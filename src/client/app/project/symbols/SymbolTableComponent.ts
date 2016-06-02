@@ -1,4 +1,4 @@
-import {Component} from "angular2/core";
+import {Component} from "@angular/core";
 import {SymbolService, Symbol} from "../SymbolService";
 import {EditSessionService} from "../editor/EditSessionService";
 import {MemoryService} from "../memory/MemoryService";

@@ -21,14 +21,14 @@
 				<span>No open files</span>
 			</lea-file-structure-no-open-file>
 			<panel-list>
-				<li *ngFor="#item of sessionSet">
+				<li *ngFor="let item of sessionSet">
 					<span class="clickable grow" (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
 					<span class="clickable" (click)="closeSession(item.value)"><i class="fa fa-times-circle-o"></i></span>
 				</li>
 			</panel-list>
 			<panel-sub-header>Files</panel-sub-header>
 			<panel-list>
-				<li *ngFor="#file of _project.files">
+				<li *ngFor="let file of _project.files">
 					<span class="clickable grow" (click)="selectFile(file)">{{file.name}}</span>
 					<span class="clickable" (click)="deleteFile(file)"><i class="fa fa-trash-o"></i></span>
 				</li>

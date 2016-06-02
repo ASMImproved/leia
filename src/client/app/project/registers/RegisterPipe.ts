@@ -1,9 +1,9 @@
-import {Pipe, PipeTransform} from 'angular2/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 
 @Pipe({name: 'register'})
 export class RegisterPipe implements PipeTransform {
-    transform(registerContent:number, args:any[] = []) : any {
+    transform(registerContent:number) : any {
         if (registerContent < 0) {
             throw new Error("invalid data in register: " + registerContent);
         }

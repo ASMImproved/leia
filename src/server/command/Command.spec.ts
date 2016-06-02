@@ -1,5 +1,5 @@
 /// <reference path="../../../typings/index.d.ts" />
-import {describe, it, expect} from 'angular2/testing';
+import {describe, it, expect} from '@angular/core/testing';
 import {AbstractCommand, Command, CommandRegistry} from "./Command";
 import {ExecutionContext} from "./ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";

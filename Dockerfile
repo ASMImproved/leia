@@ -51,6 +51,7 @@ RUN mkdir -p dist/public/vendor/ && \
     unzip /tmp/font-awesome.zip -d /tmp/ && \
     cp -R /tmp/font-awesome-4.6.3/ dist/public/vendor/font-awesome
 
+COPY vendor/bootstrap/ dist/public/vendor/bootstrap/
 
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
