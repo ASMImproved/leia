@@ -2,10 +2,12 @@ import {Component} from "@angular/core";
 import {SymbolService, Symbol} from "../SymbolService";
 import {EditSessionService} from "../editor/EditSessionService";
 import {MemoryService} from "../memory/MemoryService";
+import { TOOLTIP_DIRECTIVES } from 'ng2-bootstrap/components/tooltip';
 
 @Component({
     selector: 'lea-symboltable',
-    templateUrl: 'client/app/project/symbols/symboltable.html'
+    templateUrl: 'client/app/project/symbols/symboltable.html',
+    directives: [TOOLTIP_DIRECTIVES]
 })
 export class SymboleTableComponent {
     private globalSymbols: Symbol[] = [];
