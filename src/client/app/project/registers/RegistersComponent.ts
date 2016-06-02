@@ -6,6 +6,7 @@ import {AnswerContext} from "../../../../common/AnswerContext";
 import {MemoryService} from "../memory/MemoryService";
 import {RegisterService} from "./RegisterService";
 import {CORE_DIRECTIVES} from "@angular/common";
+import { TOOLTIP_DIRECTIVES } from 'ng2-bootstrap/components/tooltip';
 
 @Component({
     selector: 'lea-registers',

@@ -2,6 +2,6 @@
     <li *ngFor="let register of integerRegisters">
         <span class="name">{{register.name}}</span>
         <span class="value grow">{{register.value | register }}</span>
-        <span class="clickable" (click)="gotoInMemory(register)" tooltip="Goto in memory"><i class="fa fa-map-o" ></i></span>
+        <span class="clickable" (click)="gotoInMemory(register)" ><span tooltip="Goto address in memory" tooltipPlacement="left"><i class="fa fa-map-o" ></i></span></span>
     </li>
 </panel-list>

@@ -4,6 +4,7 @@ body {
 	background-color: white;
 	margin: 0px;
 	font-family: arial;
+	font-size: 15px;
 }
 
 lea-project {
@@ -50,6 +51,9 @@ lea-project {
 					font-size: larger;
 					margin-right: 10px;
 					font-weight: bold;
+				}
+				input {
+					color: black !important;
 				}
 			}
 		}
