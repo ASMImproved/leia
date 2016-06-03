@@ -18,15 +18,13 @@ import {NotificationService, NotificationLevel} from "../notification/Notificati
 // declare the ace library
 declare var ace: AceAjax.Ace;
 
-var Range = ace.require('ace/range').Range;
-
 @Injectable()
 export class EditSessionService {
     private set: Array<{key; value}> = [];
     public setChanged: EventEmitter<Array<{key: File; value: Session}>>;
     public activeSessionChanged: EventEmitter<Session>;
     private activeSession: Session;
-    private breakpointMarker: {marker: number, session: Session};
+    private breakLocationMarker: {marker: number, session: Session, location: ISourceLocation};
 
     constructor(
         private fileNameEndingService: FileNameEndingService,
@@ -42,21 +40,21 @@ export class EditSessionService {
         this.breakpointService.breakpointAdded.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
             if(session) {
-                session.ace.setBreakpoint(breakpoint.location.line - 1, (breakpoint.pending) ? "breakpoint_pending" : "breakpoint_set");
+                session.setBreakpoint(breakpoint);
             }
         });
 
         this.breakpointService.breakpointChanged.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
             if(session) {
-                session.ace.setBreakpoint(breakpoint.location.line - 1, (breakpoint.pending) ? "breakpoint_pending" : "breakpoint_set");
+                session.setBreakpoint(breakpoint);
             }
         });
 
         this.breakpointService.breakpointRemoved.subscribe((breakpoint: Breakpoint) => {
             let session: Session = this.findInSet(this.projectService.getFileByName(breakpoint.location.filename));
             if(session) {
-                session.ace.clearBreakpoint(breakpoint.location.line-1);
+                session.clearBreakpoint(breakpoint);
             }
         });
 
@@ -70,21 +68,15 @@ export class EditSessionService {
                 this.notificationService.notify("Debugger stopped in ${location.filename} with no source file available", NotificationLevel.Warn);
                 return;
             }
-            let session = this.getOrCreateSession(file);
-            const row = location.line - 1;
-            let breakpointLineMarker: number = session.ace.addMarker(new Range(row, 0, row, 1), "breakpoint_line", "fullLine", false);
-            this.breakpointMarker = {
-                marker: breakpointLineMarker,
-                session: session
-            };
+            this.showBreakLocationMarker(this.getOrCreateSession(file), location);
             this.selectFile(file);
         });
         this.runService.continued.subscribe(() => {
-            this.removeBreakpointMarker();
+            this.hideBreakLocationMarker();
         });
         this.runService.runStatusChanged.subscribe((running) => {
             if(!running) {
-                this.removeBreakpointMarker();
+                this.hideBreakLocationMarker();
             }
         });
 
@@ -96,10 +88,10 @@ export class EditSessionService {
         });
     }
 
-    public removeBreakpointMarker() {
-        if (this.breakpointMarker) {
-            this.breakpointMarker.session.ace.removeMarker(this.breakpointMarker.marker);
-            this.breakpointMarker = null;
+    public hideBreakLocationMarker() {
+        if (this.breakLocationMarker) {
+            this.breakLocationMarker.session.ace.removeMarker(this.breakLocationMarker.marker);
+            this.breakLocationMarker = null;
         }
     }
 
@@ -110,6 +102,15 @@ export class EditSessionService {
         } else {
             return this.createSession(file);
         }
+    }
+
+    private showBreakLocationMarker(session:Session, location:ISourceLocation) {
+        let marker = session.setBreakLocation(location);
+        this.breakLocationMarker = {
+            marker,
+            session,
+            location
+        };
     }
 
     private findInSet(file: File) : Session {
@@ -127,6 +128,10 @@ export class EditSessionService {
             key: file,
             value: session
         });
+        session.setBreakpoints(this.breakpointService.breakpointsOf(file.name));
+        if (this.breakLocationMarker) {
+            this.showBreakLocationMarker(session, this.breakLocationMarker.location);
+        }
         this.setChanged.emit(this.set);
         return session;
     }

@@ -51,6 +51,16 @@ export class BreakpointService {
         });
     }
 
+    breakpointsOf(filename: string): Breakpoint[] {
+        let breakpoints = [];
+        for (let id in this.breakpoints) {
+            if (this.breakpoints[id].location.filename == filename) {
+                breakpoints.push(this.breakpoints[id]);
+            }
+        }
+        return breakpoints;
+    }
+
     private sendBreakpoint(breakpoint: Breakpoint): Promise<Breakpoint> {
         return new Promise<Breakpoint>(
             (resolve:(breakpoint:Breakpoint)=>void, reject:(error:any)=>void) => {
