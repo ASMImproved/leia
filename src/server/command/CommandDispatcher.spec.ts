@@ -39,14 +39,14 @@ describe('CommandDispatcher', function() {
         var callback = {
             callback: (err) => {
                 if (err) {
-                    expect(err).toBe('Incorrect payload');
+                    expect(() => { throw err }).toThrow(new Error('Incorrect payload for command: commandToCheckType'));
                     return;
                 }
                 fail('expected an error')
             }
         };
         spyOn(callback, 'callback').and.callThrough();
-        dispatcher.executeCommand('commandToCheckType', 42, null, callback.callback);
+        dispatcher.executeCommand('commandToCheckType', "NaN", null, callback.callback);
         expect(callback.callback).toHaveBeenCalledTimes(1);
     })
 });
