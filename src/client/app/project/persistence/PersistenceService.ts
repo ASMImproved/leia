@@ -1,4 +1,3 @@
-/// <reference path="../../../../../typings/globals/async/index.d.ts" />
 import {Injectable} from "@angular/core";
 import {Project} from "../../../../common/Project";
 
