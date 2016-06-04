@@ -16,6 +16,9 @@ export class RunService {
         socketService.subscribeToServerEvent('stdout', (event) => {
             this._stdout += event.payload;
         });
+        socketService.subscribeToServerEvent('stdoutOverflood', () => {
+            this._stdout += '[stdout overflooded]\n';
+        });
         socketService.subscribeToServerEvent('exit', () => {
             this.setRunningState(false);
             console.log('exit');

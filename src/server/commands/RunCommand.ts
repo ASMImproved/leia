@@ -19,8 +19,15 @@ interface RunPayload {
 })
 export class RunCommand extends AbstractCommand<RunPayload> {
     private executionContext: ExecutionContext;
+    private stdoutCount; // this variable counts how often the stdout event has been emitted
+    private floodResetter;
+    private static OVERFLOOD_LIMIT = 20;
 
     execute(payload:RunPayload, executionContext: ExecutionContext, callback: CommandCallback) {
+        this.stdoutCount = 0;
+        this.floodResetter = setInterval(() => {
+            this.stdoutCount = 0;
+        }, 1000);
         this.executionContext = executionContext;
         if(executionContext.socketSession.mipsSession) {
             if(executionContext.socketSession.mipsSession.state != MipsSessionState.Terminated && executionContext.socketSession.mipsSession.state != MipsSessionState.Error) {
@@ -44,20 +51,24 @@ export class RunCommand extends AbstractCommand<RunPayload> {
             return callback(new Error("Project contains no files which can be consumed by gcc"));
         }
         let mips = executionContext.socketSession.mipsSession = new MipsSession(payload.project);
+        function cbWithError(err) {
+            clearInterval(this.floodResetter);
+            return callback(err);
+        }
         mips.run((err) => {
             if(err) {
-                return callback(err);
+                return cbWithError(err);
             }
             mips.debuggerStartedPromise.then(() => {
                 console.log('debugger started promise resolved');
                 mips.readMemory(executionContext.socketSession.memoryFrame, (err, memoryUpdate) => {
                     if (err) {
-                        return callback(err);
+                        return cbWithError(err);
                     }
                     const memoryContext = new AnswerContext("memoryUpdate", memoryUpdate);
                     mips.readSymbols((err, symbolUpdate) => {
                         if (err) {
-                            return callback(err);
+                            return cbWithError(err);
                         }
                         const symbolContext = new AnswerContext("symbolUpdate", symbolUpdate);
                         callback(null, {ok: true}, [memoryContext, symbolContext]);
@@ -65,12 +76,16 @@ export class RunCommand extends AbstractCommand<RunPayload> {
                 });
             }, (err) => {
                 console.error('bug started promise rejected', err);
-                return callback(err);
+                return cbWithError(err);
             });
         });
         mips.on('stdout', (chunk) => {
-            console.log(chunk);
-            executionContext.socketSession.emit('stdout', chunk, []);
+            this.stdoutCount++;
+            if(this.stdoutCount < RunCommand.OVERFLOOD_LIMIT) {
+                executionContext.socketSession.emit('stdout', chunk, []);
+            } else if(this.stdoutCount == RunCommand.OVERFLOOD_LIMIT) {
+                executionContext.socketSession.emit('stdoutOverflood', {}, []);
+            }
         });
         mips.on('hitBreakpoint', (stoppedEvent: dbgmits.IBreakpointHitEvent) => {
             this.sendHitBreakpointEvent(new SourceLocation(basename(stoppedEvent.frame.filename), stoppedEvent.frame.line), stoppedEvent.breakpointId);
@@ -86,6 +101,7 @@ export class RunCommand extends AbstractCommand<RunPayload> {
         });
         mips.on('exit', (code: number, signal: string) => {
             this.sendExitEvent(code, signal);
+            clearInterval(this.floodResetter);
         });
     }
 
