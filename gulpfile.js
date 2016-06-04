@@ -34,7 +34,7 @@ gulp.task('watch', function() {
 
 gulp.task('test_server', function() {
 	runSequence(
-		['typescript-server', 'vendor'],
+		['typescript-server'],
 		'jasmine-server',
 		function (err) {
 			if (err) {

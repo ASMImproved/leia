@@ -1,4 +1,4 @@
-import {describe, it, expect} from '@angular/core/testing'; // intentionally import angular tests in server to have TS jasmine support
+/// <reference path="../../../typings/globals/jasmine/index.d.ts" />
 import {AbstractCommand, Command, CommandRegistry} from "./Command";
 import {ExecutionContext} from "./ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
@@ -39,7 +39,7 @@ describe('CommandDispatcher', function() {
         var callback = {
             callback: (err) => {
                 if (err) {
-                    expect(err).toContainError('Incorrect payload');
+                    expect(err).toBe('Incorrect payload');
                     return;
                 }
                 fail('expected an error')
