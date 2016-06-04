@@ -251,7 +251,7 @@ export class MipsSession extends events.EventEmitter{
                 "mips-linux-gnu-gcc",
                 "-g",
                 "-static",
-                "-mips32r5",
+                "-mips32",
                 "-o",
                 MipsSession.ELF_FILE_LOCATION
             ].concat(files)
