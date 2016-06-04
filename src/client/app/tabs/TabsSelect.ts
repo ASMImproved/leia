@@ -4,7 +4,7 @@ import {FORM_DIRECTIVES, CORE_DIRECTIVES} from "@angular/common";
 
 @Component({
     selector: 'lea-tabs-select',
-    templateUrl: 'client/app/tabs/tabsSelect.html',
+    template: require('./tabsSelect.html'),
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class TabsSelect {

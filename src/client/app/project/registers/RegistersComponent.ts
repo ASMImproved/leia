@@ -10,7 +10,7 @@ import { TOOLTIP_DIRECTIVES } from 'ng2-bootstrap/components/tooltip';
 
 @Component({
     selector: 'lea-registers',
-    templateUrl: 'client/app/project/registers/registers.html',
+    template: require('./registers.html'),
     pipes: [RegisterPipe],
     directives: [TOOLTIP_DIRECTIVES, CORE_DIRECTIVES]
 })

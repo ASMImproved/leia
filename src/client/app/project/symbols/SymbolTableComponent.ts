@@ -6,7 +6,7 @@ import { TOOLTIP_DIRECTIVES } from 'ng2-bootstrap/components/tooltip';
 
 @Component({
     selector: 'lea-symboltable',
-    templateUrl: 'client/app/project/symbols/symboltable.html',
+    template: require('./symboltable.html'),
     directives: [TOOLTIP_DIRECTIVES]
 })
 export class SymboleTableComponent {

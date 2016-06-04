@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build": "webpack --config webpack.dev.js --bail --display-modules",
+    "test-client": "karma start",
     "tsc": "tsc"
   },
   "repository": {
@@ -43,6 +45,8 @@
   "devDependencies": {
     "browser-sync": "^2.11.1",
     "concurrently": "^1.0.0",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
     "gulp": "^3.9.1",
     "gulp-connect": "^2.2.0",
     "gulp-develop-server": "^0.5.0",
@@ -55,6 +59,8 @@
     "gulp-typescript": "^2.10.0",
     "gulp-typings": "^1.1.0",
     "gulp-watch": "^4.3.5",
+    "html-loader": "^0.4.3",
+    "html-webpack-plugin": "^2.15.0",
     "jasmine-core": "2.4.1",
     "jasmine-reporters": "2.1.1",
     "karma": "^0.13.21",
@@ -62,9 +68,19 @@
     "karma-coverage": "^0.5.3",
     "karma-jasmine": "^0.3.7",
     "karma-junit-reporter": "^0.3.8",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.7.0",
+    "node-sass": "^3.7.0",
+    "null-loader": "^0.1.1",
+    "raw-loader": "^0.5.1",
     "remap-istanbul": "^0.5.1",
     "run-sequence": "^1.1.5",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^0.8.1",
     "tsd": "^0.6.5",
-    "typescript": "1.8.10"
+    "typescript": "1.8.10",
+    "webpack": "^1.12.14",
+    "webpack-merge": "^0.9.0"
   }
 }

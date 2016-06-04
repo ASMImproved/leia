@@ -18,7 +18,7 @@ var watching = false;
 // Main task
 gulp.task('default' , function () {
 	runSequence(
-		['typescript-client', 'typescript-server', 'index', 'vendor', 'template', 'sass', 'ace-mips-mode']
+		['typescript-server', 'vendor', 'ace-mips-mode']
 	);
 });
 
@@ -89,7 +89,7 @@ gulp.task('typescript-client', function () {
 	return gulp.src(['src/client/app/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
 		.pipe(ts(tsProject))
-		//.on('error', failOnSingleBuild)
+		.on('error', failOnSingleBuild)
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist/public/'))
 		.pipe(browserSync.stream());
@@ -196,7 +196,8 @@ gulp.task('jasmine-server', function() {
 			reporter: new reporters.JUnitXmlReporter({
 				savePath: '/tests/server/',
 				consolidateAll: true
-			})
+			}),
+			errorOnFail: true
 		}))
 });
 

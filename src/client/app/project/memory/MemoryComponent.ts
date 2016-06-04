@@ -9,7 +9,7 @@ import {MemoryByteComponent} from "./MemoryByteComponent";
 
 @Component({
     selector: 'lea-memory',
-    templateUrl: 'client/app/project/memory/memory.html',
+    template: require('./memory.html'),
     directives: [MemoryByteComponent]
 })
 export class MemoryComponent implements  OnInit{

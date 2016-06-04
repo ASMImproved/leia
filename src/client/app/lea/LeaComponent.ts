@@ -8,7 +8,7 @@ import {TabSelect} from "../tabs/TabSelect";
 
 @Component({
     selector: 'lea',
-    templateUrl: 'client/app/lea/lea.html',
+    template: require('./lea.html'),
     directives: [ProjectComponent, SplashComponent, TabsSelect, TabSelect],
     providers: [PersistenceService]
 })

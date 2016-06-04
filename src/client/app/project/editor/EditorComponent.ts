@@ -12,7 +12,7 @@ declare var ace: AceAjax.Ace;
 
 @Component({
     selector: 'lea-editor',
-    templateUrl: 'client/app/project/editor/editor.html',
+    template: require('./editor.html'),
     directives: [AceDirective]
 })
 export class EditorComponent implements OnInit{

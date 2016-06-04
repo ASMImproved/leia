@@ -5,11 +5,6 @@
   <title>Lea</title>
   <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css" />
   <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="/css/main.css" />
-
-  <!-- 1. Load libraries -->
-  <!-- IE required polyfills, in this exact order -->
-  <script src="vendor/core-js/client/shim.min.js"></script>
 
   <script src="vendor/ace.js"></script>
   <script src="vendor/mode-c_cpp.js"></script>
@@ -18,52 +13,6 @@
   <script src="mode-mips.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 
-  <script src="vendor/zone.js/dist/zone.js"></script>
-  <script src="vendor/reflect-metadata/Reflect.js"></script>
-  <script src="vendor/systemjs/dist/system.src.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng2-bootstrap/1.0.17/ng2-bootstrap.min.js"></script>
-
-  <!-- 2. Configure SystemJS -->
-  <script>
-    (function(global) {
-      // map tells the System loader where to look for things
-      var map = {
-        '@angular':                   'vendor/@angular',
-        'rxjs':                       'vendor/rxjs'
-      };
-      // packages tells the System loader how to load when no filename and/or no extension
-      var packages = {
-        'app':                        { main: 'main.js',  defaultExtension: 'js' },
-        'rxjs':                       { defaultExtension: 'js' },
-        client: {
-          defaultExtension: 'js'
-        },
-        common: {
-          defaultExtension: 'js'
-        }
-      };
-      var ngPackageNames = [
-        'common',
-        'compiler',
-        'core',
-        'platform-browser',
-        'platform-browser-dynamic'
-      ];
-
-      // Add package entries for angular packages
-      ngPackageNames.forEach(function(pkgName) {
-        packages['@angular/'+pkgName] = { main: pkgName + '.umd.js', defaultExtension: 'js' };
-      });
-      var config = {
-        map: map,
-        packages: packages
-      }
-      System.config(config);
-    })(this);
-    System.import('client/app/main')
-          .then(null, console.error.bind(console));
-  </script>
 </head>
 <body>
   <lea></lea>

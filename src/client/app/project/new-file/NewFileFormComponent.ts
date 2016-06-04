@@ -10,7 +10,7 @@ import {OnInit} from "@angular/core";
 
 @Component({
   selector: 'new-file-form',
-  templateUrl: 'client/app/project/new-file/new-file-form.html'
+  template: require('./new-file-form.html')
 })
 export class NewFileFormComponent implements OnInit{
     private model: File = new File("");

@@ -61,13 +61,9 @@ ADD src/typings/ src/typings/
 
 RUN typings install
 
-ADD gulpfile.js ./
-ADD tsconfig.json ./
-ADD karma.conf.js ./
-ADD karma-test-shim.js ./
+COPY / .
 
-ADD src/ src/
-
+RUN npm run build
 RUN gulp
 
 EXPOSE 80

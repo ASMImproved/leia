@@ -31,7 +31,7 @@ import {EditableComponent} from "./editable/EditableComponent";
 
 @Component({
     selector: 'lea-project',
-    templateUrl: 'client/app/project/project.html',
+    template: require('./project.html'),
     directives: [
 		NewFileFormComponent,
 		EditorComponent,

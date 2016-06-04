@@ -4,7 +4,7 @@ import {Project} from "../../../common/Project";
 
 @Component({
     selector: 'lea-splash',
-    templateUrl: 'client/app/splash/splash.html'
+    template: require('./splash.html')
 })
 export class SplashComponent {
     @Output() public newProjectEvent: EventEmitter<any>;
