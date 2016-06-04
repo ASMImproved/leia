@@ -36,8 +36,6 @@ WORKDIR /lea
 ADD package.json ./
 RUN npm install
 
-RUN npm install -g typings@1.0.3
-
 RUN mkdir -p dist/public/vendor/ && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/ace.js -o dist/public/vendor/ace.js && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/mode-c_cpp.js -o dist/public/vendor/mode-c_cpp.js && \
@@ -59,12 +57,12 @@ RUN chmod +x /entrypoint.sh
 ADD typings.json ./
 ADD src/typings/ src/typings/
 
-RUN typings install
+RUN npm run typings
 
 COPY / .
 
-RUN npm run build
-RUN gulp
+ARG TARGET
+RUN if [ "$TARGET" = "PROD" ] ; then npm run build-prod; else npm run build-dev; fi
 
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]

@@ -4,8 +4,9 @@
   "description": "Assembler IDE",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "webpack --config webpack.dev.js --bail --display-modules",
+    "typings": "typings install",
+    "build-dev": "webpack --config webpack.dev.js --bail --display-modules && gulp",
+    "build-prod": "webpack --config webpack.prod.js --bail --display-modules && gulp",
     "test-client": "karma start",
     "tsc": "tsc"
   },
@@ -40,7 +41,8 @@
     "systemjs": "0.19.27",
     "tar": "^2.2.1",
     "temp": "0.8.3",
-    "zone.js": "0.6.12"
+    "zone.js": "0.6.12",
+    "typings": "1.0.3"
   },
   "devDependencies": {
     "browser-sync": "^2.11.1",
