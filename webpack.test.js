@@ -27,6 +27,6 @@ module.exports = {
         ]
     },
     ts: {
-        configFileName: 'tsconfig.json'
+        configFileName: 'tsconfig.client.json'
     }
 }
