@@ -57,7 +57,7 @@ gulp.task('typescript-server', function() {
 	return gulp.src(['src/server/**/**.ts', 'src/common/**/**.ts'], {base: 'src/'})
 		.pipe(sourcemaps.init())
 		.pipe(ts(tsServerProject))
-		//.on('error', failOnSingleBuild)
+		.on('error', failOnSingleBuild)
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('dist'));
 });
@@ -87,6 +87,7 @@ gulp.task('jasmine-server', function() {
 			}),
 			errorOnFail: true
 		}))
+		.on('error', failOnSingleBuild)
 });
 
 gulp.task('karma', function(done) {
