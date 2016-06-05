@@ -46,7 +46,7 @@ export class MipsSession extends events.EventEmitter{
     private docker: DockerClient;
     private containerId: string;
     private containerRemovalRequested = false;
-    private static ELF_FILE_LOCATION = "/out/proj.out";
+    private static ELF_FILE_LOCATION = "/leia/out/proj.out";
     private static GDB_PORT = 5678;
     public debuggerStartedPromise: Promise<void>;
 
@@ -227,12 +227,12 @@ export class MipsSession extends events.EventEmitter{
                         })
                         .pipe(packer);
 
-                    this.docker.copyFilesFromStreamIntoContainer(containerId, '/import/', tarProjectFileStream, (err) => {
+                    this.docker.copyFilesFromStreamIntoContainer(containerId, '/leia/import/', tarProjectFileStream, (err) => {
                         if(err) {
                             return cbWithError(err);
                         }
                         let files = result.map((file) => {
-                            return path.join('/import/src', file);
+                            return path.join('/leia/import/src', file);
                         });
                         cbWithSuccess(files);
                     });
@@ -333,7 +333,7 @@ export class MipsSession extends events.EventEmitter{
             "AttachStderr": true,
             "Tty": false,
             "Cmd": [
-                "/readSymbols.sh",
+                "/leia/readSymbols.sh",
             ]
         }, (err, inspect, stdout, stderr) => {
             if (err) {

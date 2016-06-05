@@ -21,7 +21,10 @@ RUN apt-get update && \
 		qemu-system-mips \
 		qemu-user
 
-RUN mkdir -p /import/ && mkdir -p /out/
-COPY readSymbols.sh /
-COPY entrypoint.sh /
-ENTRYPOINT ["/entrypoint.sh"]
+RUN useradd -u 1200 -U leia && mkdir /leia && chown leia:leia /leia
+USER 1200
+WORKDIR /leia
+RUN mkdir -p import/ && mkdir -p out/
+COPY readSymbols.sh .
+COPY entrypoint.sh .
+ENTRYPOINT ["/leia/entrypoint.sh"]

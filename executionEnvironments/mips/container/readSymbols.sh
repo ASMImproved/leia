@@ -1,9 +1,9 @@
 #!/bin/bash
 
-mkdir /symbols
-cd /symbols
+mkdir symbols/
+cd symbols/
 
-mips-linux-gnu-gcc -mips32 -g -c /import/src/* 1>&2
+mips-linux-gnu-gcc -mips32 -g -c /leia/import/src/* 1>&2
 
 if [ "`ls -1 *.o 2> /dev/null | wc -l`" -eq 0 ]; then
 	printf "Could not find object files\n" 1>&2
@@ -33,7 +33,7 @@ done
 symbols="`printf "$symbols"`"
 
 
-linkedNmOutput="$(nm -f b -l --defined-only /out/proj.out)"
+linkedNmOutput="$(nm -f b -l --defined-only /leia/out/proj.out)"
 lastLine="`printf "$symbols" | tail -1`"
 printf '[\n'
 while read line; do
