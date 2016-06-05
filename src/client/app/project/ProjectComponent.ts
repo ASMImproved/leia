@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, EventEmitter, Output} from 'angular2/core';
+import {Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
 import {File} from '../../../common/File'
 import {Project} from '../../../common/Project'
 import {NewFileFormComponent} from './new-file/NewFileFormComponent'
@@ -31,7 +31,7 @@ import {EditableComponent} from "./editable/EditableComponent";
 
 @Component({
     selector: 'lea-project',
-    templateUrl: 'client/app/project/project.html',
+    template: require('./project.html'),
     directives: [
 		NewFileFormComponent,
 		EditorComponent,

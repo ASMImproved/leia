@@ -36,8 +36,6 @@ WORKDIR /lea
 ADD package.json ./
 RUN npm install
 
-RUN npm install -g typings@1.0.3
-
 RUN mkdir -p dist/public/vendor/ && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/ace.js -o dist/public/vendor/ace.js && \
     curl -sL https://cdn.rawgit.com/ajaxorg/ace-builds/v1.2.0/src-min-noconflict/mode-c_cpp.js -o dist/public/vendor/mode-c_cpp.js && \
@@ -51,6 +49,7 @@ RUN mkdir -p dist/public/vendor/ && \
     unzip /tmp/font-awesome.zip -d /tmp/ && \
     cp -R /tmp/font-awesome-4.6.3/ dist/public/vendor/font-awesome
 
+COPY vendor/bootstrap/ dist/public/vendor/bootstrap/
 
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
@@ -58,16 +57,14 @@ RUN chmod +x /entrypoint.sh
 ADD typings.json ./
 ADD src/typings/ src/typings/
 
-RUN typings install
+RUN npm run typings
 
-ADD gulpfile.js ./
-ADD tsconfig.json ./
-ADD karma.conf.js ./
-ADD karma-test-shim.js ./
+COPY gulpfile.js karma-test-shim.js karma.conf.js root.helper.js tsconfig.client.json tsconfig.server.json webpack.common.js webpack.prod.js webpack.dev.js webpack.test.js ./
 
-ADD src/ src/
+COPY src/ src/
 
-RUN gulp
+ARG TARGET
+RUN if [ "$TARGET" = "PROD" ] ; then npm run build-prod; else npm run build-dev; fi
 
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]

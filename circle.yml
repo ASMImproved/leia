@@ -5,7 +5,7 @@ machine:
 dependencies:
   override:
     - docker info
-    - docker build -t lea .
+    - docker build --build-arg TARGET=PROD -t lea .
 
 test:
   override:

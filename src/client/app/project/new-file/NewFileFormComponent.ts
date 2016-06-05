@@ -1,16 +1,16 @@
-import {Component, Output, EventEmitter} from 'angular2/core';
-import {NgForm}    from 'angular2/common';
+import {Component, Output, EventEmitter} from '@angular/core';
+import {NgForm}    from '@angular/common';
 import { File }    from '../../../../common/File';
 import {ProjectService} from "../ProjectService";
-import {FormBuilder} from "angular2/common";
-import {ControlGroup} from "angular2/common";
-import {Validators} from "angular2/common";
-import {Control} from "angular2/common";
-import {OnInit} from "angular2/core";
+import {FormBuilder} from "@angular/common";
+import {ControlGroup} from "@angular/common";
+import {Validators} from "@angular/common";
+import {Control} from "@angular/common";
+import {OnInit} from "@angular/core";
 
 @Component({
   selector: 'new-file-form',
-  templateUrl: 'client/app/project/new-file/new-file-form.html'
+  template: require('./new-file-form.html')
 })
 export class NewFileFormComponent implements OnInit{
     private model: File = new File("");

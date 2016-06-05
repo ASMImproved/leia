@@ -1,5 +1,5 @@
 /// <reference path="../../../../../typings/globals/ace/index.d.ts" />
-import {Component, Input, OnInit} from 'angular2/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {AceDirective} from './AceDirective'
 import {File} from '../../../../common/File'
 import Document = AceAjax.Document;
@@ -12,7 +12,7 @@ declare var ace: AceAjax.Ace;
 
 @Component({
     selector: 'lea-editor',
-    templateUrl: 'client/app/project/editor/editor.html',
+    template: require('./editor.html'),
     directives: [AceDirective]
 })
 export class EditorComponent implements OnInit{

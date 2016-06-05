@@ -2,7 +2,7 @@ import {Project} from "../../../common/Project";
 import {File} from "../../../common/File";
 import {BehaviorSubject} from 'rxjs/Rx'
 import {PersistenceService} from "./persistence/PersistenceService";
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {EditSessionService} from "./editor/EditSessionService";
 import {Subject} from "rxjs/Subject";
 

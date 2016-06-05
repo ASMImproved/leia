@@ -1,3 +1,4 @@
+var webpackConfig = require('./webpack.test.js');
 module.exports = function(config) {
     config.set({
 
@@ -7,26 +8,19 @@ module.exports = function(config) {
 
         files: [
             // paths loaded by Karma
-            {pattern: 'node_modules/angular2/bundles/angular2-polyfills.js', included: true, watched: true},
-            {pattern: 'node_modules/systemjs/dist/system.src.js', included: true, watched: true},
-            {pattern: 'node_modules/rxjs/bundles/Rx.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/angular2.dev.js', included: true, watched: true},
-            {pattern: 'node_modules/angular2/bundles/testing.dev.js', included: true, watched: true},
-            {pattern: 'karma-test-shim.js', included: true, watched: true},
-
-            // paths loaded via module imports
-            {pattern: 'dist/public/client/**/*.js', included: false, watched: true},
-            {pattern: 'dist/public/common/**/*.js', included: false, watched: true},
-
-            // paths to support debugging with source maps in dev tools
-            {pattern: 'src/**/*.ts', included: false, watched: false},
-            {pattern: 'dist/**/*.js.map', included: false, watched: false}
+            {pattern: './karma-test-shim.js', watched: false}
         ],
 
-        // proxied base paths
-        proxies: {
-            // required for component assets fetched by Angular's compiler
-            '/src/': '/base/src/'
+        preprocessors: {
+            './karma-test-shim.js': ['webpack', 'sourcemap']
+        },
+
+        webpack: webpackConfig,
+        webpackMiddleware: {
+            stats: 'errors-only'
+        },
+        webpackServer: {
+            noInfo: true
         },
 
         port: 9876,
@@ -35,7 +29,7 @@ module.exports = function(config) {
 
         colors: true,
 
-        autoWatch: true,
+        autoWatch: false,
 
         browsers: ['Chrome_nosandbox'],
 
@@ -50,7 +44,9 @@ module.exports = function(config) {
         plugins: [
             'karma-jasmine',
             'karma-junit-reporter',
-            'karma-chrome-launcher'
+            'karma-chrome-launcher',
+            'karma-webpack',
+            'karma-sourcemap-loader'
         ],
 
         reporters: ['progress', 'junit'],

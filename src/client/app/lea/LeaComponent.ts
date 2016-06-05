@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {ProjectComponent} from '../project/ProjectComponent'
 import {SplashComponent} from '../splash/SplashComponent'
 import {Project} from '../../../common/Project'
@@ -8,7 +8,7 @@ import {TabSelect} from "../tabs/TabSelect";
 
 @Component({
     selector: 'lea',
-    templateUrl: 'client/app/lea/lea.html',
+    template: require('./lea.html'),
     directives: [ProjectComponent, SplashComponent, TabsSelect, TabSelect],
     providers: [PersistenceService]
 })

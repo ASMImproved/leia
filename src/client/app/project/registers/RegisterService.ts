@@ -1,5 +1,5 @@
 
-import {Injectable} from "angular2/core";
+import {Injectable} from "@angular/core";
 import {SocketService} from "../socket/SocketService";
 import {AnswerContext} from "../../../../common/AnswerContext";
 import {Register} from "../../../../common/Debugger";

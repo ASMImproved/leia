@@ -1,11 +1,12 @@
-import {Component} from "angular2/core";
+import {Component} from "@angular/core";
 import {TabSelect} from "./TabSelect";
+import {TabList} from "./TabList";
 
 @Component({
     selector: 'lea-tabs-list',
     template: `
     <ul class="lea-tabs">
-      <li *ngFor="#tab of tabs" [ngClass]="{active: tab.active}" (click)="selectTab(tab)">
+      <li *ngFor="let tab of tabs" [ngClass]="{active: tab.active}" (click)="selectTab(tab)">
         {{tab.tabTitle}}
       </li>
     </ul>
@@ -13,16 +14,16 @@ import {TabSelect} from "./TabSelect";
   `,
 })
 export class TabsList {
-    tabs: TabSelect[] = [];
+    tabs: TabList[] = [];
 
-    selectTab(tab: TabSelect) {
+    selectTab(tab: TabList) {
         this.tabs.forEach((tab) => {
             tab.active = false;
         });
         tab.active = true;
     }
 
-    addTab(tab: TabSelect) {
+    addTab(tab: TabList) {
         if (this.tabs.length === 0) {
             tab.active = true;
         }

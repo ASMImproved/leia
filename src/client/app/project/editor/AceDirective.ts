@@ -1,6 +1,6 @@
 /// <reference path="../../../../../typings/globals/ace/index.d.ts" />
 
-import {Component, Directive, EventEmitter, ElementRef, Input} from 'angular2/core';
+import {Component, Directive, EventEmitter, ElementRef, Input} from '@angular/core';
 import {BreakpointService} from "./../BreakpointService";
 import {SourceLocation} from '../../../../common/Debugger';
 import IEditSession = AceAjax.IEditSession;

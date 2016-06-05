@@ -1,5 +1,4 @@
-/// <reference path="../../../typings/index.d.ts" />
-import {describe, it, expect} from 'angular2/testing';
+/// <reference path="../../../typings/globals/jasmine/index.d.ts" />
 import {AbstractCommand, Command, CommandRegistry} from "./Command";
 import {ExecutionContext} from "./ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
@@ -40,14 +39,14 @@ describe('CommandDispatcher', function() {
         var callback = {
             callback: (err) => {
                 if (err) {
-                    expect(err).toContainError('Incorrect payload');
+                    expect(() => { throw err }).toThrow(new Error('Incorrect payload for command: commandToCheckType'));
                     return;
                 }
                 fail('expected an error')
             }
         };
         spyOn(callback, 'callback').and.callThrough();
-        dispatcher.executeCommand('commandToCheckType', 42, null, callback.callback);
+        dispatcher.executeCommand('commandToCheckType', "NaN", null, callback.callback);
         expect(callback.callback).toHaveBeenCalledTimes(1);
     })
 });

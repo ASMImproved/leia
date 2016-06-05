@@ -4,6 +4,7 @@ body {
 	background-color: white;
 	margin: 0px;
 	font-family: arial;
+	font-size: 15px;
 }
 
 lea-project {
@@ -50,6 +51,9 @@ lea-project {
 					font-size: larger;
 					margin-right: 10px;
 					font-weight: bold;
+				}
+				input {
+					color: black !important;
 				}
 			}
 		}
@@ -316,7 +320,7 @@ lea-project {
 							display: flex;
 							flex-direction: column;
 							lea-memory-header {
-								flex-shrink: 1;
+								flex-shrink: 0;
 								flex-grow: 0;
 
 								display: flex;
@@ -338,7 +342,7 @@ lea-project {
 								}
 							}
 							lea-memory-content {
-								flex-shrink: 0;
+								flex-shrink: 1;
 								flex-grow: 1;
 								font-family: monospace;
 								display: flex;
@@ -348,6 +352,27 @@ lea-project {
 									border: none;
 									padding: 0px;
 									background: none;
+								}
+								table {
+									width: 100%;
+
+									td {
+										text-align: center;
+										lea-memory-byte {
+											display: inline-flex;
+											span {
+												border-bottom-style: solid;
+												border-bottom-width: 4px;
+												border-bottom-color: gainsboro;
+												&.memoryByteRegister {
+													border-bottom-color: $primary-color;
+												}
+												&.memoryByteSymbol {
+													border-bottom-color: #D8AB47;
+												}
+											}
+										}
+									}
 								}
 							}
 						}
@@ -363,6 +388,9 @@ lea-project {
 				flex-direction: column;
 			}
 		}
+	}
+	.inactiveTab{
+		display: none;
 	}
 }
 

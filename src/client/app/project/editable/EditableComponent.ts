@@ -1,4 +1,4 @@
-import {Component, Input, Output} from 'angular2/core';
+import {Component, Input, Output} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/Rx';
 
 @Component({

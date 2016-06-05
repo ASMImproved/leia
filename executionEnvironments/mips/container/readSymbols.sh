@@ -3,7 +3,7 @@
 mkdir /symbols
 cd /symbols
 
-mips-linux-gnu-gcc -mips32r5 -g -c /import/src/* 1>&2
+mips-linux-gnu-gcc -mips32 -g -c /import/src/* 1>&2
 
 if [ "`ls -1 *.o 2> /dev/null | wc -l`" -eq 0 ]; then
 	printf "Could not find object files\n" 1>&2

@@ -1,5 +1,5 @@
 /// <reference path="../../../../typings/globals/jasmine/index.d.ts" />
-import {describe, it, expect} from 'angular2/testing';
+import {describe, it, expect} from '@angular/core/testing';
 import {BreakpointService} from "./BreakpointService";
 import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";

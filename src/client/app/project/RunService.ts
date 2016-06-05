@@ -1,4 +1,4 @@
-import {Injectable, EventEmitter} from "angular2/core";
+import {Injectable, EventEmitter} from "@angular/core";
 import {SocketService} from "./socket/SocketService";
 import {Project} from "../../../common/Project";
 import {HitBreakpointEvent, ISourceLocation, HitWatchpointEvent} from "../../../common/Debugger";
@@ -8,8 +8,8 @@ import {NotificationService, NotificationLevel} from "./notification/Notificatio
 export class RunService {
     private _stdout: string = "";
     private _running: boolean = false;
-    public runStatusChanged: EventEmitter<boolean> = new EventEmitter();
-    public stopped: EventEmitter<ISourceLocation> = new EventEmitter();
+    public runStatusChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public stopped: EventEmitter<ISourceLocation> = new EventEmitter<ISourceLocation>();
     public continued: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private socketService: SocketService, private notificationService: NotificationService) {

@@ -1,14 +1,16 @@
-import {Component, OnInit} from "angular2/core";
+import {Component, OnInit} from "@angular/core";
 import {MemoryService} from "./MemoryService";
 import {MemoryFrame} from "../../../../common/MemoryFrame";
 import {RegisterService} from "../registers/RegisterService";
 import {Register} from "../../../../common/Debugger";
 import {SymbolService, Symbol} from "../SymbolService";
 import {MemoryWatchService} from "../MemoryWatchService";
+import {MemoryByteComponent} from "./MemoryByteComponent";
 
 @Component({
     selector: 'lea-memory',
-    templateUrl: 'client/app/project/memory/memory.html'
+    template: require('./memory.html'),
+    directives: [MemoryByteComponent]
 })
 export class MemoryComponent implements  OnInit{
     private matrix: Array<Array<Array<{value: string, address: number, registers: Array<Register>, symbols: Array<Symbol>}>>> = [];
@@ -21,6 +23,10 @@ export class MemoryComponent implements  OnInit{
         private registerService: RegisterService,
         private symbolService: SymbolService,
         private memoryWatchService:MemoryWatchService) {
+        this.clearMatrix();
+    }
+
+    private clearMatrix () {
         for (let i: number = 0; i < this.memoryService.ROWS; i++) {
             this.matrix[i] = [];
         }
@@ -30,6 +36,9 @@ export class MemoryComponent implements  OnInit{
         this.memoryService.memoryBlocksChanged$.subscribe((blocks) => {
             this.blocks = blocks;
             this.computeMatrix();
+        });
+        this.memoryService.memoryReadFailed$.subscribe(() => {
+            this.clearMatrix();
         });
         this.registerService.registersChanged$.subscribe((registers:Register[]) => {
             this.registers = registers;
@@ -43,6 +52,7 @@ export class MemoryComponent implements  OnInit{
 
     private computeMatrix() {
         if (this.blocks) {
+            this.clearMatrix();
             this.blocks.forEach((block) => {
                 let offset = parseInt(block.offset.substring(2), 16);
                 for (let i:number = 0; i < block.contents.length; i += 2) {

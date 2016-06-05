@@ -8,7 +8,7 @@ if [ "$1" == "test" ]; then
     Xvfb $DISPLAY -screen 0 1024x768x24 -fbdir /var/run -ac > /dev/null 2>&1 &
 
 	result=0
-    gulp test_client; result=$((result+$?))
+    npm run test-client; result=$((result+$?))
     gulp test_server; result=$((result+$?))
     exit $result
 elif [ "$1" == "watch" ]; then

@@ -1,4 +1,3 @@
-/// <reference path="../../../../typings/index.d.ts" />
 
 import {Project} from "../../../common/Project";
 let tar = require('tar');
@@ -252,7 +251,7 @@ export class MipsSession extends events.EventEmitter{
                 "mips-linux-gnu-gcc",
                 "-g",
                 "-static",
-                "-mips32r5",
+                "-mips32",
                 "-o",
                 MipsSession.ELF_FILE_LOCATION
             ].concat(files)

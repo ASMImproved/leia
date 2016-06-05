@@ -1,13 +1,13 @@
-import {Output, EventEmitter, Injectable} from 'angular2/core';
+import {Output, EventEmitter, Injectable} from '@angular/core';
 import {SocketService} from "./socket/SocketService";
 import {RunService} from "./RunService";
 import {Breakpoint, SourceLocation} from "../../../common/Debugger"
 
 @Injectable()
 export class BreakpointService {
-    breakpointAdded: EventEmitter<Breakpoint> = new EventEmitter();
-    breakpointChanged: EventEmitter<Breakpoint> = new EventEmitter();
-    breakpointRemoved: EventEmitter<Breakpoint> = new EventEmitter();
+    breakpointAdded: EventEmitter<Breakpoint> = new EventEmitter<Breakpoint>();
+    breakpointChanged: EventEmitter<Breakpoint> = new EventEmitter<Breakpoint>();
+    breakpointRemoved: EventEmitter<Breakpoint> = new EventEmitter<Breakpoint>();
     private breakpoints: {[index: string]: Breakpoint} = {};
 
     constructor(private socketService: SocketService, private runService: RunService) {

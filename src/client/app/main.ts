@@ -1,6 +1,21 @@
-/// <reference path="../../../node_modules/angular2/typings/browser.d.ts" />
+/// <reference path="../../../typings/index.d.ts" />
 
-import {bootstrap}    from 'angular2/platform/browser'
+import 'core-js/es6';
+import 'reflect-metadata';
+require('zone.js/dist/zone');
+
+import '../sass/main.scss';
+
+import {bootstrap}    from '@angular/platform-browser-dynamic'
 import {LeaComponent} from './lea/LeaComponent'
+import { enableProdMode } from '@angular/core';
+
+if (process.env.ENV === 'production') {
+    enableProdMode();
+} else {
+    // Development
+    Error['stackTraceLimit'] = Infinity;
+    require('zone.js/dist/long-stack-trace-zone');
+}
 
 bootstrap(LeaComponent);

@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/index.d.ts" />
+
 
 import {SocketSession} from "./SocketSession";
 import {CommandDispatcher} from "../command/CommandDispatcher";

@@ -1,5 +1,4 @@
-/// <reference path="../../../typings/index.d.ts" />
-import {describe, it, expect} from 'angular2/testing';
+/// <reference path="../../../typings/globals/jasmine/index.d.ts" />
 import {AbstractCommand, Command, CommandRegistry} from "./Command";
 import {ExecutionContext} from "./ExecutionContext";
 import {AnswerContext} from "../../common/AnswerContext";
@@ -16,7 +15,7 @@ class TestClass extends AbstractCommand<void> {
 describe('CommandRegistry', function() {
     it('can register a command', function() {
         CommandRegistry.addCommand({name: 'test'}, TestClass);
-        expect(CommandRegistry.createCommand('test')).toBeAnInstanceOf(TestClass);
+        expect(CommandRegistry.createCommand('test') instanceof TestClass).toBe(true);
     })
 });
 
@@ -35,6 +34,6 @@ class Test2Class extends AbstractCommand<void> {
 
 describe('Command', function() {
     it('registers a command', function() {
-        expect(CommandRegistry.createCommand('test2')).toBeAnInstanceOf(Test2Class);
+        expect(CommandRegistry.createCommand('test2') instanceof Test2Class).toBe(true);
     })
 });

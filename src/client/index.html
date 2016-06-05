@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
   <title>Lea</title>
-  <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css"></link>
-  <link rel="stylesheet" type="text/css" href="/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css" />
 
   <script src="vendor/ace.js"></script>
   <script src="vendor/mode-c_cpp.js"></script>
@@ -13,33 +13,6 @@
   <script src="mode-mips.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 
-  <!-- 1. Load libraries -->
-  <!-- IE required polyfills, in this exact order -->
-  <script src="vendor/es6-shim/es6-shim.min.js"></script>
-  <script src="vendor/systemjs/dist/system-polyfills.js"></script>
-
-  <script src="vendor/angular2/bundles/angular2-polyfills.js"></script>
-  <script src="vendor/systemjs/dist/system.src.js"></script>
-  <script src="vendor/rxjs/bundles/Rx.js"></script>
-  <script src="vendor/angular2/bundles/angular2.dev.js"></script>
-
-  <!-- 2. Configure SystemJS -->
-  <script>
-    System.config({
-      packages: {
-        client: {
-          format: 'register',
-          defaultExtension: 'js'
-        },
-        common: {
-          format: 'register',
-          defaultExtension: 'js'
-        }
-      }
-    });
-    System.import('client/app/main')
-          .then(null, console.error.bind(console));
-  </script>
 </head>
 <body>
   <lea></lea>

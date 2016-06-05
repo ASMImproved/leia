@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Output} from 'angular2/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {PersistenceService} from "../project/persistence/PersistenceService";
 import {Project} from "../../../common/Project";
 
 @Component({
     selector: 'lea-splash',
-    templateUrl: 'client/app/splash/splash.html'
+    template: require('./splash.html')
 })
 export class SplashComponent {
     @Output() public newProjectEvent: EventEmitter<any>;
@@ -12,7 +12,7 @@ export class SplashComponent {
 
     constructor(private persistenceService: PersistenceService) {
         this.newProjectEvent = new EventEmitter();
-        this.openProjectEvent = new EventEmitter();
+        this.openProjectEvent = new EventEmitter<Project>();
     }
 
     public newProject() {

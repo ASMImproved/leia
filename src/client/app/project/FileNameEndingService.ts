@@ -1,4 +1,4 @@
-import {Output, EventEmitter, Injectable} from 'angular2/core';
+import {Output, EventEmitter, Injectable} from '@angular/core';
 
 @Injectable()
 export class FileNameEndingService {

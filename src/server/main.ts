@@ -1,4 +1,17 @@
-/// <reference path="../../typings/index.d.ts" />
+/// <reference path="../../typings/globals/ace/index.d.ts" />
+/// <reference path="../../typings/globals/async/index.d.ts" />
+/// <reference path="../../typings/globals/bunyan/index.d.ts" />
+/// <reference path="../../typings/globals/express-serve-static-core/index.d.ts" />
+/// <reference path="../../typings/globals/express-session/index.d.ts" />
+/// <reference path="../../typings/globals/express/index.d.ts" />
+/// <reference path="../../typings/globals/jasmine/index.d.ts" />
+/// <reference path="../../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/globals/socket.io/index.d.ts" />
+/// <reference path="../../typings/globals/tar/index.d.ts" />
+/// <reference path="../../typings/modules/express-socket.io-session/index.d.ts" />
+/// <reference path="../../typings/modules/randomstring/index.d.ts" />
+/// <reference path="../../typings/modules/request/index.d.ts" />
+/// <reference path="../../typings/modules/serve-static/index.d.ts" />
 require('source-map-support').install();
 import * as express from "express";
 import path = require('path');

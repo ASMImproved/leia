@@ -1,10 +1,10 @@
-import {Component} from "angular2/core";
+import {Component} from "@angular/core";
 import {TabSelect} from "./TabSelect";
-import {FORM_DIRECTIVES, CORE_DIRECTIVES} from "angular2/common";
+import {FORM_DIRECTIVES, CORE_DIRECTIVES} from "@angular/common";
 
 @Component({
     selector: 'lea-tabs-select',
-    templateUrl: 'client/app/tabs/tabsSelect.html',
+    template: require('./tabsSelect.html'),
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })
 export class TabsSelect {
