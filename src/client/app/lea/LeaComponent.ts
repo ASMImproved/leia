@@ -7,12 +7,12 @@ import {TabsSelect} from "../tabs/TabsSelect";
 import {TabSelect} from "../tabs/TabSelect";
 
 @Component({
-    selector: 'lea',
-    template: require('./lea.html'),
+    selector: 'leia',
+    template: require('./leia.html'),
     directives: [ProjectComponent, SplashComponent, TabsSelect, TabSelect],
     providers: [PersistenceService]
 })
-export class LeaComponent {
+export class LeiaComponent {
     public activeProject: Project;
 
     public newProject() {

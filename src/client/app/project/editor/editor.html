@@ -1,7 +1,7 @@
-<lea-editor-no-session *ngIf="!session">
+<leia-editor-no-session *ngIf="!session">
     <h3>No file selected</h3>
-</lea-editor-no-session>
-<lea-editor-active-session *ngIf="session">
+</leia-editor-no-session>
+<leia-editor-active-session *ngIf="session">
     <h4>{{session.file.name}} <button (click)="session.save()"><i class="fa fa-floppy-o"></i> Save</button></h4>
     <ace-editor [session]="session"></ace-editor>
-</lea-editor-active-session>
+</leia-editor-active-session>

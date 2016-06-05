@@ -3,7 +3,7 @@ import {TabSelect} from "./TabSelect";
 import {FORM_DIRECTIVES, CORE_DIRECTIVES} from "@angular/common";
 
 @Component({
-    selector: 'lea-tabs-select',
+    selector: 'leia-tabs-select',
     template: require('./tabsSelect.html'),
     directives: [CORE_DIRECTIVES, FORM_DIRECTIVES]
 })

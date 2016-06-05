@@ -5,7 +5,7 @@ import {MemoryService} from "../memory/MemoryService";
 import { TOOLTIP_DIRECTIVES } from 'ng2-bootstrap/components/tooltip';
 
 @Component({
-    selector: 'lea-symboltable',
+    selector: 'leia-symboltable',
     template: require('./symboltable.html'),
     directives: [TOOLTIP_DIRECTIVES]
 })

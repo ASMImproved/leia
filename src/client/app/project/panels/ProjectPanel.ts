@@ -1,23 +1,23 @@
 import {Component} from "@angular/core";
 
 @Component({
-    selector: 'lea-project-panel',
+    selector: 'leia-project-panel',
     template: `
-        <ng-content select="lea-header"></ng-content>
-        <lea-project-view [ngStyle]="{'flex-basis': horizontalMainPanel + '%'}">
-            <lea-left-panel [ngStyle]="{'flex-basis': leftPanelSize + '%'}">
+        <ng-content select="leia-header"></ng-content>
+        <leia-project-view [ngStyle]="{'flex-basis': horizontalMainPanel + '%'}">
+            <leia-left-panel [ngStyle]="{'flex-basis': leftPanelSize + '%'}">
                 <ng-content select="left"></ng-content>
-            </lea-left-panel>
-            <lea-middle-panel [ngStyle]="{'flex-basis': centralPanelSize + '%'}">
+            </leia-left-panel>
+            <leia-middle-panel [ngStyle]="{'flex-basis': centralPanelSize + '%'}">
                 <ng-content select="central" id="lee-central-panel"></ng-content>
-            </lea-middle-panel>
-            <lea-right-panel [ngStyle]="{'flex-basis': rightPanelSize + '%'}">
+            </leia-middle-panel>
+            <leia-right-panel [ngStyle]="{'flex-basis': rightPanelSize + '%'}">
                 <ng-content select="right" id="lee-right-panel"></ng-content>
-            </lea-right-panel>
-        </lea-project-view>
-        <lea-bottom-panel [ngStyle]="{'flex-basis': bottomPanelSize + '%'}">
+            </leia-right-panel>
+        </leia-project-view>
+        <leia-bottom-panel [ngStyle]="{'flex-basis': bottomPanelSize + '%'}">
             <ng-content select="bottom" id="lee-bottom-panel"></ng-content>
-        </lea-bottom-panel>
+        </leia-bottom-panel>
   `
 })
 export class ProjectPanel {

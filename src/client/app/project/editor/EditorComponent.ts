@@ -11,7 +11,7 @@ import {Session} from "./Session";
 declare var ace: AceAjax.Ace;
 
 @Component({
-    selector: 'lea-editor',
+    selector: 'leia-editor',
     template: require('./editor.html'),
     directives: [AceDirective]
 })

@@ -5,16 +5,15 @@ machine:
 dependencies:
   override:
     - docker info
-    - docker build --build-arg TARGET=PROD -t lea .
+    - docker build --build-arg TARGET=PROD -t $DOCKER_REPO .
 
 test:
   override:
-    - docker run -v $CIRCLE_TEST_REPORTS/:/tests/ lea test
+    - docker run -v $CIRCLE_TEST_REPORTS/:/tests/ $DOCKER_REPO test
 
 deployment:
   hub:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker tag lea $DOCKER_REPO
       - docker push $DOCKER_REPO

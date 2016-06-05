@@ -7,8 +7,8 @@ body {
 	font-size: 15px;
 }
 
-lea-project {
-	lea-project-panel {
+leia-project {
+	leia-project-panel {
 		overflow: hidden;
 		position: absolute;
 		left: 0;
@@ -19,7 +19,7 @@ lea-project {
 		display: flex;
 		flex-direction: column;
 
-		lea-header {
+		leia-header {
 			order: 1;
 			flex-grow: 0;
 			justify-content: space-between;
@@ -31,7 +31,7 @@ lea-project {
 			h2 {
 				margin: 5px;
 			}
-			lea-header-group {
+			leia-header-group {
 				display: flex;
 				button {
 					background: none;
@@ -58,7 +58,7 @@ lea-project {
 			}
 		}
 
-		lea-project-view {
+		leia-project-view {
 			order: 2;
 			flex-grow: 8;
 
@@ -69,7 +69,7 @@ lea-project {
 				border: 1px $primary-color solid;
 			}
 
-			lea-tabs-select {
+			leia-tabs-select {
 				select {
 					border: none;
 					background-color: $primary-color;
@@ -78,7 +78,7 @@ lea-project {
 					font-size: 16px;
 				}
 			}
-			lea-left-panel {
+			leia-left-panel {
 				@extend panel;
 				order: 1;
 
@@ -90,21 +90,21 @@ lea-project {
 					flex-direction: column;
 					justify-content: space-between;
 				}
-				lea-resize-panel {
+				leia-resize-panel {
 					display: flex;
 					justify-content: flex-start;
 				}
 
-				lea-file-structure {
+				leia-file-structure {
 					overflow-y: auto;
-					lea-file-structure-no-open-file {
+					leia-file-structure-no-open-file {
 						padding: 20px;
 						display: block;
 						font-style: italic;
 					}
 				}
 			}
-			lea-middle-panel {
+			leia-middle-panel {
 				@extend panel;
 				order: 2;
 				flex-grow: 8;
@@ -116,12 +116,12 @@ lea-project {
 
 					display: flex;
 
-					lea-editor {
+					leia-editor {
 						flex-grow: 1;
 
 						display: flex;
 
-						lea-editor-active-session {
+						leia-editor-active-session {
 							flex-grow: 1;
 
 							display: flex;
@@ -153,7 +153,7 @@ lea-project {
 						}
 					}
 
-					lea-editor-no-session {
+					leia-editor-no-session {
 						flex-grow: 1;
 						display: flex;
 						justify-content: center;
@@ -168,7 +168,7 @@ lea-project {
 					}
 				}
 			}
-			lea-right-panel {
+			leia-right-panel {
 				@extend panel;
 				order: 3;
 
@@ -180,7 +180,7 @@ lea-project {
 					flex-direction: column;
 					justify-content: space-between;
 
-					lea-tabs-select {
+					leia-tabs-select {
 						flex-grow: 1;
 
 						display: flex;
@@ -190,13 +190,13 @@ lea-project {
 							flex-shrink: 0;
 						}
 
-						lea-tab-select {
+						leia-tab-select {
 							flex-grow: 1;
 							flex-shrink: 1;
 
 							display: flex;
 
-							lea-registers {
+							leia-registers {
 								flex-shrink: 1;
 								flex-grow: 1;
 								overflow-y: scroll;
@@ -205,7 +205,7 @@ lea-project {
 								}
 							}
 
-							lea-symboltable {
+							leia-symboltable {
 								width: 100%;
 								table {
 									font-family: monospace;
@@ -216,7 +216,7 @@ lea-project {
 						}
 					}
 				}
-				lea-resize-panel {
+				leia-resize-panel {
 					display: flex;
 					justify-content: flex-end;
 				}
@@ -254,7 +254,7 @@ lea-project {
 			}
 		}
 
-		lea-bottom-panel {
+		leia-bottom-panel {
 			order: 3;
 
 			display: flex;
@@ -266,14 +266,14 @@ lea-project {
 				flex-direction: row;
 				justify-content: space-between;
 
-				lea-tabs-list {
+				leia-tabs-list {
 					order: 1;
 					flex-grow: 1;
 
 					display: flex;
 					flex-direction: column;
 
-					.lea-tabs {
+					.leia-tabs {
 						flex-shrink: 0;
 
 						list-style: none;
@@ -295,31 +295,31 @@ lea-project {
 						}
 					}
 
-					lea-tab-list {
+					leia-tab-list {
 						flex-grow: 1;
 
 						display: flex;
 
-						lea-console {
+						leia-console {
 							flex-grow: 1;
 							background-color: #E8E8E8;
 
 							display: flex;
 							overflow-y: scroll;
 
-							lea-console-output {
+							leia-console-output {
 								font-family: courier new;
 								white-space: pre-wrap;
 								padding: 13px;
 							}
 						}
 
-						lea-memory {
+						leia-memory {
 							flex-grow: 1;
 
 							display: flex;
 							flex-direction: column;
-							lea-memory-header {
+							leia-memory-header {
 								flex-shrink: 0;
 								flex-grow: 0;
 
@@ -341,7 +341,7 @@ lea-project {
 									font-weight: normal;
 								}
 							}
-							lea-memory-content {
+							leia-memory-content {
 								flex-shrink: 1;
 								flex-grow: 1;
 								font-family: monospace;
@@ -358,7 +358,7 @@ lea-project {
 
 									td {
 										text-align: center;
-										lea-memory-byte {
+										leia-memory-byte {
 											display: inline-flex;
 											span {
 												border-bottom-style: solid;
@@ -380,7 +380,7 @@ lea-project {
 				}
 			}
 
-			lea-resize-panel {
+			leia-resize-panel {
 				order: 2;
 
 				display: flex;
@@ -394,7 +394,7 @@ lea-project {
 	}
 }
 
-lea-resize-panel {
+leia-resize-panel {
 	flex-shrink: 0;
 	background-color: #e8e8e8;
 	button {

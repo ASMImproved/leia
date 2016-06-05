@@ -1,25 +1,25 @@
-<lea-project-panel>
-	<lea-header>
+<leia-project-panel>
+	<leia-header>
 		<editable [(text)]="_project.name"></editable>
 
 		<h2>{{socketService.connected ? "" : "Disconnected"}}</h2>
-		<lea-header-group>
+		<leia-header-group>
 			<button [disabled]="!runService.running || !socketService.connected" (click)="runService.continue()"><i class="fa fa-play"></i> Continue</button>
 			<button [disabled]="!runService.running || !socketService.connected" (click)="runService.step()"><i class="fa fa-step-forward"></i> Step</button>
 			<button *ngIf="!runService.running" [disabled]="runService.running || !socketService.connected" (click)="runProject()"><i class="fa fa-play"></i> Run</button>
 			<button *ngIf="runService.running" [disabled]="!socketService.connected" (click)="runService.stop()"><i class="fa fa-stop"></i> Stop</button>
-		</lea-header-group>
-		<lea-header-group>
+		</leia-header-group>
+		<leia-header-group>
 			<button (click)="persist()"><i class="fa fa-download"></i> Download</button>
 			<button (click)="exit()"><i class="fa fa-sign-out" ></i> Exit</button>
-		</lea-header-group>
-	</lea-header>
+		</leia-header-group>
+	</leia-header>
 	<left>
-		<lea-file-structure>
+		<leia-file-structure>
 			<panel-sub-header>Open Files</panel-sub-header>
-			<lea-file-structure-no-open-file *ngIf="sessionSet.length == 0">
+			<leia-file-structure-no-open-file *ngIf="sessionSet.length == 0">
 				<span>No open files</span>
-			</lea-file-structure-no-open-file>
+			</leia-file-structure-no-open-file>
 			<panel-list>
 				<li *ngFor="let item of sessionSet">
 					<span class="clickable grow" (click)="selectFile(item.key)">{{item.key.name}}{{item.value.dirty ? '*' : ''}}</span>
@@ -34,29 +34,29 @@
 				</li>
 			</panel-list>
 			<new-file-form (newFile)="newFile($event)"></new-file-form>
-		</lea-file-structure>
+		</leia-file-structure>
 	</left>
 	<central>
-		<lea-editor>
-		</lea-editor>
+		<leia-editor>
+		</leia-editor>
 	</central>
 	<right>
-		<lea-tabs-select>
-			<lea-tab-select tabTitle="Registers"><lea-registers></lea-registers></lea-tab-select>
-			<lea-tab-select tabTitle="Symbols"><lea-symboltable></lea-symboltable></lea-tab-select>
-		</lea-tabs-select>
+		<leia-tabs-select>
+			<leia-tab-select tabTitle="Registers"><leia-registers></leia-registers></leia-tab-select>
+			<leia-tab-select tabTitle="Symbols"><leia-symboltable></leia-symboltable></leia-tab-select>
+		</leia-tabs-select>
 	</right>
 	<bottom>
-		<lea-tabs-list>
-			<lea-tab-list tabTitle="Console">
-				<lea-console>
-					<lea-console-output>{{runService.stdout}}</lea-console-output>
-				</lea-console>
-			</lea-tab-list>
-			<lea-tab-list tabTitle="Memory">
-				<lea-memory>
-				</lea-memory>
-			</lea-tab-list>
-		</lea-tabs-list>
+		<leia-tabs-list>
+			<leia-tab-list tabTitle="Console">
+				<leia-console>
+					<leia-console-output>{{runService.stdout}}</leia-console-output>
+				</leia-console>
+			</leia-tab-list>
+			<leia-tab-list tabTitle="Memory">
+				<leia-memory>
+				</leia-memory>
+			</leia-tab-list>
+		</leia-tabs-list>
 	</bottom>
-</lea-project-panel>
+</leia-project-panel>

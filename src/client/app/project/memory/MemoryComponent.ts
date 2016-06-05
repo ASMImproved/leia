@@ -8,7 +8,7 @@ import {MemoryWatchService} from "../MemoryWatchService";
 import {MemoryByteComponent} from "./MemoryByteComponent";
 
 @Component({
-    selector: 'lea-memory',
+    selector: 'leia-memory',
     template: require('./memory.html'),
     directives: [MemoryByteComponent]
 })

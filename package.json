@@ -1,5 +1,5 @@
 {
-  "name": "lea",
+  "name": "leia",
   "version": "0.0.0",
   "description": "Assembler IDE",
   "main": "server.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@qw123.de:asmi/lea.git"
+    "url": "git@qw123.de:asmi/leia.git"
   },
   "author": "",
   "license": "ISC",

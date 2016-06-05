@@ -26,12 +26,12 @@ RUN apt-get update && \
 		qemu-user \
 		unzip
 
-RUN mkdir /lea
+RUN mkdir /leia
 
 #RUN npm install -g tsd
 RUN npm install -g gulp-cli
 
-WORKDIR /lea
+WORKDIR /leia
 
 ADD package.json ./
 RUN npm install
