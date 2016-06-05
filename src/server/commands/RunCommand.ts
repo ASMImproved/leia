@@ -51,8 +51,10 @@ export class RunCommand extends AbstractCommand<RunPayload> {
             return callback(new Error("Project contains no files which can be consumed by gcc"));
         }
         let mips = executionContext.socketSession.mipsSession = new MipsSession(payload.project);
-        function cbWithError(err) {
-            clearInterval(this.floodResetter);
+        let cbWithError = (err) => {
+            if(this.floodResetter) {
+                clearInterval(this.floodResetter);
+            }
             return callback(err);
         }
         mips.run((err) => {
