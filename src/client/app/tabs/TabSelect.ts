@@ -2,7 +2,7 @@ import {Component, Input, HostBinding} from "@angular/core";
 import {TabsSelect} from "./TabsSelect";
 
 @Component({
-    selector: 'lea-tab-select',
+    selector: 'leia-tab-select',
     template: `<ng-content></ng-content>`
 })
 export class TabSelect {

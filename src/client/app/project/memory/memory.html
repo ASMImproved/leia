@@ -1,16 +1,16 @@
-<lea-memory-content>
+<leia-memory-content>
     <table>
         <tr *ngFor="let row of matrix">
             <td *ngFor="let cell of row" [ngClass]="{cell_changed: memoryWatchService.brokenBecauseOf(cell[0].address)}">
                 0x
-                <lea-memory-byte *ngFor="let byte of cell" [byte]="byte"></lea-memory-byte>
+                <leia-memory-byte *ngFor="let byte of cell" [byte]="byte"></leia-memory-byte>
                 <button *ngIf="!memoryWatchService.watchId(cell[0].address)" (click)="watch(cell[0].address)"><i class="fa fa-search" aria-hidden="true"></i></button>
                 <button *ngIf="memoryWatchService.watchId(cell[0].address)" (click)="unwatch(memoryWatchService.watchId(cell[0].address))"><i class="fa fa-search-minus" aria-hidden="true"></i></button></td>
         </tr>
     </table>
-</lea-memory-content>
-<lea-memory-header>
+</leia-memory-content>
+<leia-memory-header>
     <button (click)="moveDown()"><i class="fa fa-long-arrow-left"></i></button>
     <span>Start at : 0x{{memoryService.memoryFrame.start.toString(16)}}</span>
     <button (click)="moveUp()"><i class="fa fa-long-arrow-right"></i></button>
-</lea-memory-header>
+</leia-memory-header>

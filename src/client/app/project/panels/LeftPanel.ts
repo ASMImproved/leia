@@ -5,10 +5,10 @@ import {ProjectPanel} from "./ProjectPanel";
     selector: 'left',
     template: `
         <ng-content></ng-content>
-        <lea-resize-panel>
+        <leia-resize-panel>
 			<button (click)="projectPanel.shrinkLeftPanel()"><i class="fa fa-long-arrow-left"></i></button>
 			<button (click)="projectPanel.growLeftPanel()"><i class="fa fa-long-arrow-right"></i></button>
-		</lea-resize-panel>        
+		</leia-resize-panel>        
   `
 })
 export class LeftPanel {

@@ -17,7 +17,7 @@ export class PersistenceService  {
         zip.createWriter(new zip.BlobWriter("application/zip"), function(writer) {
             writer.add("proj.json", new zip.TextReader(string), function() {
                 writer.close(function(blob) {
-                    saveAs(blob, "proj.lea");
+                    saveAs(blob, "proj.leia");
                 });
             });
         }, function(err) {

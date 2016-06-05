@@ -1,0 +1,3 @@
+
+<leia-project *ngIf="activeProject" [project]="activeProject" (exitRequest)="exitProject()"></leia-project>
+<leia-splash *ngIf="!activeProject" (newProjectEvent)="newProject()" (openProjectEvent)="openProject($event)"></leia-splash>

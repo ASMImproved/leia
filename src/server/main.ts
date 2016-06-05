@@ -26,7 +26,7 @@ var io: SocketIO.Server = require('socket.io')(server);
 
 var session = expressSession({
 	secret: 'shouldbesecret',
-	name: 'asmimproved-lea'
+	name: 'asmimproved-leia'
 });
 
 app.use(session);

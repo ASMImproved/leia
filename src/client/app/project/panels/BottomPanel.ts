@@ -5,10 +5,10 @@ import {ProjectPanel} from "./ProjectPanel";
     selector: 'bottom',
     template: `
         <ng-content></ng-content>
-        <lea-resize-panel>
+        <leia-resize-panel>
 			<button (click)="projectPanel.growBottomPanel()"><i class="fa fa-long-arrow-up"></i></button>
 			<button (click)="projectPanel.shrinkBottomPanel()"><i class="fa fa-long-arrow-down"></i></button>
-		</lea-resize-panel>     
+		</leia-resize-panel>     
   `
 })
 export class BottomPanel {

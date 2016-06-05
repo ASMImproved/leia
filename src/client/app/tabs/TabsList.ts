@@ -3,9 +3,9 @@ import {TabSelect} from "./TabSelect";
 import {TabList} from "./TabList";
 
 @Component({
-    selector: 'lea-tabs-list',
+    selector: 'leia-tabs-list',
     template: `
-    <ul class="lea-tabs">
+    <ul class="leia-tabs">
       <li *ngFor="let tab of tabs" [ngClass]="{active: tab.active}" (click)="selectTab(tab)">
         {{tab.tabTitle}}
       </li>

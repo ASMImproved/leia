@@ -30,7 +30,7 @@ import {BottomPanel} from "./panels/BottomPanel";
 import {EditableComponent} from "./editable/EditableComponent";
 
 @Component({
-    selector: 'lea-project',
+    selector: 'leia-project',
     template: require('./project.html'),
     directives: [
 		NewFileFormComponent,

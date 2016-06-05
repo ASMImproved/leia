@@ -7,7 +7,7 @@ require('zone.js/dist/zone');
 import '../sass/main.scss';
 
 import {bootstrap}    from '@angular/platform-browser-dynamic'
-import {LeaComponent} from './lea/LeaComponent'
+import {LeiaComponent} from './leia/LeiaComponent'
 import { enableProdMode } from '@angular/core';
 
 if (process.env.ENV === 'production') {
@@ -18,4 +18,4 @@ if (process.env.ENV === 'production') {
     require('zone.js/dist/long-stack-trace-zone');
 }
 
-bootstrap(LeaComponent);
+bootstrap(LeiaComponent);

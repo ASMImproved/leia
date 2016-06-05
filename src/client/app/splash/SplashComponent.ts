@@ -3,7 +3,7 @@ import {PersistenceService} from "../project/persistence/PersistenceService";
 import {Project} from "../../../common/Project";
 
 @Component({
-    selector: 'lea-splash',
+    selector: 'leia-splash',
     template: require('./splash.html')
 })
 export class SplashComponent {

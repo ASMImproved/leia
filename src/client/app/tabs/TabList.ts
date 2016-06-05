@@ -3,7 +3,7 @@ import {TabsSelect} from "./TabsSelect";
 import {TabsList} from "./TabsList";
 
 @Component({
-    selector: 'lea-tab-list',
+    selector: 'leia-tab-list',
     template: `<ng-content></ng-content>`
 })
 export class TabList {
