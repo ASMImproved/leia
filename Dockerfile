@@ -59,7 +59,9 @@ ADD src/typings/ src/typings/
 
 RUN npm run typings
 
-COPY / .
+COPY gulpfile.js karma-test-shim.js karma.conf.js root.helper.js tsconfig.client.json tsconfig.server.json webpack.common.js webpack.prod.js webpack.dev.js webpack.test.js ./
+
+COPY src/ src/
 
 ARG TARGET
 RUN if [ "$TARGET" = "PROD" ] ; then npm run build-prod; else npm run build-dev; fi
