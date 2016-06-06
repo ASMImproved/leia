@@ -1,4 +1,4 @@
-FROM ubuntu:14.04.4
+FROM ubuntu:xenial-20160525
 
 ADD ./emdebian-toolchain-archive.key .
 
@@ -16,14 +16,9 @@ RUN apt-get update && \
         build-essential \
         xvfb \
         chromium-browser \
-	    cpp-4.3-mips-linux-gnu \
-		gcc-4.3-mips-linux-gnu \
-		gdb-multiarch \
 		git \
 		libexif12 \
 		python \
-		qemu-system-mips \
-		qemu-user \
 		unzip
 
 RUN mkdir /leia
