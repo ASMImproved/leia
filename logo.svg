@@ -1,0 +1,18 @@
+<svg width="310" height="310" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <rect fill="#47a9d8" stroke-width="1.5" x="-1.500003" y="0.500004" width="585.000027" height="401.999979" id="svg_1" stroke="null"/>
+
+  <ellipse fill="#c4c4c4" cx="156" cy="156" id="svg_10" rx="152" ry="152"/>
+  <ellipse fill="#ffffff" cx="155" cy="155" id="svg_3" rx="150" ry="150"/>
+
+  <ellipse fill="#c4c4c4" cx="77" cy="156" id="svg_11" rx="28" ry="63" stroke="null"/>
+  <ellipse fill="#c4c4c4" cx="157" cy="156" id="svg_12" rx="63" ry="63" stroke="null"/>
+  <ellipse fill="#c4c4c4" cx="247" cy="156" id="svg_13" rx="28" ry="63" stroke="null"/>
+
+  <ellipse fill="#47a9d8" cx="75" cy="155" id="svg_7" rx="28" ry="63" stroke="null"/>
+  <ellipse fill="#47a9d8" cx="155" cy="155" id="svg_5" rx="63" ry="63" stroke="null"/>
+  <ellipse fill="#47a9d8" cx="245" cy="155" id="svg_6" rx="28" ry="63" stroke="null"/>
+ </g>
+</svg>
