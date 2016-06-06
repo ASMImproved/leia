@@ -6,10 +6,11 @@ dependencies:
   override:
     - docker info
     - docker build --build-arg TARGET=PROD -t $DOCKER_REPO .
+    - docker build -t $DOCKER_MIPS_IMAGE_NAME -f executionEnvironments/mips/container/Dockerfile-mips executionEnvironments/mips/container/
 
 test:
   override:
-    - docker run -v $CIRCLE_TEST_REPORTS/:/tests/ $DOCKER_REPO test
+    - docker run -v $CIRCLE_TEST_REPORTS/:/tests/ -e MIPS_IMAGE_NO_PULL=1 $DOCKER_REPO test
 
 deployment:
   hub:
@@ -17,3 +18,4 @@ deployment:
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push $DOCKER_REPO
+      - docker push $DOCKER_MIPS_IMAGE_NAME
