@@ -3,6 +3,10 @@
 export DISPLAY=:99
 export MIPS_IMAGE_NAME=asmimpoved/mips
 
+echo 'Pulling image $MIPS_IMAGE_NAME before the server starts'
+curl --version
+curl -XPOST --unix-socket /var/run/docker.sock http:/images/create?fromImage=$MIPS_IMAGE_NAME
+
 cd /leia
 
 if [ "$1" == "test" ]; then
