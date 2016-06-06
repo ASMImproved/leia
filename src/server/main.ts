@@ -24,6 +24,8 @@ import {SocketSessionManager} from "./socket/SocketSessionManager";
 var server: http.Server = http.createServer(app);
 var io: SocketIO.Server = require('socket.io')(server);
 
+console.log('use mips image: %s', process.env['MIPS_IMAGE_NAME']);
+
 var session = expressSession({
 	secret: 'shouldbesecret',
 	name: 'asmimproved-leia'

@@ -152,7 +152,7 @@ export class MipsSession extends events.EventEmitter{
             "Tty": false,
             "OpenStdin": true,
             "StdinOnce": false,
-            "Image": "mips",
+            "Image": process.env['MIPS_IMAGE_NAME'],
             "Labels": {
                 "com.github.asmimproved.leia": "true"
             },

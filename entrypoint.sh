@@ -1,6 +1,7 @@
 #! /bin/bash
 
 export DISPLAY=:99
+export MIPS_IMAGE_NAME=asmimpoved/mips
 
 cd /leia
 
