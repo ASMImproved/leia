@@ -1,6 +1,14 @@
 #! /bin/bash
 
 export DISPLAY=:99
+export MIPS_IMAGE_NAME=asmimpoved/mips:v1
+
+if [ -z $MIPS_IMAGE_NO_PULL ]; then
+    echo "Pulling image $MIPS_IMAGE_NAME before the server starts"
+    curl -XPOST --unix-socket /var/run/docker.sock http:/images/create?fromImage=$MIPS_IMAGE_NAME
+else
+    echo 'not pulling mips image'
+fi
 
 cd /leia
 
