@@ -7,6 +7,36 @@ body {
 	font-size: 15px;
 }
 
+leia-splash {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+
+	background-color: $primary-color;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	h1 {
+		margin: 0px;
+		font-weight: normal;
+	}
+	h3 {
+		color: white;
+	}
+	button {
+		border: 2px solid white;
+		background: none;
+		padding: 5px 20px;
+	}
+	#logo {
+		height: 250px;
+		margin: 10px;
+	}
+}
+
 leia-project {
 	leia-project-panel {
 		overflow: hidden;

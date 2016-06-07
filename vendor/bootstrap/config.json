@@ -382,11 +382,14 @@
     "@hr-border": "@gray-lighter"
   },
   "css": [
-    "tooltip.less"
+    "close.less",
+    "component-animations.less",
+    "tooltip.less",
+    "modals.less"
   ],
   "js": [
     "tooltip.js",
     "transition.js"
   ],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=335f7cebc158024b40b8ac7dd1081041"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=fe90eafafa3ac2329d38c11fb47a22ed"
 }

@@ -17,7 +17,7 @@ import {MemoryWatchService} from "./MemoryWatchService";
 import {SymbolService} from "./SymbolService";
 import {SymboleTableComponent} from "./symbols/SymbolTableComponent";
 import {PersistenceService} from "./persistence/PersistenceService";
-import {NotificationService} from "./notification/NotificationService";
+import {NotificationService} from "../notification/NotificationService";
 import {RegisterService} from "./registers/RegisterService";
 import {TabsSelect} from "../tabs/TabsSelect";
 import {TabSelect} from "../tabs/TabSelect";
@@ -58,7 +58,6 @@ import {EditableComponent} from "./editable/EditableComponent";
 		MemoryService,
 		MemoryWatchService,
 		SymbolService,
-		NotificationService,
 		RegisterService
 	]
 })

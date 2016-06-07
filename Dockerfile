@@ -54,7 +54,7 @@ ADD src/typings/ src/typings/
 
 RUN npm run typings
 
-COPY gulpfile.js karma-test-shim.js karma.conf.js root.helper.js tsconfig.client.json tsconfig.server.json webpack.common.js webpack.prod.js webpack.dev.js webpack.test.js ./
+COPY logo.svg gulpfile.js karma-test-shim.js karma.conf.js root.helper.js tsconfig.client.json tsconfig.server.json webpack.common.js webpack.prod.js webpack.dev.js webpack.test.js ./
 
 COPY src/ src/
 

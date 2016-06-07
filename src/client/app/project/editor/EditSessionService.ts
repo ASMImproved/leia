@@ -13,7 +13,7 @@ import {ISourceLocation} from "../../../../common/Debugger";
 import {SymbolService} from "../SymbolService";
 import {Subject} from "rxjs/Subject";
 import {Subscription} from "rxjs/Subscription";
-import {NotificationService, NotificationLevel} from "../notification/NotificationService";
+import {NotificationService, NotificationLevel} from "../../notification/NotificationService";
 
 // declare the ace library
 declare var ace: AceAjax.Ace;
