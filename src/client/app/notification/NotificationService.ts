@@ -1,5 +1,6 @@
 
 import {Injectable} from "@angular/core";
+import {NotificationComponent} from "./NotificationComponent";
 
 export enum NotificationLevel {
     Info,
@@ -9,15 +10,15 @@ export enum NotificationLevel {
 
 @Injectable()
 export class NotificationService {
+    private notificationComponent: NotificationComponent;
     private notificationsHistory: Array<{message: string, level: NotificationLevel, time}> = [];
 
     constructor() {
 
     }
 
-    public confirm(message, cb) {
-        let answer = confirm(message);
-        cb(null, answer);
+    public confirm(message: string, cb) {
+        this.notificationComponent.confirm(message, cb);
     }
 
     public notify(message: string, level: NotificationLevel) {
@@ -26,7 +27,10 @@ export class NotificationService {
             level: level,
             time: new Date()
         });
-        alert(level + ": " + message);
+        this.notificationComponent.notify(message, level);
     }
 
+    public registerNotificationComponent(notificationComponent: NotificationComponent) {
+        this.notificationComponent = notificationComponent;
+    }
 }

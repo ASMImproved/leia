@@ -1,0 +1,31 @@
+<div bsModal #notificationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"  aria-labelledby="notificationModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="notificationModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">{{ header }}</h4>
+            </div>
+            <div class="modal-body">
+                {{ message }}
+            </div>
+        </div>
+    </div>
+</div>
+<div bsModal #promptModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"  aria-labelledby="promptModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Prompt</h4>
+            </div>
+            <div class="modal-body">
+                {{ message }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="abortPrompt()">Abort</button>
+                <button type="button" class="btn btn-primary" (click)="confirmPrompt()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
