@@ -1,7 +1,7 @@
 #! /bin/bash
 
 export DISPLAY=:99
-export MIPS_IMAGE_NAME=asmimpoved/mips:v1
+export MIPS_IMAGE_NAME=asmimproved/mips:v1
 
 if [ -z $MIPS_IMAGE_NO_PULL ]; then
     echo "Pulling image $MIPS_IMAGE_NAME before the server starts"
